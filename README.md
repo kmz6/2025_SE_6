@@ -11,3 +11,7 @@ npm run dev
 npm add styled-component
 <br>
 npm add react-router-dom
+<br>
+@tanstack/react-query
+<br>
+@tanstack/react-query-devtools
