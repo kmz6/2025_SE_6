@@ -1,6 +1,7 @@
-## 초기 설정
+### Frontend 초기 설정
 
-### Frontend
+git clone https://github.com/kmz6/2025_SE_6.git
+<br>
 cd frontend
 <br>
 npm install
