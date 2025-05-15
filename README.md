@@ -1,4 +1,6 @@
-### Frontend 초기 설정
+## Frontend 
+
+### 초기 설정
 
 git clone https://github.com/kmz6/2025_SE_6.git
 <br>
@@ -8,11 +10,11 @@ npm install
 <br>
 npm run dev
 
-### install
-npm add styled-component
+### 패키지 설치
+npm add styled-components
 <br>
 npm add react-router-dom
 <br>
-@tanstack/react-query
+npm add @tanstack/react-query
 <br>
-@tanstack/react-query-devtools
+npm add @tanstack/react-query-devtools
