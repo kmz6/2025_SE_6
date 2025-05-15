@@ -7,7 +7,8 @@ git clone https://github.com/kmz6/2025_SE_6.git
 cd frontend
 <br>
 npm install
-<br>
+
+### 실행
 npm run dev
 
 ### 패키지 설치
