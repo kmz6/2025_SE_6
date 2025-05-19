@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import "./NoticePage.css";
+import "./NoticeListPage.css";
+import { useNavigate } from "react-router-dom";
 
 const dummyData = Array.from({ length: 25 }).map((_, i) => ({
   id: i + 1,
@@ -8,14 +9,14 @@ const dummyData = Array.from({ length: 25 }).map((_, i) => ({
   date: "2025-05-19",
 }));
 
-export default function NoticePage() {
+export default function NoticeListPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 10;
+  const navigate = useNavigate();
 
   const indexOfLast = currentPage * postsPerPage;
   const indexOfFirst = indexOfLast - postsPerPage;
   const currentPosts = dummyData.slice(indexOfFirst, indexOfLast);
-
   const totalPages = Math.ceil(dummyData.length / postsPerPage);
 
   return (
@@ -38,10 +39,15 @@ export default function NoticePage() {
           </tr>
         </thead>
         <tbody>
-          {currentPosts.map((post, idx) => (
+          {currentPosts.map((post) => (
             <tr key={post.id}>
               <td>{post.id}</td>
-              <td>{post.title}</td>
+              <td
+                className="clickable-title"
+                onClick={() => navigate(`/notice/${post.id}`)}
+              >
+                {post.title}
+              </td>
               <td>{post.author}</td>
               <td>{post.date}</td>
             </tr>
