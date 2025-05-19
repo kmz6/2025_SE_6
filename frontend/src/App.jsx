@@ -7,8 +7,9 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import ErrorPage from "./pages/ErrorPage";
-import LectureHomePage from "./pages/LectureRoomPage"
+import LectureHomePage from "./pages/LectureRoomPage";
 import NoticePage from "./pages/NoticePage";
+import MyPage from "./pages/MyPage";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
       { path: "signup", element: <SignupPage /> },
       { path: "lectureroom", element: <LectureHomePage /> },
       { path: "notice", element: <NoticePage /> },
+      { path: "my", element: <MyPage /> },
     ],
     errorElement: <ErrorPage />,
   },
