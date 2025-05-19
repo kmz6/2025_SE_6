@@ -1,0 +1,104 @@
+.notice-container {
+  padding: 24px;
+  margin: 30px;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 60px;
+}
+
+.notice-header {
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.subject-name {
+  font-size: 30px;
+}
+
+.subject-info {
+  font-size: 18px;
+}
+
+.subject-name {
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.write-button {
+  background-color: #3b7038;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.notice-table {
+  width: 80%;
+  border-collapse: collapse;
+  table-layout: fixed; /* 열 너비 고정 */
+}
+
+.notice-table th,
+.notice-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+
+.notice-table th {
+  background-color: #f0f0f0;
+}
+
+/* No. */
+.notice-table th:nth-child(1),
+.notice-table td:nth-child(1) {
+  width: 10%;
+  text-align: center;
+}
+
+/* 게시물 제목 */
+.notice-table th:nth-child(2),
+.notice-table td:nth-child(2) {
+  width: 70%;
+}
+
+/* 작성자 */
+.notice-table th:nth-child(3),
+.notice-table td:nth-child(3) {
+  width: 10%;
+  text-align: center;
+}
+
+/* 작성일자 */
+.notice-table th:nth-child(4),
+.notice-table td:nth-child(4) {
+  width: 10%;
+  text-align: center;
+}
+
+/* 페이지네이션 */
+.pagination {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.page-btn {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.page-btn.active {
+  background-color: #CCCCCC;
+  color: white;
+  font-weight: bold;
+}

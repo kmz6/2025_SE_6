@@ -1,7 +1,10 @@
 import React from "react";
 import "./LectureRoomPage.css";
+import { useNavigate } from "react-router-dom";
 
 export default function LectureRoom() {
+  const navigate = useNavigate();
+
   return (
     <div className="container">
       <div className="layout">
@@ -19,7 +22,10 @@ export default function LectureRoom() {
             </div>
           </div>
           <div className="circle-buttons">
-            <div className="circle-button">
+            <div
+              className="circle-button"
+              onClick={() => navigate("/notice")}
+              >
               <div className="circle-icon">
                 📢<br />
                 <span className="circle-label">공지사항</span>
