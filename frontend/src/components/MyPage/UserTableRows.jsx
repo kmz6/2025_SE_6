@@ -1,16 +1,16 @@
 import * as S from "../../pages/MyPage.style";
-import {
-  userData,
-  studentData,
-  facultyData,
-  staffData,
-} from "../../mocks/userData";
+import { formatPhoneNumber } from "../../utils/format";
 
-export const UserTableRows = ({ userType }) => {
-  let userInfo = null;
+export const UserTableRows = ({ userType, userInfo }) => {
+  if (!userInfo) {
+    return (
+      <S.Row>
+        <S.Cell colSpan="4">사용자 정보 없음</S.Cell>
+      </S.Row>
+    );
+  }
 
   if (userType === "student") {
-    userInfo = studentData;
     return (
       <>
         <S.Row>
@@ -39,7 +39,7 @@ export const UserTableRows = ({ userType }) => {
         </S.Row>
         <S.Row>
           <S.CellHead>전화번호</S.CellHead>
-          <S.Cell colSpan="3">{userInfo.phone}</S.Cell>
+          <S.Cell colSpan="3">{formatPhoneNumber(userInfo.phone)}</S.Cell>
         </S.Row>
         <S.Row>
           <S.CellHead>이메일</S.CellHead>
@@ -48,7 +48,6 @@ export const UserTableRows = ({ userType }) => {
       </>
     );
   } else if (userType === "faculty") {
-    userInfo = facultyData;
     return (
       <>
         <S.Row>
@@ -67,7 +66,7 @@ export const UserTableRows = ({ userType }) => {
           <S.CellHead>사번</S.CellHead>
           <S.Cell>{userInfo.faculty_id}</S.Cell>
           <S.CellHead>전화번호</S.CellHead>
-          <S.Cell>{userInfo.telephone}</S.Cell>
+          <S.Cell>{formatPhoneNumber(userInfo.telephone)}</S.Cell>
         </S.Row>
         <S.Row>
           <S.CellHead>이메일</S.CellHead>
@@ -76,7 +75,6 @@ export const UserTableRows = ({ userType }) => {
       </>
     );
   } else if (userType === "staff") {
-    userInfo = staffData;
     return (
       <>
         <S.Row>
@@ -93,7 +91,7 @@ export const UserTableRows = ({ userType }) => {
         </S.Row>
         <S.Row>
           <S.CellHead>전화번호</S.CellHead>
-          <S.Cell>{userInfo.telephone}</S.Cell>
+          <S.Cell>{formatPhoneNumber(userInfo.telephone)}</S.Cell>
           <S.CellHead>이메일</S.CellHead>
           <S.Cell>{userInfo.email}</S.Cell>
         </S.Row>
