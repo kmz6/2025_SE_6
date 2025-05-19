@@ -9,6 +9,8 @@ import SignupPage from "./pages/SignupPage";
 import ErrorPage from "./pages/ErrorPage";
 import LectureHomePage from "./pages/LectureRoomPage"
 import NoticeListPage from "./pages/NoticeListPage";
+import NoticePostPage from "./pages/NoticePostPage"
+import MyPage from "./pages/MyPage";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +22,8 @@ const router = createBrowserRouter([
       { path: "signup", element: <SignupPage /> },
       { path: "lectureroom", element: <LectureHomePage /> },
       { path: "notice", element: <NoticeListPage /> },
+      { path: "notice/:id", element: <NoticePostPage /> },
+      { path: "my", element: <MyPage /> },
     ],
     errorElement: <ErrorPage />,
   },

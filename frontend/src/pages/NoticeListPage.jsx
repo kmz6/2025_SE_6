@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./NoticePage.css";
+import "./NoticeListPage.css";
 
 const dummyData = Array.from({ length: 25 }).map((_, i) => ({
   id: i + 1,
