@@ -41,7 +41,7 @@
 .notice-table {
   width: 80%;
   border-collapse: collapse;
-  table-layout: fixed; /* 열 너비 고정 */
+  table-layout: fixed;
 }
 
 .notice-table th,
@@ -65,6 +65,7 @@
 .notice-table th:nth-child(2),
 .notice-table td:nth-child(2) {
   width: 70%;
+  cursor: pointer;
 }
 
 /* 작성자 */
