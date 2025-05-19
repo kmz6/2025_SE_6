@@ -1,6 +1,6 @@
 import * as S from "./MyPage.style";
 import { userData } from "../mocks/userData";
-import { UserTableRows } from "../components/UserTableRows";
+import { UserTableRows } from "../components/MyPage/UserTableRows";
 
 const MyPage = () => {
   const userType = userData.user_type;

@@ -1,10 +1,10 @@
-import * as S from "../pages/MyPage.style";
+import * as S from "../../pages/MyPage.style";
 import {
   userData,
   studentData,
   facultyData,
   staffData,
-} from "../mocks/userData";
+} from "../../mocks/userData";
 
 export const UserTableRows = ({ userType }) => {
   let userInfo = null;
