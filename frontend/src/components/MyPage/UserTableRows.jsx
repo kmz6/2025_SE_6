@@ -101,7 +101,7 @@ export const UserTableRows = ({ userType, userInfo }) => {
 
   return (
     <S.Row>
-      <S.Cell colSpan="4">사용자 정보가 없습니다.</S.Cell>
+      <S.Cell colSpan="4">사용자 정보 없음</S.Cell>
     </S.Row>
   );
 };
