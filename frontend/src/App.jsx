@@ -11,6 +11,7 @@ import LectureHomePage from "./pages/LectureRoomPage"
 import NoticeListPage from "./pages/NoticeListPage";
 import NoticePostPage from "./pages/NoticePostPage"
 import MyPage from "./pages/MyPage";
+import TimetablePage from "./pages/TimetablePage";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
       { path: "notice", element: <NoticeListPage /> },
       { path: "notice/:id", element: <NoticePostPage /> },
       { path: "my", element: <MyPage /> },
+      { path: "timetable", element: <TimetablePage /> },
     ],
     errorElement: <ErrorPage />,
   },
