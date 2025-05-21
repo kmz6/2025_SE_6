@@ -14,14 +14,24 @@ export const studentData = {
   email: "student@example.com",
 };
 
-export const facultyData = {
-  faculty_id: "2022000000",
-  name: "교수님",
-  college: "인공지능융합대학",
-  department: "컴퓨터정보공학부",
-  telephone: "010-0000-1111",
-  email: "fa@gmail.com",
-};
+export const facultyData = [
+  {
+    faculty_id: "2022000000",
+    name: "한교동",
+    college: "인공지능융합대학",
+    department: "컴퓨터정보공학부",
+    telephone: "010-0000-1111",
+    email: "fa@gmail.com",
+  },
+  {
+    faculty_id: "2022000001",
+    name: "고양이",
+    college: "인공지능융합대학",
+    department: "컴퓨터정보공학부",
+    telephone: "010-0000-2222",
+    email: "catprofessor@gmail.com",
+  },
+];
 
 export const staffData = {
   staff_id: "202211111111",
