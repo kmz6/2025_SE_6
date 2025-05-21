@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const Nav = styled.div`
   height: 60px;
@@ -43,9 +44,13 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    setUser(null); // 로그인 상태 해제
-    navigate("/login"); // 로그인 페이지로 이동
+    setUser(null);
+    navigate("/login");
   };
+
+  useEffect(() => {
+    console.log("✅ user 변경됨 → 현재 상태:", user);
+  }, [user]);
 
   return (
     <Nav>
