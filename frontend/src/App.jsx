@@ -7,15 +7,16 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import ErrorPage from "./pages/ErrorPage";
-import LectureHomePage from "./pages/LectureRoomPage"
+import LectureHomePage from "./pages/LectureRoomPage";
 import NoticeListPage from "./pages/NoticeListPage";
-import NoticePostPage from "./pages/NoticePostPage"
+import NoticePostPage from "./pages/NoticePostPage";
 import MyPage from "./pages/MyPage";
 import TimetablePage from "./pages/TimetablePage";
 import StudLectureList from "./pages/StudLectureList";
 import StudAttendPage from "./pages/StudAttendPage";
 import ProfLectureList from "./pages/ProfLectureList";
 import ProfAttendPage from "./pages/ProfAttendPage";
+import SugangPage from "./pages/SugangPage";
 import { UserProvider } from "./context/UserContext";
 
 const router = createBrowserRouter([
@@ -35,6 +36,7 @@ const router = createBrowserRouter([
       { path: "attendance/student/:lectureId", element: <StudAttendPage /> },
       { path: "attendance/professor", element: <ProfLectureList /> },
       { path: "attendance/professor/:lectureId", element: <ProfAttendPage /> },
+      { path: "sugang", element: <SugangPage /> },
     ],
     errorElement: <ErrorPage />,
   },
@@ -46,8 +48,8 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <UserProvider>
-      <RouterProvider router={router} />
-      <ReactQueryDevtools initialIsOpen={false} />
+        <RouterProvider router={router} />
+        <ReactQueryDevtools initialIsOpen={false} />
       </UserProvider>
     </QueryClientProvider>
   );
