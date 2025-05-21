@@ -40,6 +40,7 @@ const Sidebar = () => {
     "학사지원",
     "대시보드",
     "마이페이지",
+    "수강신청", // 추후 수정? (05.22)
   ];
 
   const externalLinks = [
