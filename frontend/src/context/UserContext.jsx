@@ -9,11 +9,7 @@ export const useUser = () => useContext(UserContext);
 // context Provider
 export const UserProvider = ({ children }) => {
   // 임시 로그인 정보 (나중엔 로그인 성공 시 setUser()로 갱신!)
-  const [user, setUser] = useState({
-    name: "농담곰",
-    id: "2022202063",
-    role: "professor", // 또는 "professor"
-  });
+  const [user, setUser] = useState(null);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
