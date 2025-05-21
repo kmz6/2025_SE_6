@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useUser } from "../context/UserContext";
+import { userData, studentData, facultyData, staffData } from "../mocks/userData";
 
 const LoginContainer = styled.div`
   display: flex;
@@ -59,16 +62,59 @@ const Footer = styled.div`
 `;
 
 function LoginPage() {
+  const { setUser } = useUser();
+  const navigate = useNavigate();
+
+  const [id, setId] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    // mock 로그인 체크
+    if (id === userData.user_id && password === userData.password) {
+      let detailedInfo = null;
+
+      if (userData.user_type === "student") {
+        detailedInfo = studentData;
+      } else if (userData.user_type === "faculty") {
+        detailedInfo = facultyData;
+      } else if (userData.user_type === "staff") {
+        detailedInfo = staffData;
+      }
+
+      const fullUser = {
+        ...userData,
+        ...detailedInfo,
+      };
+      console.log("🟢 로그인 성공! 저장할 user 정보:", fullUser);
+
+      setUser(fullUser); // Context에 저장
+
+      navigate("/my");
+    } else {
+      alert("아이디 또는 비밀번호가 올바르지 않습니다.");
+    }
+  };
+
   return (
     <LoginContainer>
       <Logo src="../images/1506.png" alt="1506" />
-
-      <LoginForm>
-        <Input type="id" placeholder="학번/사번" />
-        <Input type="password" placeholder="비밀번호" />
+      <LoginForm onSubmit={handleLogin}>
+        <Input
+          type="text"
+          placeholder="학번/사번"
+          value={id}
+          onChange={(e) => setId(e.target.value)}
+        />
+        <Input
+          type="password"
+          placeholder="비밀번호"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
         <Button type="submit">로그인</Button>
       </LoginForm>
-
       <Footer>
         <a href="/signup">회원 가입</a>
         <span>|</span>
