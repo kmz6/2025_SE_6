@@ -1,5 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+import { useUser } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const Nav = styled.div`
   height: 60px;
@@ -26,20 +29,41 @@ const Right = styled.div`
     font-weight: 500;
   }
 
-  a {
-    text-decoration: none;
+  button {
+    background: none;
+    border: none;
     color: #1a73e8;
     font-weight: bold;
+    cursor: pointer;
+    padding: 0;
   }
 `;
 
 const Navbar = () => {
+  const { user, setUser } = useUser();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    setUser(null);
+    navigate("/login");
+  };
+
+  useEffect(() => {
+    console.log("✅ user 변경됨 → 현재 상태:", user);
+  }, [user]);
+
   return (
     <Nav>
       <Left>메뉴</Left>
       <Right>
-        <span>농담곰(2022202063)</span>
-        <a href="/login">로그아웃</a> {/* 나중에 Link로 바꾸면 됨 */}
+        {user ? (
+          <>
+            <span>{user.name}({user.user_id})</span>
+            <button onClick={handleLogout}>로그아웃</button>
+          </>
+        ) : (
+          <a href="/login">로그인</a>
+        )}
       </Right>
     </Nav>
   );
