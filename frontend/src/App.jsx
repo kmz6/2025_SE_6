@@ -20,6 +20,7 @@ import SugangPage from "./pages/SugangPage";
 import LeaveRequestPage from "./pages/LeaveRequestPage";
 import LeaveApprovalPage from "./pages/LeaveApprovalPage"
 import { UserProvider } from "./context/UserContext";
+import ArchivesListPage from "./pages/ArchivesListPage"
 
 const router = createBrowserRouter([
   { 
@@ -36,8 +37,8 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "lectureroom", element: <LectureHomePage /> },
-      { path: "notice", element: <NoticeListPage /> },
-      { path: "notice/:id", element: <NoticePostPage /> },
+      { path: "notice/:lectureId", element: <NoticeListPage /> },
+      { path: "notice/:lectureId/:Postid", element: <NoticePostPage /> },
       { path: "my", element: <MyPage /> },
       { path: "timetable", element: <TimetablePage /> },
       { path: "attendance/student", element: <StudLectureList /> },
@@ -47,6 +48,7 @@ const router = createBrowserRouter([
       { path: "sugang", element: <SugangPage /> },
       { path: "leave-request", element: <LeaveRequestPage /> },
       { path: "leave-approval", element: <LeaveApprovalPage /> },
+      { path: "archives/:lectureId", element: <ArchivesListPage /> },
     ],
     errorElement: <ErrorPage />,
   },

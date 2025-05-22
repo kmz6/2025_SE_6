@@ -1,11 +1,10 @@
-.notice-post-container {
+.notice-detail-container {
   padding: 24px;
   margin: 30px;
-  font-family: Arial, sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 60px
+  margin-top: 20px;
 }
 
 .notice-header {
@@ -79,6 +78,7 @@
 .comment-title {
   font-weight: bold;
   font-size: 20px;
+  margin-bottom: 16px;
 }
 
 .comment-item {
@@ -97,7 +97,7 @@
 
 .comment-content {
   font-size: 14px;
-  display: space-between;
+  display: flex;
   justify-content: space-between;
 }
 
@@ -106,4 +106,12 @@
   font-size: 12px;
   margin-left: auto;
   cursor: pointer;
+}
+
+.board-title {
+  width: 80%;
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 24px;
+  text-align: left;
 }
