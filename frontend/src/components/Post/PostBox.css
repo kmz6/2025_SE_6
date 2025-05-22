@@ -25,3 +25,21 @@
   line-height: 1.6;
   white-space: pre-wrap;
 }
+
+.post-attachment {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #ccc;
+  font-size: 15px;
+}
+
+.attachment-label {
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.attachment-link {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+}
