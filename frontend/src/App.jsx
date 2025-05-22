@@ -30,6 +30,7 @@ import ProfSyllabusListPage from "./pages/ProfSyllabusListPage";
 import ArchivesPostPage from "./pages/ArchivesPostPage";
 import NoticeWritePage from "./pages/NoticeWritePage";
 import ArchivesWritePage from "./pages/ArchivesWritePage";
+import DashboardPage from "./pages/DashboardPage";
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,7 @@ const router = createBrowserRouter([
       { path: "attendance/professor", element: <ProfLectureList /> },
       { path: "attendance/professor/:lectureId", element: <ProfAttendPage /> },
       { path: "sugang", element: <SugangPage /> },
+      { path: "dashboard", element: <DashboardPage /> },
       { path: "leave-request", element: <LeaveRequestPage /> },
       { path: "leave-approval", element: <LeaveApprovalPage /> },
       { path: "archives/:lectureId", element: <ArchivesListPage /> },
