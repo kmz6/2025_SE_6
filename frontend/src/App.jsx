@@ -17,6 +17,7 @@ import StudAttendPage from "./pages/StudAttendPage";
 import ProfLectureList from "./pages/ProfLectureList";
 import ProfAttendPage from "./pages/ProfAttendPage";
 import SugangPage from "./pages/SugangPage";
+import LeaveRequestPage from "./pages/LeaveRequestPage";
 import { UserProvider } from "./context/UserContext";
 
 const router = createBrowserRouter([
@@ -37,6 +38,7 @@ const router = createBrowserRouter([
       { path: "attendance/professor", element: <ProfLectureList /> },
       { path: "attendance/professor/:lectureId", element: <ProfAttendPage /> },
       { path: "sugang", element: <SugangPage /> },
+      { path: "leave-request", element: <LeaveRequestPage /> },
     ],
     errorElement: <ErrorPage />,
   },
