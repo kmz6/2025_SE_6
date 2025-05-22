@@ -18,10 +18,11 @@ import ProfLectureList from "./pages/ProfLectureList";
 import ProfAttendPage from "./pages/ProfAttendPage";
 import SugangPage from "./pages/SugangPage";
 import LeaveRequestPage from "./pages/LeaveRequestPage";
-import LeaveApprovalPage from "./pages/LeaveApprovalPage"
+import LeaveApprovalPage from "./pages/LeaveApprovalPage";
+import ArchivesListPage from "./pages/ArchivesListPage";
+import ManagementPage from "./pages/ManagementPage";
 import GradeInputPage from "./pages/GradeInputPage";
 import { UserProvider } from "./context/UserContext";
-import ArchivesListPage from "./pages/ArchivesListPage"
 
 const router = createBrowserRouter([
   {
@@ -51,6 +52,7 @@ const router = createBrowserRouter([
       { path: "leave-approval", element: <LeaveApprovalPage /> },
       { path: "archives/:lectureId", element: <ArchivesListPage /> },
       { path: "gradeInput/:courseId", element: <GradeInputPage /> },
+      { path: "management", element: <ManagementPage /> },
     ],
     errorElement: <ErrorPage />,
   },
