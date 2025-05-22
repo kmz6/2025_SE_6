@@ -143,7 +143,7 @@ const ProfGrade = ({ courseData, studentData }) => {
             <S.Table>
                 <thead>
                     <S.Row>
-                        <S.CellHead width="14%">학과</S.CellHead>
+                        <S.CellHead width="16%">학과</S.CellHead>
                         <S.CellHead width="10%">학번</S.CellHead>
                         <S.CellHead width="10%">이름</S.CellHead>
                         <S.CellHead width="10%">출석</S.CellHead>
@@ -151,7 +151,7 @@ const ProfGrade = ({ courseData, studentData }) => {
                         <S.CellHead width="10%">기말</S.CellHead>
                         <S.CellHead width="10%">과제</S.CellHead>
                         <S.CellHead width="10%">기타</S.CellHead>
-                        <S.CellHead width="10%">총점</S.CellHead>
+                        <S.CellHead width="8%">총점</S.CellHead>
                         <S.CellHead width="6%">성적</S.CellHead>
                     </S.Row>
                 </thead>
