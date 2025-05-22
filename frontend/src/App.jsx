@@ -31,6 +31,8 @@ import ArchivesPostPage from "./pages/ArchivesPostPage";
 import NoticeWritePage from "./pages/NoticeWritePage";
 import ArchivesWritePage from "./pages/ArchivesWritePage";
 import DashboardPage from "./pages/DashboardPage";
+import ArchivesListPage from "./pages/ArchivesListPage"
+import StudRankPage from "./pages/StudRankPage";
 
 const router = createBrowserRouter([
   {
@@ -69,6 +71,7 @@ const router = createBrowserRouter([
       { path: "archives/:lectureId/:Postid", element: <ArchivesPostPage /> },
       { path: "notice/:lectureId/write", element: <NoticeWritePage /> },
       { path: "archives/:lectureId/write", element: <ArchivesWritePage /> },
+      { path: "student/grade", element: <StudRankPage /> },
     ],
     errorElement: <ErrorPage />,
   },
