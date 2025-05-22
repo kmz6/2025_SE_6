@@ -21,6 +21,7 @@ import LeaveRequestPage from "./pages/LeaveRequestPage";
 import LeaveApprovalPage from "./pages/LeaveApprovalPage";
 import ArchivesListPage from "./pages/ArchivesListPage";
 import ManagementPage from "./pages/ManagementPage";
+import GradeInputPage from "./pages/GradeInputPage";
 import { UserProvider } from "./context/UserContext";
 
 const router = createBrowserRouter([
@@ -50,6 +51,7 @@ const router = createBrowserRouter([
       { path: "leave-request", element: <LeaveRequestPage /> },
       { path: "leave-approval", element: <LeaveApprovalPage /> },
       { path: "archives/:lectureId", element: <ArchivesListPage /> },
+      { path: "gradeInput/:courseId", element: <GradeInputPage /> },
       { path: "management", element: <ManagementPage /> },
     ],
     errorElement: <ErrorPage />,
