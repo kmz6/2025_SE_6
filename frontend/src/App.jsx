@@ -28,6 +28,7 @@ import ProfSyllabusPage from "./pages/ProfSyllabusPage";
 import StudSyllabusSearchPage from "./pages/StudSyllabusSearchPage";
 import ProfSyllabusListPage from "./pages/ProfSyllabusListPage";
 import ArchivesPostPage from "./pages/ArchivesPostPage";
+import NoticeWritePage from "./pages/NoticeWritePage";
 
 const router = createBrowserRouter([
   {
@@ -63,6 +64,7 @@ const router = createBrowserRouter([
       { path: "syllabus/student", element: <StudSyllabusSearchPage /> },
       { path: "syllabus/student/:lectureId", element: <StudSyllabusPage /> },
       { path: "archives/:lectureId/:Postid", element: <ArchivesPostPage /> },
+      { path: "notice/:lectureId/write", element: <NoticeWritePage /> },
     ],
     errorElement: <ErrorPage />,
   },
