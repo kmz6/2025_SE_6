@@ -28,6 +28,7 @@ import ProfSyllabusPage from "./pages/ProfSyllabusPage";
 import StudSyllabusSearchPage from "./pages/StudSyllabusSearchPage";
 import ProfSyllabusListPage from "./pages/ProfSyllabusListPage";
 import ArchivesPostPage from "./pages/ArchivesPostPage";
+import DashboardPage from "./pages/DashboardPage";
 
 const router = createBrowserRouter([
   {
@@ -53,6 +54,7 @@ const router = createBrowserRouter([
       { path: "attendance/professor", element: <ProfLectureList /> },
       { path: "attendance/professor/:lectureId", element: <ProfAttendPage /> },
       { path: "sugang", element: <SugangPage /> },
+      { path: "dashboard", element: <DashboardPage /> },
       { path: "leave-request", element: <LeaveRequestPage /> },
       { path: "leave-approval", element: <LeaveApprovalPage /> },
       { path: "archives/:lectureId", element: <ArchivesListPage /> },
