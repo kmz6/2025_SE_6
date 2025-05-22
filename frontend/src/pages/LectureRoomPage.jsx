@@ -1,9 +1,11 @@
 import React from "react";
 import "./LectureRoomPage.css";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 export default function LectureRoom() {
   const navigate = useNavigate();
+  const { lectureId } = useParams();
 
   return (
     <div className="container">
@@ -11,7 +13,6 @@ export default function LectureRoom() {
         <div className="main">
           <div className="subject">
             <select>
-              <option>과목 선택</option>
               <option>정보보호이론</option>
               <option>산학협력캡스톤설계</option>
               <option>소프트웨어공학</option>
@@ -24,7 +25,7 @@ export default function LectureRoom() {
           <div className="circle-buttons">
             <div
               className="circle-button"
-              onClick={() => navigate("/notice")}
+              onClick={() => navigate(`/notice/${lectureId}`)}
               >
               <div className="circle-icon">
                 📢<br />
