@@ -23,6 +23,14 @@ import ArchivesListPage from "./pages/ArchivesListPage";
 import ManagementPage from "./pages/ManagementPage";
 import GradeInputPage from "./pages/GradeInputPage";
 import { UserProvider } from "./context/UserContext";
+<<<<<<< Updated upstream
+=======
+import ArchivesListPage from "./pages/ArchivesListPage"
+import StudSyllabusPage from "./pages/StudSyllabusPage";
+import ProfSyllabusPage from "./pages/ProfSyllabusPage";
+import StudSyllabusSearchPage from "./pages/StudSyllabusSearchPage";
+import ProfSyllabusListPage from "./pages/ProfSyllabusListPage";
+>>>>>>> Stashed changes
 
 const router = createBrowserRouter([
   {
@@ -51,8 +59,15 @@ const router = createBrowserRouter([
       { path: "leave-request", element: <LeaveRequestPage /> },
       { path: "leave-approval", element: <LeaveApprovalPage /> },
       { path: "archives/:lectureId", element: <ArchivesListPage /> },
+<<<<<<< Updated upstream
       { path: "gradeInput/:courseId", element: <GradeInputPage /> },
       { path: "management", element: <ManagementPage /> },
+=======
+      { path: "syllabus/professor", element: <ProfSyllabusListPage /> },
+      { path: "syllabus/professor/:lectureId", element: <ProfSyllabusPage /> },
+      { path: "syllabus/student", element: <StudSyllabusSearchPage /> },
+      { path: "syllabus/student/:lectureId", element: <StudSyllabusPage /> },
+>>>>>>> Stashed changes
     ],
     errorElement: <ErrorPage />,
   },
