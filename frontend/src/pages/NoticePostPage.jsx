@@ -1,53 +1,36 @@
 import React from "react";
 //import { useParams } from "react-router-dom";
+import PostHeader from "../components/Post/PostHeader";
+import PostBox from "../components/Post/PostBox";
+import CommentBox from "../components/Post/CommentBox";
 import "./NoticePostPage.css";
 
 export default function NoticePostPage() {
-  //const { id } = useParams();
+  //const { lectureId, postId } = useParams();
+
+  const dummyComments = [
+    { meta: "작성자 이름 (학과/학번)", content: "댓글 내용입니다." }
+  ];
 
   return (
-    <div className="notice-post-container">
-      <div className="notice-header">
-        <div className="subject-info">
-          <span className="subject-name">과목명</span>
-          <span className="subject-code">/학정번호</span>
-        </div>
-        <div className="button-group">
-          <button className="edit-button">수정</button>
-          <button className="delete-button">삭제</button>
-        </div>
-      </div>
+    <div className="notice-detail-container">
+      <h1 className="board-title">공지사항</h1>
 
-      <div className="post-box">
-        <div className="post-title">게시물 제목</div>
-        <div className="post-meta">
-          <span>작성자</span>
-          <span>작성일자</span>
-        </div>
-        <div className="post-content">
-          본문 내용
-        </div>
-      </div>
+      <PostHeader
+        subjectName="[과목명]"
+        subjectCode="[학정번호]"
+        onEdit={() => console.log("수정")}
+        onDelete={() => console.log("삭제")}
+      />
 
-      <div className="comment-box">
-        <div className="comment-title">댓글</div>
-        <div className="comment-item">
-          <div className="comment-meta">작성자 이름 (학번)
-            <span className="comment-actions">수정 / 삭제</span>
-          </div>
-          <div className="comment-content">
-            댓글 내용
-          </div>
-        </div>
-        <div className="comment-item">
-          <div className="comment-meta">작성자 이름 (학번)
-            <span className="comment-actions">수정 / 삭제</span>
-          </div>
-          <div className="comment-content">
-            댓글 내용
-          </div>
-        </div>
-      </div>
+      <PostBox
+        title="예시 제목"
+        author="홍길동"
+        date="2025-05-19"
+        content="여기 게시글의 본문 내용이 들어갑니다."
+      />
+
+      <CommentBox comments={dummyComments} />
     </div>
   );
 }

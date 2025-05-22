@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import BoardHeader from "../components/Board/BoardHeader";
 import BoardListTable from "../components/Board/BoardListTable";
-import "./NoticeListPage.css";
+import "./ArchivesListPage.css";
 
 const dummyData = Array.from({ length: 25 }).map((_, i) => ({
   id: i + 1,
@@ -11,7 +11,7 @@ const dummyData = Array.from({ length: 25 }).map((_, i) => ({
   date: "2025-05-19",
 }));
 
-export default function NoticeListPage() {
+export default function ArchivesListPage() {
   const { lectureId } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 10;
@@ -23,18 +23,18 @@ export default function NoticeListPage() {
   const totalPages = Math.ceil(dummyData.length / postsPerPage);
 
   return (
-    <div className="notice-container">
-      <h1 className="board-title">공지사항</h1>
+    <div className="archives-container">
+      <h1 className="board-title">강의 자료실</h1>
 
       <BoardHeader
         subjectName="[과목명]"
         subjectCode="[학정번호]"
-        onWrite={() => navigate(`/notice/${lectureId}/write`)}
+        onWrite={() => navigate(`/archives/${lectureId}/write`)}
       />
 
       <BoardListTable
         data={currentPosts}
-        onRowClick={(postId) => navigate(`/notice/${lectureId}/${postId}`)}
+        onRowClick={(postId) => navigate(`/archives/${lectureId}/${postId}`)}
       />
 
       <div className="pagination">
