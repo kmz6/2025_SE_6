@@ -22,13 +22,19 @@ import LeaveApprovalPage from "./pages/LeaveApprovalPage"
 import { UserProvider } from "./context/UserContext";
 
 const router = createBrowserRouter([
+  { 
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/signup",
+    element: <SignupPage />,
+  },
   {
     path: "/",
     element: <RootLayout />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: "login", element: <LoginPage /> },
-      { path: "signup", element: <SignupPage /> },
       { path: "lectureroom", element: <LectureHomePage /> },
       { path: "notice", element: <NoticeListPage /> },
       { path: "notice/:id", element: <NoticePostPage /> },
