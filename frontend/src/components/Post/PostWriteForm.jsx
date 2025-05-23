@@ -33,7 +33,6 @@ export default function PostWriteForm({ onSubmit }) {
         className="title-input"
       />
       <div className="file-upload">
-        <label htmlFor="file">첨부파일</label>
         <input
           type="file"
           id="file"

@@ -31,6 +31,9 @@ import ArchivesPostPage from "./pages/ArchivesPostPage";
 import NoticeWritePage from "./pages/NoticeWritePage";
 import ArchivesWritePage from "./pages/ArchivesWritePage";
 import DashboardPage from "./pages/DashboardPage";
+import AssignListPage from "./pages/AssignListPage";
+import AssignPostPage from "./pages/AssignPostPage";
+import AssignWritePage from "./pages/AssignWritePage";
 import StudRankPage from "./pages/StudRankPage";
 
 const router = createBrowserRouter([
@@ -49,7 +52,7 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: "lectureroom", element: <LectureHomePage /> },
       { path: "notice/:lectureId", element: <NoticeListPage /> },
-      { path: "notice/:lectureId/:Postid", element: <NoticePostPage /> },
+      { path: "notice/:lectureId/:postId", element: <NoticePostPage /> },
       { path: "my", element: <MyPage /> },
       { path: "timetable", element: <TimetablePage /> },
       { path: "attendance/student", element: <StudLectureList /> },
@@ -67,9 +70,12 @@ const router = createBrowserRouter([
       { path: "syllabus/professor/:lectureId", element: <ProfSyllabusPage /> },
       { path: "syllabus/student", element: <StudSyllabusSearchPage /> },
       { path: "syllabus/student/:lectureId", element: <StudSyllabusPage /> },
-      { path: "archives/:lectureId/:Postid", element: <ArchivesPostPage /> },
+      { path: "archives/:lectureId/:postId", element: <ArchivesPostPage /> },
       { path: "notice/:lectureId/write", element: <NoticeWritePage /> },
       { path: "archives/:lectureId/write", element: <ArchivesWritePage /> },
+      { path: "assignment/:lectureId", element: <AssignListPage /> },
+      { path: "assignment/:lectureId/:postId", element: <AssignPostPage /> },
+      { path: "assignment/:lectureId/write", element: <AssignWritePage /> },
       { path: "student/grade", element: <StudRankPage /> },
     ],
     errorElement: <ErrorPage />,
