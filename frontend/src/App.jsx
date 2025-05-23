@@ -34,6 +34,7 @@ import DashboardPage from "./pages/DashboardPage";
 import AssignListPage from "./pages/AssignListPage";
 import AssignPostPage from "./pages/AssignPostPage";
 import AssignWritePage from "./pages/AssignWritePage";
+import StudGradePage from "./pages/StudGradePage";
 import StudRankPage from "./pages/StudRankPage";
 
 const router = createBrowserRouter([
@@ -77,6 +78,8 @@ const router = createBrowserRouter([
       { path: "assignment/:lectureId/:postId", element: <AssignPostPage /> },
       { path: "assignment/:lectureId/write", element: <AssignWritePage /> },
       { path: "student/grade", element: <StudRankPage /> },
+      { path: "student/grade", element: <StudGradePage /> },
+      { path: "student/rank", element: <StudRankPage /> },
     ],
     errorElement: <ErrorPage />,
   },
