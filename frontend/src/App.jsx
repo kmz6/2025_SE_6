@@ -77,7 +77,6 @@ const router = createBrowserRouter([
       { path: "assignment/:lectureId", element: <AssignListPage /> },
       { path: "assignment/:lectureId/:postId", element: <AssignPostPage /> },
       { path: "assignment/:lectureId/write", element: <AssignWritePage /> },
-      { path: "student/grade", element: <StudRankPage /> },
       { path: "student/grade", element: <StudGradePage /> },
       { path: "student/rank", element: <StudRankPage /> },
     ],

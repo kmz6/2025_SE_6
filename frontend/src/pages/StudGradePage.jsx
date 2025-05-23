@@ -56,7 +56,7 @@ const StudGradePage = () => {
 
   return (
     <S.Container>
-      <S.Title>학습성과</S.Title>
+      <S.Title>학습 결과</S.Title>
       {userType === "student" ? (
         <>
           <S.SubTitle>기본 정보</S.SubTitle>
@@ -137,7 +137,7 @@ const StudGradePage = () => {
           </S.Table>
         </>
       ) : (
-        <S.WarningMessage>학습성과 조회는 학생만 가능합니다.</S.WarningMessage>
+        <S.WarningMessage>학습결과 조회는 학생만 가능합니다.</S.WarningMessage>
       )
       }
     </S.Container >
