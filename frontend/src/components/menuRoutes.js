@@ -4,7 +4,7 @@ export const routeMap = {
     "출석 관리": "/attendance/student",
     "강의 계획서 조회": "/syllabus/student",
     "수강/성적 조회": "/student/grade",
-    "석차 조회": "",
+    "석차 조회": "/student/rank",
     "휴복학 신청": "/leave-request",
     "강의 종합": "",
     "온라인 강의 콘텐츠 시청": "",

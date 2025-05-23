@@ -54,3 +54,23 @@ export const WarningMessage = styled.p`
   border: 1px solid #ffa8a8;
   border-radius: 8px;
 `;
+
+export const SelectWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+
+export const SelectLabel = styled.label`
+  font-weight: 600;
+  color: #333;
+    margin-right: 12px;
+`;
+
+export const Select = styled.select`
+  padding: 4px 20px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: white;
+  font-size: 16px;
+`;

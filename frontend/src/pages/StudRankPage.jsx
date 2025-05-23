@@ -2,146 +2,129 @@ import { useState } from "react";
 import * as S from "./StudRankPage.style";
 
 import {
-  userData,
-  studentData,
-  facultyData,
-  staffData,
+    userData,
+    studentData,
+    facultyData,
+    staffData,
 } from "../mocks/userData";
 
 import {
-  attendData
+    attendData
 } from "../mocks/gradeData";
 
 const StudRankPage = () => {
-  const userType = userData.user_type; //현재 사용자의 type 확인
+    const userType = userData.user_type; //현재 사용자의 type 확인
 
-  //user type에 따라 정보 초기화
-  const initialUserInfo =
-    userType === "student"
-      ? studentData
-      : userType === "faculty"
-        ? facultyData
-        : userType === "staff"
-          ? staffData
-          : null;
+    //user type에 따라 정보 초기화
+    const initialUserInfo =
+        userType === "student"
+            ? studentData
+            : userType === "faculty"
+                ? facultyData
+                : userType === "staff"
+                    ? staffData
+                    : null;
 
-  const [userInfo, setUserInfo] = useState(initialUserInfo);
+    const [userInfo, setUserInfo] = useState(initialUserInfo);
 
-  const [selectedSemester, setSelectedSemester] = useState("2024-2");
-  const subjects = attendData[selectedSemester] || []; //학기
+    //평점을 점수로 변환
+    const gradeToPoint = {
+        "A": 4.0,
+        "B": 3.0,
+        "C": 2.0,
+        "D": 1.0,
+        "F": 0.0
+    };
 
-  //학점 수 계산
-  const calculateCredit = (subjectsData) => {
-    let totalCredit = 0; //전체
-    let majorCredit = 0; //전공
-    let generalCredit = 0; //교양
+    //학기별 학점 수 및 평점 계산
+    function calculateScoreInfo(attendData) {
+        const result = [];
 
-    subjectsData.forEach((subject) => {
-      const credit = subject.credit || 0;
+        for (const semester in attendData) {
+            const courses = attendData[semester];
 
-      if (subject.course_type === "전공") {
-        majorCredit += credit;
-      } else if (subject.course_type === "교양") {
-        generalCredit += credit;
-      }
-    });
+            let totalCredits = 0;
+            let totalGradePoints = 0;
 
-    totalCredit = majorCredit + generalCredit;
+            courses.forEach(course => {
+                const credit = course.credit;
+                const grade = course.grade;
+                const gradePoint = gradeToPoint[grade] || 0;
 
-    return { total: totalCredit, major: majorCredit, general: generalCredit };
-  };
+                totalCredits += credit;
+                totalGradePoints += gradePoint * credit;
+            });
 
-  const allSubjects = Object.values(attendData).flat(); //데이터 하나로 합치기
-  const [creditInfo, setCreditInfo] = useState(() => calculateCredit(allSubjects));
+            const totalScore = totalCredits > 0 ? (totalGradePoints / totalCredits).toFixed(2) : "0.00";
 
-  return (
-    <S.Container>
-      <S.Title>학습성과</S.Title>
-      {userType === "student" ? (
-        <>
-          <S.SubTitle>기본 정보</S.SubTitle>
-          <S.Table>
-            <S.Row>
-              <S.CellHead>이름</S.CellHead>
-              <S.Cell>{userInfo.name}</S.Cell>
-              <S.CellHead>학번</S.CellHead>
-              <S.Cell>{userInfo.student_id}</S.Cell>
-              <S.CellHead>학과</S.CellHead>
-              <S.Cell>{userInfo.department}</S.Cell>
-              <S.CellHead>학적상태</S.CellHead>
-              <S.Cell>
-                {userInfo.enrollment_status === "enrolled"
-                  ? "재학"
-                  : userInfo.enrollment_status === "on_leave"
-                    ? "휴학"
-                    : userInfo.enrollment_status}
-              </S.Cell>
-            </S.Row>
-          </S.Table>
+            result.push({
+                semester,
+                totalCredits,
+                totalScore
+            });
+        }
 
-          <S.Table>
-            <thead>
-              <S.Row>
-                <S.CellHead>전체 이수학점</S.CellHead>
-                <S.CellHead>전공 이수학점</S.CellHead>
-                <S.CellHead>교양 이수학점</S.CellHead>
-                <S.CellHead>평량 평균</S.CellHead>
-              </S.Row>
-            </thead>
-            <tbody>
-              <S.Row>
-                <S.Cell>{creditInfo.total}</S.Cell>
-                <S.Cell>{creditInfo.major}</S.Cell>
-                <S.Cell>{creditInfo.general}</S.Cell>
-                <S.Cell></S.Cell>
-              </S.Row>
-            </tbody>
-          </S.Table>
+        return result;
+    }
 
-          <S.SubTitle>수강/성적 조회</S.SubTitle>
-          <S.SelectWrapper>
-            <S.SelectLabel htmlFor="semester">학기 선택 :</S.SelectLabel>
-            <S.Select
-              onChange={(e) => setSelectedSemester(e.target.value)}>
-              {Object.keys(attendData).map((semester) => (
-                <option key={semester} value={semester}>
-                  {semester}
-                </option>
-              ))}
-            </S.Select>
-          </S.SelectWrapper>
+    const semesterResults = calculateScoreInfo(attendData);
 
-          <S.Table>
-            <thead>
-              <S.Row>
-                <S.CellHead>학정번호</S.CellHead>
-                <S.CellHead>과목명</S.CellHead>
-                <S.CellHead>이수구분</S.CellHead>
-                <S.CellHead>학점</S.CellHead>
-                <S.CellHead>성적</S.CellHead>
-              </S.Row>
-            </thead>
-            <tbody>
-              {subjects.map((subject) => {
-                return (
-                  <S.Row>
-                    <S.Cell>{subject.course_code}</S.Cell>
-                    <S.Cell>{subject.course_name}</S.Cell>
-                    <S.Cell>{subject.course_type}</S.Cell>
-                    <S.Cell>{subject.credit}</S.Cell>
-                    <S.Cell>{subject.grade}</S.Cell>
-                  </S.Row>
+    return (
+        <S.Container>
+            <S.Title>
+                학습 결과
+            </S.Title>
+            {userType === "student" ? (
+                <>
+                    <S.SubTitle>기본 정보</S.SubTitle>
+                    <S.Table>
+                        <S.Row>
+                            <S.CellHead>이름</S.CellHead>
+                            <S.Cell>{userInfo.name}</S.Cell>
+                            <S.CellHead>학번</S.CellHead>
+                            <S.Cell>{userInfo.student_id}</S.Cell>
+                            <S.CellHead>학과</S.CellHead>
+                            <S.Cell>{userInfo.department}</S.Cell>
+                            <S.CellHead>학적상태</S.CellHead>
+                            <S.Cell>
+                                {userInfo.enrollment_status === "enrolled"
+                                    ? "재학"
+                                    : userInfo.enrollment_status === "on_leave"
+                                        ? "휴학"
+                                        : userInfo.enrollment_status}
+                            </S.Cell>
+                        </S.Row>
+                    </S.Table>
+
+                    <S.SubTitle>석차 조회</S.SubTitle>
+                    <S.Table>
+                        <thead>
+                            <S.Row>
+                                <S.CellHead>학기</S.CellHead>
+                                <S.CellHead>신청학점</S.CellHead>
+                                <S.CellHead>평점</S.CellHead>
+                                <S.CellHead>학과석차</S.CellHead>
+                            </S.Row>
+                        </thead>
+                        <tbody>
+                            {semesterResults.map(({ semester, totalCredits, totalScore }) => (
+                                <S.Row key={semester}>
+                                    <S.Cell>{semester}</S.Cell>
+                                    <S.Cell>{totalCredits}</S.Cell>
+                                    <S.Cell>{totalScore}</S.Cell>
+                                    <S.Cell>등수 / 학생수</S.Cell>
+                                </S.Row>
+                            ))}
+                        </tbody>
+                    </S.Table>
+                </>
+            ) :
+                (
+                    <S.WarningMessage>학습결과 조회는 학생만 가능합니다.</S.WarningMessage>
                 )
-              })}
-            </tbody>
-          </S.Table>
-        </>
-      ) : (
-        <S.WarningMessage>학습성과 조회는 학생만 가능합니다.</S.WarningMessage>
-      )
-      }
-    </S.Container >
-  );
-};
+            }
+        </S.Container>
+    )
+}
 
 export default StudRankPage;
