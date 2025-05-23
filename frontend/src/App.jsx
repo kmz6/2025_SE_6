@@ -36,6 +36,7 @@ import AssignPostPage from "./pages/AssignPostPage";
 import AssignWritePage from "./pages/AssignWritePage";
 import StudGradePage from "./pages/StudGradePage";
 import StudRankPage from "./pages/StudRankPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -49,38 +50,186 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <HomePage /> },
       { path: "lectureroom", element: <LectureHomePage /> },
       { path: "notice/:lectureId", element: <NoticeListPage /> },
       { path: "notice/:lectureId/:postId", element: <NoticePostPage /> },
-      { path: "my", element: <MyPage /> },
-      { path: "timetable", element: <TimetablePage /> },
-      { path: "attendance/student", element: <StudLectureList /> },
-      { path: "attendance/student/:lectureId", element: <StudAttendPage /> },
-      { path: "attendance/professor", element: <ProfLectureList /> },
-      { path: "attendance/professor/:lectureId", element: <ProfAttendPage /> },
-      { path: "sugang", element: <SugangPage /> },
-      { path: "dashboard", element: <DashboardPage /> },
-      { path: "leave-request", element: <LeaveRequestPage /> },
-      { path: "leave-approval", element: <LeaveApprovalPage /> },
+      {
+        path: "notice/:lectureId/write",
+        element: (
+          <ProtectedRoute allowedRoles={["faculty"]}>
+            <NoticeWritePage />
+          </ProtectedRoute>
+        ),
+      },
       { path: "archives/:lectureId", element: <ArchivesListPage /> },
-      { path: "gradeInput/:courseId", element: <GradeInputPage /> },
-      { path: "management", element: <ManagementPage /> },
-      { path: "syllabus/professor", element: <ProfSyllabusListPage /> },
-      { path: "syllabus/professor/:lectureId", element: <ProfSyllabusPage /> },
-      { path: "syllabus/student", element: <StudSyllabusSearchPage /> },
-      { path: "syllabus/student/:lectureId", element: <StudSyllabusPage /> },
       { path: "archives/:lectureId/:postId", element: <ArchivesPostPage /> },
-      { path: "notice/:lectureId/write", element: <NoticeWritePage /> },
       { path: "archives/:lectureId/write", element: <ArchivesWritePage /> },
+
+      // ✅ Protected routes
+      {
+        path: "my",
+        element: (
+          <ProtectedRoute allowedRoles={["student", "faculty", "staff"]}>
+            <MyPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "timetable",
+        element: (
+          <ProtectedRoute allowedRoles={["student"]}>
+            <TimetablePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "attendance/student",
+        element: (
+          <ProtectedRoute allowedRoles={["student"]}>
+            <StudLectureList />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "attendance/student/:lectureId",
+        element: (
+          <ProtectedRoute allowedRoles={["student"]}>
+            <StudAttendPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "attendance/professor",
+        element: (
+          <ProtectedRoute allowedRoles={["faculty"]}>
+            <ProfLectureList />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "attendance/professor/:lectureId",
+        element: (
+          <ProtectedRoute allowedRoles={["faculty"]}>
+            <ProfAttendPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "sugang",
+        element: (
+          <ProtectedRoute allowedRoles={["student"]}>
+            <SugangPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "dashboard",
+        element: (
+          <ProtectedRoute allowedRoles={["student"]}>
+            <DashboardPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "leave-request",
+        element: (
+          <ProtectedRoute allowedRoles={["student"]}>
+            <LeaveRequestPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "leave-approval",
+        element: (
+          <ProtectedRoute allowedRoles={["staff"]}>
+            <LeaveApprovalPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "gradeInput/:courseId",
+        element: (
+          <ProtectedRoute allowedRoles={["faculty"]}>
+            <GradeInputPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "syllabus/professor",
+        element: (
+          <ProtectedRoute allowedRoles={["faculty"]}>
+            <ProfSyllabusListPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "syllabus/professor/:lectureId",
+        element: (
+          <ProtectedRoute allowedRoles={["faculty"]}>
+            <ProfSyllabusPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "syllabus/student",
+        element: (
+          <ProtectedRoute allowedRoles={["student"]}>
+            <StudSyllabusSearchPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "syllabus/student/:lectureId",
+        element: (
+          <ProtectedRoute allowedRoles={["student"]}>
+            <StudSyllabusPage />
+          </ProtectedRoute>
+        ),
+      },
       { path: "assignment/:lectureId", element: <AssignListPage /> },
-      { path: "assignment/:lectureId/:postId", element: <AssignPostPage /> },
-      { path: "assignment/:lectureId/write", element: <AssignWritePage /> },
-      { path: "student/grade", element: <StudGradePage /> },
-      { path: "student/rank", element: <StudRankPage /> },
+      {
+        path: "assignment/:lectureId/:postId",
+        element: (
+          <ProtectedRoute allowedRoles={["student"]}>
+            <AssignPostPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "assignment/:lectureId/write",
+        element: (
+          <ProtectedRoute allowedRoles={["faculty"]}>
+            <AssignWritePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "student/grade",
+        element: (
+          <ProtectedRoute allowedRoles={["student"]}>
+            <StudGradePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "student/rank",
+        element: (
+          <ProtectedRoute allowedRoles={["student"]}>
+            <StudRankPage />
+          </ProtectedRoute>
+        ),
+      },
+      { path: "management",
+        element: (
+          <ProtectedRoute allowedRoles={["staff"]}>
+            <ManagementPage />
+          </ProtectedRoute>
+        ),
+      },
     ],
-    errorElement: <ErrorPage />,
   },
 ]);
 
