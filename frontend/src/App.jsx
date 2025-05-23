@@ -31,7 +31,6 @@ import ArchivesPostPage from "./pages/ArchivesPostPage";
 import NoticeWritePage from "./pages/NoticeWritePage";
 import ArchivesWritePage from "./pages/ArchivesWritePage";
 import DashboardPage from "./pages/DashboardPage";
-import ArchivesListPage from "./pages/ArchivesListPage"
 import StudRankPage from "./pages/StudRankPage";
 
 const router = createBrowserRouter([
