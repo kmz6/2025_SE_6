@@ -37,6 +37,8 @@ import AssignWritePage from "./pages/AssignWritePage";
 import StudGradePage from "./pages/StudGradePage";
 import StudRankPage from "./pages/StudRankPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AssignSubmitListPage from "./pages/AssignSubmitListPage";
+import AssignSubmittedDetailPage from "./pages/AssignSubmittedDetailPage";
 
 const router = createBrowserRouter([
   {
@@ -66,7 +68,7 @@ const router = createBrowserRouter([
       },
       { path: "archives/:lectureId", element: <ArchivesListPage /> },
       { path: "archives/:lectureId/:postId", element: <ArchivesPostPage /> },
-      { path: "archives/:lectureId/write", element: <ArchivesWritePage /> },
+      { path: "archives/:lectureId/write", element: <ArchivesWritePage /> },      
 
       // ✅ Protected routes
       {
@@ -203,6 +205,22 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={["faculty"]}>
             <AssignWritePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "assignment/:lectureId/professor/:postId",
+        element: (
+          <ProtectedRoute allowedRoles={["faculty"]}>
+            <AssignSubmitListPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "assignment/:lectureId/professor/:postId/:studentId",
+        element: (
+          <ProtectedRoute allowedRoles={["faculty"]}>
+            <AssignSubmittedDetailPage />
           </ProtectedRoute>
         ),
       },
