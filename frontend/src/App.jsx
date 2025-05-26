@@ -39,6 +39,7 @@ import StudGradePage from "./pages/student/StudGradePage";
 import StudRankPage from "./pages/student/StudRankPage";
 import AssignSubmitListPage from "./pages/faculty/AssignSubmitListPage";
 import AssignSubmittedDetailPage from "./pages/faculty/AssignSubmittedDetailPage";
+import ResetPasswdPage from "./pages/studfac/ResetPasswdPage";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
   {
     path: "/signup",
     element: <SignupPage />,
+  },
+  {
+    path: "/forgotpasswd",
+    element: <ResetPasswdPage />,
   },
   {
     path: "/",
