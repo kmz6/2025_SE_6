@@ -1,8 +1,11 @@
 import React from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   padding: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
 `;
 
 const Table = styled.table`
@@ -19,7 +22,7 @@ const Th = styled.th`
 `;
 
 const Td = styled.td`
-  height: 60px;
+  height: 50px;
   border: 1px solid #ddd;
   position: relative;
 `;
@@ -37,8 +40,9 @@ const SubjectBlock = styled.div`
 `;
 
 const Timetable = ({ subjects }) => {
+  const navigate = useNavigate(); // 추가
   const days = ["월", "화", "수", "목", "금", "토"];
-  const timeSlots = [1, 2, 3, 4, 5, 6, 7]; // 칸 수 조절 가능
+  const timeSlots = [1, 2, 3, 4, 5, 6, 7];
 
   return (
     <Wrapper>
@@ -62,7 +66,13 @@ const Timetable = ({ subjects }) => {
                 return (
                   <Td key={day + time}>
                     {subject && (
-                      <SubjectBlock color={subject.color}>
+                      <SubjectBlock
+                        color={subject.color}
+                        onClick={() =>
+                          navigate(`/lectureroom/${subject.lectureId}`)
+                        }
+                        style={{ cursor: "pointer" }}
+                      >
                         {subject.name}
                       </SubjectBlock>
                     )}
