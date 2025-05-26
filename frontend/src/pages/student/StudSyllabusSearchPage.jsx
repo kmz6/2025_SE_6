@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { courseData } from "../../mocks/courseData";
 import SyllabusFilterForm from "../../components/Syllabus/SyllabusFilterForm";
 import SyllabusResultTable from "../../components/Syllabus/SyllabusResultTable";
-
+import { facultyMap } from "../../mocks/courseData";
 const PageWrapper = styled.div`
   padding: 2rem;
   width: 100%;
@@ -36,7 +36,7 @@ export default function StudSyllabusSearchPage() {
 
   const filteredResults = courseData.filter((course) => {
     const nameMatch = course.course_name.includes(filters.courseName);
-    const profMatch = course.faculty_id.includes(filters.professor);
+    const profMatch = facultyMap[course.faculty_id].includes(filters.professor);
     const semMatch = filters.semester === "25-1"; // 예시
     return nameMatch && profMatch && semMatch;
   });

@@ -45,7 +45,11 @@ export default function SyllabusFilterForm({ filters, onChange }) {
     <FormWrapper>
       <FormRow>
         <Label>년도/학기</Label>
-        <Select name="semester" value={filters.semester} onChange={handleInputChange}>
+        <Select
+          name="semester"
+          value={filters.semester}
+          onChange={handleInputChange}
+        >
           <option value="25-1">2025년 1학기</option>
           <option value="25-2">2025년 2학기</option>
         </Select>
