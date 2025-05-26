@@ -1,5 +1,5 @@
 import { useState } from "react";
-import * as S from "./MyPage.style";
+import * as S from "../styles/MyPage.style";
 import {
   userData,
   studentData,

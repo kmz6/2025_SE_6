@@ -44,7 +44,7 @@ const Input = styled.input`
   border-radius: 6px;
   font-size: 14px;
   line-height: normal;
-  box-sizing:border-box;
+  box-sizing: border-box;
 `;
 
 const Select = styled.select`

@@ -15,7 +15,7 @@ const ProtectedRoute = ({ allowedRoles, children }) => {
     return <Navigate to="/" replace />;
   }
 
-  // ❌ 권한 없는 경우
+  // ❌ 권한 없는 경우 (디자인 수정하기)
   if (!allowedRoles.includes(user.user_type)) {
     return <div>접근 권한이 없습니다.</div>;
   }

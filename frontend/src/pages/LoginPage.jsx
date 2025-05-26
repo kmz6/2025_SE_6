@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useUser } from "../context/UserContext";
-import { userData, studentData, facultyData, staffData } from "../mocks/userData";
+import {
+  userData,
+  studentData,
+  facultyData,
+  staffData,
+} from "../mocks/userData";
 
 const LoginContainer = styled.div`
   display: flex;

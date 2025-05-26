@@ -56,7 +56,7 @@ const Button = styled.button`
   font-weight: bold;
   color: #333;
   position: relative;
-  cursor: pointer;  // 👈 마우스 올리면 손모양
+  cursor: pointer; // 👈 마우스 올리면 손모양
 `;
 
 const ButtonGroup = styled.div`

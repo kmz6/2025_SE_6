@@ -1,6 +1,6 @@
 export const userData = {
   user_id: "2022202063",
-  password: "00000000",
+  password: "0000",
   user_type: "student",
 };
 
