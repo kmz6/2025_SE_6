@@ -17,6 +17,7 @@ const LoginContainer = styled.div`
   height: 100vh;
   font-family: "Pretendard", sans-serif;
   background-color: #fff;
+  position: relative;
 `;
 
 const Logo = styled.img`
@@ -50,7 +51,7 @@ const Button = styled.button`
   margin-top: 10px;
 
   &:hover {
-    background-color: #005fd1;
+    background-color: #003366;
   }
 `;
 
@@ -104,7 +105,7 @@ function LoginPage() {
 
   return (
     <LoginContainer>
-      <Logo src="../images/1506.png" alt="1506" />
+      <Logo src="../images/1506.png" alt="1506" onClick={() => navigate("/login")} />
       <LoginForm onSubmit={handleLogin}>
         <Input
           type="text"
@@ -123,7 +124,7 @@ function LoginPage() {
       <Footer>
         <a href="/signup">회원 가입</a>
         <span>|</span>
-        <a href="#">비밀번호 찾기</a>
+        <a href="/forgotpasswd">비밀번호 찾기</a>
       </Footer>
     </LoginContainer>
   );
