@@ -11,7 +11,7 @@ import SignupPage from "./pages/SignupPage";
 import ErrorPage from "./pages/ErrorPage";
 import LectureHomePage from "./pages/student/LectureRoomPage";
 import NoticeListPage from "./pages/studfac/NoticeListPage";
-import NoticePostPage from "./pages/faculty/NoticeWritePage";
+import NoticePostPage from "./pages/studfac/NoticePostPage";
 import MyPage from "./pages/MyPage";
 import TimetablePage from "./pages/student/TimetablePage";
 import StudLectureList from "./pages/student/StudLectureList";
