@@ -4,13 +4,18 @@ import PostHeader from "../../components/Post/PostHeader";
 import PostBox from "../../components/Post/PostBox";
 import CommentBox from "../../components/Post/CommentBox";
 import "./ArchivesPostPage.css";
+import { useUser } from "../../context/UserContext";
 
 export default function ArchivesPostPage() {
   //const { lectureId, postId } = useParams();
+  const { user } = useUser();
+  const currentUserId = user?.user_id;
 
   const dummyComments = [
     { meta: "작성자 이름 (학과/학번)", content: "댓글 내용입니다." },
   ];
+
+  const postAuthorId = "2022000000";  // 예시: 게시글 작성자의 학번 또는 ID
 
   return (
     <div className="archives-detail-container">
@@ -21,6 +26,8 @@ export default function ArchivesPostPage() {
         subjectCode="[학정번호]"
         onEdit={() => console.log("수정")}
         onDelete={() => console.log("삭제")}
+        authorId={postAuthorId}
+        currentUserId={currentUserId}
       />
 
       <PostBox
