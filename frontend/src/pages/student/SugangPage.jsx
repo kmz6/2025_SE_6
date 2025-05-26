@@ -2,8 +2,10 @@ import { useState } from "react";
 import { courseData, facultyMap } from "../../mocks/courseData";
 import * as S from "../../styles/SugangPage.style";
 import { FaSearch } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 function SugangPage() {
+  const navigate = useNavigate();
   const [inputValue, setInputValue] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selected, setSelected] = useState([]);
@@ -103,7 +105,12 @@ function SugangPage() {
       </S.Left>
 
       <S.Right>
-        <h3>신청한 과목</h3>
+        <S.RightHeader>
+          <h3>신청한 과목</h3>
+          <S.TimetableButton onClick={() => navigate("/student/timetable")}>
+            시간표 확인하기
+          </S.TimetableButton>
+        </S.RightHeader>
         <S.SelectedList>
           {selected.length === 0 && <p>신청한 과목이 없습니다.</p>}
           {selected.map((course) => (

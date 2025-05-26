@@ -76,6 +76,7 @@ const router = createBrowserRouter([
     children: [
       { path: "sugang", element: <SugangPage /> },
       { path: "dashboard", element: <DashboardPage /> },
+      { path: "timetable", element: <TimetablePage /> },
     ],
   },
   {
