@@ -1,26 +1,49 @@
-import React from "react";
-import { Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Navigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
+import * as S from "../styles/SugangPage.style";
 
 const ProtectedRoute = ({ allowedRoles, children }) => {
+  const navigate = useNavigate();
   const { user, loading } = useUser();
+  const [showModal, setShowModal] = useState(false);
 
-  // 🔄 로딩 중일 땐 아무것도 보여주지 않음 (또는 로딩 스피너)
+  useEffect(() => {
+    if (user && !allowedRoles.includes(user.user_type)) {
+      setShowModal(true);
+    }
+  }, [user, allowedRoles]);
+
+  // 로딩 중일 땐 아무것도 보여주지 않음 (또는 로딩 스피너)
   if (loading) {
     return <div>로딩 중...</div>;
   }
 
-  // ❌ 로그인 안 된 경우
+  // 로그인 안 된 경우
   if (!user) {
-    return <Navigate to="/" replace />;
+    return <navigate to="/" replace />;
   }
 
-  // ❌ 권한 없는 경우 (디자인 수정하기)
-  if (!allowedRoles.includes(user.user_type)) {
-    return <div>접근 권한이 없습니다.</div>;
+  // 권한 없는 경우 (디자인 수정하기)
+  if (showModal) {
+    return (
+      <S.ModalOverlay>
+        <S.Modal>
+          접근 권한이 없습니다.
+          <div style={{ margin: "5px 0" }} />
+          <S.ModalCloseButton
+            onClick={() => {
+              setShowModal(false);
+              navigate(-1);
+            }}
+          >
+            닫기
+          </S.ModalCloseButton>
+        </S.Modal>
+      </S.ModalOverlay>
+    );
   }
 
-  // ✅ 통과
   return children;
 };
 
