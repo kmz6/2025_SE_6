@@ -1,7 +1,7 @@
 export const userData = {
-  user_id: "2022202063",
+  user_id: "2022111111",
   password: "0000",
-  user_type: "student",
+  user_type: "staff",
 };
 
 export const studentData = {
@@ -35,14 +35,14 @@ export const facultyData = [
 
 export const staffData = [
   {
-    staff_id: "202211111111",
+    staff_id: "2022111111",
     name: "스태프",
     department: "인공지능융합대학",
     telephone: "010-9999-9999",
     email: "staff@gmail.com",
   },
   {
-    staff_id: "2022222222222",
+    staff_id: "2022222222",
     name: "스탭입니다",
     department: "인공지능융합대학",
     telephone: "010-1212-3434",

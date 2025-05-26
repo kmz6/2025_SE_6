@@ -11,7 +11,7 @@ function LeaveApprovalPage() {
   return (
     <S.Container>
       <S.Title>학적관리</S.Title>
-      {userType === "faculty" ? (
+      {userType === "staff" ? (
         <>
           <S.SubTitle>휴복학 승인</S.SubTitle>
           <S.Table>
