@@ -66,7 +66,7 @@ export default function AssignSubmitListPage() {
                 onClick={() =>
                   isSubmitted &&
                   navigate(
-                    `/assignment/${lectureId}/${assignmentId}/submitted/${s.studentId}`
+                    `/assignment/${lectureId}/${assignmentId}/${s.studentId}`
                   )
                 }
               >

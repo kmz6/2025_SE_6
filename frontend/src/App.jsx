@@ -34,11 +34,11 @@ import ArchivesWritePage from "./pages/faculty/ArchivesWritePage";
 import DashboardPage from "./pages/student/DashboardPage";
 import AssignListPage from "./pages/studfac/AssignListPage";
 import AssignPostPage from "./pages/student/AssignPostPage";
-import AssignWritePage from "./pages/student/AssignWritePage";
+import AssignWritePage from "./pages/faculty/AssignWritePage";
 import StudGradePage from "./pages/student/StudGradePage";
 import StudRankPage from "./pages/student/StudRankPage";
 import AssignSubmitListPage from "./pages/faculty/AssignSubmitListPage";
-import AssignSubmittedDetailPage from "./pages/faculty/AssignSubmittedDetailPage";
+import AssignSubmittedDetailPage from "./pages/studfac/AssignSubmittedDetailPage";
 import ResetPasswdPage from "./pages/studfac/ResetPasswdPage";
 
 const router = createBrowserRouter([
@@ -67,6 +67,8 @@ const router = createBrowserRouter([
       { path: "notice/:lectureId/:postId", element: <NoticePostPage /> },
       { path: "archives/:lectureId", element: <ArchivesListPage /> },
       { path: "archives/:lectureId/:postId", element: <ArchivesPostPage /> },
+      { path: "assignment/:lectureId", element: <AssignListPage /> },
+      { path: "assignment/:lectureId/:postId/:studentId", element: <AssignSubmittedDetailPage /> },
     ],
   },
   {
@@ -77,6 +79,7 @@ const router = createBrowserRouter([
       { path: "sugang", element: <SugangPage /> },
       { path: "dashboard", element: <DashboardPage /> },
       { path: "timetable", element: <TimetablePage /> },
+      { path: "assignment/:lectureId/:postId", element: <AssignPostPage /> },
     ],
   },
   {
@@ -97,6 +100,22 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={["faculty"]}>
             <ArchivesWritePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "assignment/:lectureId/write",
+        element: (
+          <ProtectedRoute allowedRoles={["faculty"]}>
+            <AssignWritePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "assignment/:lectureId",
+        element: (
+          <ProtectedRoute allowedRoles={["faculty"]}>
+            <AssignSubmitListPage />
           </ProtectedRoute>
         ),
       },

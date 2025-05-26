@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import BoardHeader from "../../components/Board/BoardHeader";
 import BoardListTable from "../../components/Board/BoardListTable";
 import "./NoticeListPage.css";
+import { useUser } from "../../context/UserContext";
 
 const dummyData = Array.from({ length: 25 }).map((_, i) => ({
   id: i + 1,
@@ -22,6 +23,9 @@ export default function NoticeListPage() {
   const currentPosts = dummyData.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(dummyData.length / postsPerPage);
 
+  const { user } = useUser();
+  const userType = user?.user_type;
+
   return (
     <div className="notice-container">
       <h1 className="board-title">공지사항</h1>
@@ -29,7 +33,8 @@ export default function NoticeListPage() {
       <BoardHeader
         subjectName="[과목명]"
         subjectCode="[학정번호]"
-        onWrite={() => navigate(`/notice/${lectureId}/write`)}
+        onWrite={() => navigate(`/professor/notice/${lectureId}/write`)}
+        userType={userType}
       />
 
       <BoardListTable

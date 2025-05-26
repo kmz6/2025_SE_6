@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import BoardHeader from "../../components/Board/BoardHeader";
 import BoardListTable from "../../components/Board/BoardListTable";
 import "./ArchivesListPage.css";
+import { useUser } from "../../context/UserContext";
 
 const dummyData = Array.from({ length: 25 }).map((_, i) => ({
   id: i + 1,
@@ -22,6 +23,10 @@ export default function ArchivesListPage() {
   const currentPosts = dummyData.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(dummyData.length / postsPerPage);
 
+  const { user } = useUser();
+  const userType = user?.user_type;
+
+
   return (
     <div className="archives-container">
       <h1 className="board-title">강의 자료실</h1>
@@ -29,7 +34,8 @@ export default function ArchivesListPage() {
       <BoardHeader
         subjectName="[과목명]"
         subjectCode="[학정번호]"
-        onWrite={() => navigate(`/archives/${lectureId}/write`)}
+        onWrite={() => navigate(`/professor/archives/${lectureId}/write`)}
+        userType={userType}
       />
 
       <BoardListTable
