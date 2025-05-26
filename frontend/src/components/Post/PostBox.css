@@ -1,0 +1,45 @@
+.post-box {
+  width: 80%;
+  border: 1px solid #555;
+  padding: 16px;
+  margin-bottom: 32px;
+}
+
+.post-title {
+  font-weight: bold;
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.post-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #555;
+  border-bottom: 1px solid #ccc;
+}
+
+.post-content {
+  font-size: 16px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.post-attachment {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #ccc;
+  font-size: 15px;
+}
+
+.attachment-label {
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.attachment-link {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+}

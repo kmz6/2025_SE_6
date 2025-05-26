@@ -1,0 +1,46 @@
+.board-table {
+  width: 80%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.board-table th,
+.board-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+
+.board-table th {
+  background-color: #f0f0f0;
+}
+
+/* No. */
+.board-table th:nth-child(1),
+.board-table td:nth-child(1) {
+  width: 10%;
+  text-align: center;
+}
+
+/* 게시물 제목 */
+.board-table th:nth-child(2),
+.board-table td:nth-child(2) {
+  width: 65%;
+}
+
+/* 작성자 */
+.board-table th:nth-child(3),
+.board-table td:nth-child(3) {
+  width: 10%;
+  text-align: center;
+}
+
+/* 작성일자 */
+.board-table th:nth-child(4),
+.board-table td:nth-child(4) {
+  width: 15%;
+  text-align: center;
+}
+
+.clickable-title {
+  cursor: pointer;
+}

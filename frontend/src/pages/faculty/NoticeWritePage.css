@@ -1,0 +1,17 @@
+.notice-write-container,
+.archives-write-container {
+  padding: 24px;
+  margin: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.board-title {
+  width: 80%;
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 24px;
+  text-align: left;
+}

@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useUser } from "../context/UserContext";
-import { userData, studentData, facultyData, staffData } from "../mocks/userData";
+import {
+  userData,
+  studentData,
+  facultyData,
+  staffData,
+} from "../mocks/userData";
 
 const LoginContainer = styled.div`
   display: flex;
@@ -12,6 +17,7 @@ const LoginContainer = styled.div`
   height: 100vh;
   font-family: "Pretendard", sans-serif;
   background-color: #fff;
+  position: relative;
 `;
 
 const Logo = styled.img`
@@ -45,7 +51,7 @@ const Button = styled.button`
   margin-top: 10px;
 
   &:hover {
-    background-color: #005fd1;
+    background-color: #003366;
   }
 `;
 
@@ -91,7 +97,7 @@ function LoginPage() {
 
       setUser(fullUser); // Context에 저장
 
-      navigate("/");
+      navigate("/home");
     } else {
       alert("아이디 또는 비밀번호가 올바르지 않습니다.");
     }
@@ -99,7 +105,7 @@ function LoginPage() {
 
   return (
     <LoginContainer>
-      <Logo src="../images/1506.png" alt="1506" />
+      <Logo src="../images/1506.png" alt="1506" onClick={() => navigate("/login")} />
       <LoginForm onSubmit={handleLogin}>
         <Input
           type="text"
@@ -118,7 +124,7 @@ function LoginPage() {
       <Footer>
         <a href="/signup">회원 가입</a>
         <span>|</span>
-        <a href="#">비밀번호 찾기</a>
+        <a href="/forgotpasswd">비밀번호 찾기</a>
       </Footer>
     </LoginContainer>
   );

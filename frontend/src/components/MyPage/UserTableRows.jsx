@@ -1,4 +1,4 @@
-import * as S from "../../pages/MyPage.style";
+import * as S from "../../styles/MyPage.style";
 import { formatPhoneNumber } from "../../utils/format";
 
 export const UserTableRows = ({ userType, userInfo }) => {

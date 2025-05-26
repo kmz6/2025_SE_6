@@ -5,14 +5,20 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 const Nav = styled.div`
+  width: 100vw; /* ✅ 스크롤바 생겨도 고정된 뷰포트 너비 기준 */
   height: 60px;
   background-color: #f9f9f9;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
   border-bottom: 1px solid #ccc;
   font-family: sans-serif;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 20px;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 10;
 `;
 
 const Left = styled.div`
@@ -20,9 +26,23 @@ const Left = styled.div`
   color: #555;
 `;
 
+const Center = styled.img`
+  height: 40px;
+  cursor: pointer;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateX(-50%) scale(1.05);
+  }
+`;
+
 const Right = styled.div`
   color: #1a73e8;
   font-size: 14px;
+  white-space: nowrap;
 
   span {
     margin-right: 12px;
@@ -45,9 +65,9 @@ const Navbar = () => {
 
   const handleLogout = () => {
     setUser(null);
+    sessionStorage.removeItem("user"); // 이 줄 꼭 추가!
     navigate("/login");
   };
-
   useEffect(() => {
     console.log("✅ user 변경됨 → 현재 상태:", user);
   }, [user]);
@@ -55,6 +75,7 @@ const Navbar = () => {
   return (
     <Nav>
       <Left>메뉴</Left>
+      <Center src="/images/1506.png" alt="로고" onClick={() => navigate("/")} />
       <Right>
         {user ? (
           <>

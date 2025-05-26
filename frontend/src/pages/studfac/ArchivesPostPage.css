@@ -1,0 +1,17 @@
+.archives-detail-container {
+  padding: 24px;
+  margin: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.board-title {
+  font-size: 30px;
+  font-weight: bold;
+  color: black;
+  border-bottom: 1px solid #003366;
+  padding-bottom: 20px;
+  margin-bottom: 25px;
+}

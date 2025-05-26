@@ -1,0 +1,77 @@
+.assignment-list-container {
+  padding: 24px;
+  margin: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.board-title {
+  font-size: 30px;
+  font-weight: bold;
+  color: black;
+  border-bottom: 1px solid #003366;
+  padding-bottom: 20px;
+  margin-bottom: 25px;
+}
+
+.assignment-table {
+  width: 80%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.assignment-table th,
+.assignment-table td {
+  border: 1px solid #ccc;
+  padding: 12px;
+  text-align: center;
+}
+
+.assignment-table th {
+  background-color: #f0f0f0;
+}
+
+.assignment-table tr:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+.submitted {
+  color: green;
+  font-weight: bold;
+}
+
+.not-submitted {
+  color: red;
+  font-weight: bold;
+}
+
+/* No. */
+.assignment-table th:nth-child(1),
+.assignment-table td:nth-child(1) {
+  width: 10%;
+  text-align: center;
+}
+
+/* 게시물 제목 */
+.assignment-table th:nth-child(2),
+.assignment-table td:nth-child(2) {
+  width: 65%;
+  text-align: left;
+}
+
+/* 작성자 */
+.assignment-table th:nth-child(3),
+.assignment-table td:nth-child(3) {
+  width: 15%;
+  text-align: center;
+}
+
+/* 작성일자 */
+.assignment-table th:nth-child(4),
+.assignment-table td:nth-child(4) {
+  width: 10%;
+  text-align: center;
+}
