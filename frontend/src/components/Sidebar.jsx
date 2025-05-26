@@ -66,7 +66,13 @@ const Sidebar = () => {
       "수강 관리": ["시간표", "출석 관리", "강의 계획서 조회"],
       "학습 결과": ["수강/성적 조회", "석차 조회"],
       "학적 관리": ["휴복학 신청"],
-      "학습 지원": ["강의 종합", "온라인 강의 콘텐츠 시청", "공지사항", "강의 자료실", "과제 제출"],
+      "학습 지원": [
+        "강의 종합",
+        "온라인 강의 콘텐츠 시청",
+        "공지사항",
+        "강의 자료실",
+        "과제 제출",
+      ],
       "대시 보드": [],
       "마이 페이지": [],
       "수강 신청": [],
@@ -74,7 +80,12 @@ const Sidebar = () => {
     faculty: {
       "수강 관리": ["출석 관리", "강의 계획서 작성"],
       "학습 결과": ["성적 입력"],
-      "학습 지원": ["온라인 강의 콘텐츠 업로드", "공지사항 업로드", "자료실 업로드", "제출된 과제 확인"],
+      "학습 지원": [
+        "온라인 강의 콘텐츠 업로드",
+        "공지사항 업로드",
+        "자료실 업로드",
+        "제출된 과제 확인",
+      ],
     },
     staff: {
       "학적 관리": [],
@@ -87,7 +98,7 @@ const Sidebar = () => {
 
   const externalLinks = [
     { label: "웹메일", url: "https://wmail.kw.ac.kr/" },
-    { label: "중앙도서관", url: "https://reading.kw.ac.kr/" },
+    { label: "중앙도서관", url: "https://kupis.kw.ac.kr/" },
   ];
 
   return (
@@ -109,7 +120,8 @@ const Sidebar = () => {
           </MenuItem>
 
           {/* 서브 메뉴 있는 경우에만 펼침 */}
-          {openMenu === menuTitle && subItems.length > 0 &&
+          {openMenu === menuTitle &&
+            subItems.length > 0 &&
             subItems.map((subItem) => (
               <SubMenuItem
                 key={subItem}
