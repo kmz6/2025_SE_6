@@ -69,7 +69,8 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     errorElement: <ErrorPage />,
     children: [
-      
+      { path: "sugang", element: <SugangPage /> },
+      { path: "dashboard", element: <DashboardPage /> },
     ],
   },
   {
@@ -100,9 +101,7 @@ const router = createBrowserRouter([
     path: "/staff/",
     element: <RootLayout />,
     errorElement: <ErrorPage />,
-    children: [
-      
-    ],
+    children: [{ path: "management", element: <ManagementPage /> }],
   },
 ]);
 
