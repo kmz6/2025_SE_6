@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-
+import { facultyMap } from "../../mocks/courseData";
 const Table = styled.table`
   width: 100%;
   margin: 0 auto;
@@ -53,13 +53,16 @@ export default function SyllabusResultTable({ results }) {
       </thead>
       <tbody>
         {results.map((course) => (
-          <Row key={course.course_id} onClick={() => handleRowClick(course.course_id)}>
+          <Row
+            key={course.course_id}
+            onClick={() => handleRowClick(course.course_id)}
+          >
             <Td>{course.course_code}</Td>
             <Td>{course.course_name}</Td>
             <Td>{course.course_type}</Td>
             <Td>{course.credit}</Td>
             <Td>{formatTime(course.time)}</Td>
-            <Td>{course.faculty_id}</Td>
+            <Td>{facultyMap[course.faculty_id]}</Td>
           </Row>
         ))}
       </tbody>
