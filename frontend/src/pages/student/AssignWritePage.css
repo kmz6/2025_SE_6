@@ -8,9 +8,10 @@
 }
 
 .board-title {
-  width: 80%;
-  font-size: 36px;
+  font-size: 30px;
   font-weight: bold;
-  margin-bottom: 24px;
-  text-align: left;
+  color: black;
+  border-bottom: 1px solid #003366;
+  padding-bottom: 20px;
+  margin-bottom: 25px;
 }

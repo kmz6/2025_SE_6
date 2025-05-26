@@ -98,15 +98,15 @@
   padding: 16px;
 }
 
-.board-title {
+.bottom-board-title {
   font-weight: bold;
   margin-bottom: 8px;
+  cursor: pointer;
+  font-size: 24px;
 }
 
 .post-list {
   list-style: none;
-  padding: 0;
-  margin: 0;
 }
 
 .post-item {
