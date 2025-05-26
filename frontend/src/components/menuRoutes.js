@@ -6,7 +6,7 @@ export const routeMap = {
     "수강/성적 조회": "/student/grade",
     "석차 조회": "/student/rank",
     "휴복학 신청": "/leave-request",
-    "강의 종합": "/lectureroom",
+    "강의 종합": "/lectureroom/0",
     "온라인 강의 콘텐츠 시청": "",
     "공지사항": "/notice",
     "강의 자료실": "",
