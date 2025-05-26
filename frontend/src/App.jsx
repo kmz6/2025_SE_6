@@ -56,9 +56,27 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "home", element: <HomePage /> },
+      { path: "my", element: <MyPage /> },
       { path: "lectureroom/:lectureId", element: <LectureHomePage /> },
       { path: "notice/:lectureId", element: <NoticeListPage /> },
       { path: "notice/:lectureId/:postId", element: <NoticePostPage /> },
+      { path: "archives/:lectureId", element: <ArchivesListPage /> },
+      { path: "archives/:lectureId/:postId", element: <ArchivesPostPage /> },
+    ],
+  },
+  {
+    path: "/student/",
+    element: <RootLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      
+    ],
+  },
+  {
+    path: "/professor/",
+    element: <RootLayout />,
+    errorElement: <ErrorPage />,
+    children: [
       {
         path: "notice/:lectureId/write",
         element: (
@@ -67,188 +85,23 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      { path: "archives/:lectureId", element: <ArchivesListPage /> },
-      { path: "archives/:lectureId/:postId", element: <ArchivesPostPage /> },
-      { path: "archives/:lectureId/write", element: <ArchivesWritePage /> },
-
-      // ✅ Protected routes
       {
-        path: "my",
-        element: (
-          <ProtectedRoute allowedRoles={["student", "faculty", "staff"]}>
-            <MyPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "timetable",
-        element: (
-          <ProtectedRoute allowedRoles={["student"]}>
-            <TimetablePage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "attendance/student",
-        element: (
-          <ProtectedRoute allowedRoles={["student"]}>
-            <StudLectureList />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "attendance/student/:lectureId",
-        element: (
-          <ProtectedRoute allowedRoles={["student"]}>
-            <StudAttendPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "attendance/professor",
+        path: "archives/:lectureId/write",
         element: (
           <ProtectedRoute allowedRoles={["faculty"]}>
-            <ProfLectureList />
+            <ArchivesWritePage />
           </ProtectedRoute>
         ),
       },
-      {
-        path: "attendance/professor/:lectureId",
-        element: (
-          <ProtectedRoute allowedRoles={["faculty"]}>
-            <ProfAttendPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "sugang",
-        element: (
-          <ProtectedRoute allowedRoles={["student"]}>
-            <SugangPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "dashboard",
-        element: (
-          <ProtectedRoute allowedRoles={["student"]}>
-            <DashboardPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "leave-request",
-        element: (
-          <ProtectedRoute allowedRoles={["student"]}>
-            <LeaveRequestPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "leave-approval",
-        element: (
-          <ProtectedRoute allowedRoles={["staff"]}>
-            <LeaveApprovalPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "gradeInput/:courseId",
-        element: (
-          <ProtectedRoute allowedRoles={["faculty"]}>
-            <GradeInputPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "syllabus/professor",
-        element: (
-          <ProtectedRoute allowedRoles={["faculty"]}>
-            <ProfSyllabusListPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "syllabus/professor/:lectureId",
-        element: (
-          <ProtectedRoute allowedRoles={["faculty"]}>
-            <ProfSyllabusPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "syllabus/student",
-        element: (
-          <ProtectedRoute allowedRoles={["student"]}>
-            <StudSyllabusSearchPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "syllabus/student/:lectureId",
-        element: (
-          <ProtectedRoute allowedRoles={["student"]}>
-            <StudSyllabusPage />
-          </ProtectedRoute>
-        ),
-      },
-      { path: "assignment/:lectureId", element: <AssignListPage /> },
-      {
-        path: "assignment/:lectureId/:postId",
-        element: (
-          <ProtectedRoute allowedRoles={["student"]}>
-            <AssignPostPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "assignment/:lectureId/write",
-        element: (
-          <ProtectedRoute allowedRoles={["faculty"]}>
-            <AssignWritePage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "assignment/:lectureId/professor/:postId",
-        element: (
-          <ProtectedRoute allowedRoles={["faculty"]}>
-            <AssignSubmitListPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "assignment/:lectureId/professor/:postId/:studentId",
-        element: (
-          <ProtectedRoute allowedRoles={["faculty"]}>
-            <AssignSubmittedDetailPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "student/grade",
-        element: (
-          <ProtectedRoute allowedRoles={["student"]}>
-            <StudGradePage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "student/rank",
-        element: (
-          <ProtectedRoute allowedRoles={["student"]}>
-            <StudRankPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "management",
-        element: (
-          <ProtectedRoute allowedRoles={["staff"]}>
-            <ManagementPage />
-          </ProtectedRoute>
-        ),
-      },
+      // 여기부터 추가가
+    ],
+  },
+  {
+    path: "/staff/",
+    element: <RootLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      
     ],
   },
 ]);
