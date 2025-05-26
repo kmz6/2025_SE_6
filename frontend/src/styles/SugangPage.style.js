@@ -163,3 +163,26 @@ export const ModalCloseButton = styled.button`
   font-weight: 600;
   cursor: pointer;
 `;
+
+export const RightHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: -8px;
+`;
+
+export const TimetableButton = styled.button`
+  padding: 8px 16px;
+  background-color: #d61c4e;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgb(184, 23, 63);
+  }
+`;

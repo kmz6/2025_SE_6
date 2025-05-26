@@ -1,6 +1,6 @@
 export const routeMap = {
   student: {
-    시간표: "/timetable",
+    시간표: "/student/timetable",
     "출석 관리": "/attendance/student",
     "강의 계획서 조회": "/syllabus/student",
     "수강/성적 조회": "/student/grade",
