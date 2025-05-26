@@ -55,6 +55,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { index: true, element: <HomePage /> },
+      { path: "home", element: <HomePage /> },
       { path: "lectureroom", element: <LectureHomePage /> },
       { path: "notice/:lectureId", element: <NoticeListPage /> },
       { path: "notice/:lectureId/:postId", element: <NoticePostPage /> },
