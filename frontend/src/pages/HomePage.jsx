@@ -3,24 +3,24 @@ import styled from "styled-components";
 import Timetable from "../components/Timetable";
 import { useNavigate } from "react-router-dom";
 
-// 💡 시간표용 mock 데이터 (유지)
 const mockSubjects = [
-  { name: "정보보호이론", day: "월", time: 2, color: "#e7b4f0" },
-  { name: "소프트웨어공학", day: "월", time: 5, color: "#a0e2e2" },
-  { name: "생명과기술", day: "월", time: 6, color: "#f3cc7f" },
-  { name: "산학협력캡스톤설계", day: "화", time: 5, color: "#d9b4f0" },
-  { name: "생명과기술", day: "수", time: 5, color: "#f3cc7f" },
-  { name: "소프트웨어공학", day: "수", time: 6, color: "#a0e2e2" },
-  { name: "산학협력캡스톤설계", day: "목", time: 6, color: "#d9b4f0" },
-  { name: "클래식음악의역사", day: "토", time: 7, color: "#a4dfb7" },
+  { name: "정보보호이론", day: "월", time: 2, color: "#e7b4f0", lectureId: 1 },
+  { name: "소프트웨어공학", day: "월", time: 5, color: "#a0e2e2", lectureId: 2 },
+  { name: "생명과기술", day: "월", time: 6, color: "#f3cc7f", lectureId: 3 },
+  { name: "산학협력캡스톤설계", day: "화", time: 5, color: "#d9b4f0", lectureId: 4 },
+  { name: "생명과기술", day: "수", time: 5, color: "#f3cc7f", lectureId: 3 },
+  { name: "소프트웨어공학", day: "수", time: 6, color: "#a0e2e2", lectureId: 2 },
+  { name: "산학협력캡스톤설계", day: "목", time: 6, color: "#d9b4f0", lectureId: 4 },
+  { name: "클래식음악의역사", day: "토", time: 7, color: "#a4dfb7", lectureId: 5 },
 ];
 
-// 과목명만 중복 제거
+// 과목명 중복 제거
 const courseList = [...new Set(mockSubjects.map((s) => s.name))];
 
-// 스타일 정의
 const HomeWrapper = styled.div`
   padding: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
 `;
 
 const Section = styled.div`
@@ -31,7 +31,10 @@ const Section = styled.div`
 `;
 
 const SectionTitle = styled.h3`
-  margin-bottom: 10px;
+  font-size: 30px;
+  font-weight: bold;
+  color: #003366;
+  margin-bottom: 25px;
   text-align: center;
 `;
 
@@ -56,42 +59,12 @@ const Button = styled.button`
   font-weight: bold;
   color: #333;
   position: relative;
-  cursor: pointer; // 👈 마우스 올리면 손모양
+  cursor: pointer;
 `;
 
 const ButtonGroup = styled.div`
   display: flex;
   gap: 8px;
-`;
-
-const NoticeButton = styled.button`
-  background-color: #a9d9b3;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-weight: bold;
-  color: #333;
-`;
-
-const MaterialButton = styled.button`
-  background-color: #d0d7e5;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-weight: bold;
-  color: #333;
-  position: relative;
-`;
-
-const NewBadge = styled.span`
-  position: absolute;
-  top: -6px;
-  right: -10px;
-  background: red;
-  color: white;
-  font-size: 10px;
-  padding: 1px 4px;
-  border-radius: 6px;
 `;
 
 function HomePage() {
@@ -118,7 +91,7 @@ function HomePage() {
           <CourseRow key={name}>
             <CourseName>{name}</CourseName>
             <ButtonGroup>
-              {/* ⬇ 여기에 navigate 연결 */}
+              {/* 여기에 navigate 연결 */}
               <Button
                 bg="#a9d9b3"
                 onClick={() => navigate(`/notice/${encodeURIComponent(name)}`)}
@@ -126,12 +99,18 @@ function HomePage() {
                 공지사항
               </Button>
 
-              <Button bg="#d0d7e5">
+              <Button 
+                bg="#d0d7e5"
+                onClick={() => navigate(`/archives/${encodeURIComponent(name)}`)}
+                >
                 강의자료실
-                {index === 0 && <NewBadge>N</NewBadge>}
               </Button>
-              <Button bg="#f6e3b4">온라인 강의</Button>
-              <Button bg="#f2c0c0">과제 제출</Button>
+              <Button 
+                bg="#f2c0c0"
+                onClick={() => navigate(`/archives/${encodeURIComponent(name)}`)}
+                >
+                  과제 제출
+                  </Button>
             </ButtonGroup>
           </CourseRow>
         ))}
