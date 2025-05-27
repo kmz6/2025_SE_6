@@ -1,38 +1,13 @@
 import React from "react";
-import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { facultyMap } from "../../mocks/courseData";
-const Table = styled.table`
-  width: 100%;
-  margin: 0 auto;
-  border-collapse: collapse;
-`;
-
-const Th = styled.th`
-  border: 1px solid #ccc;
-  padding: 10px;
-  background-color: #f0f0f0;
-  text-align: center;
-`;
-
-const Td = styled.td`
-  border: 1px solid #ccc;
-  padding: 10px;
-  text-align: center;
-`;
-
-const Row = styled.tr`
-  cursor: pointer;
-  &:hover {
-    background-color: #f9f9f9;
-  }
-`;
+import { Table, Row, Cell, CellHead } from "../../styles/Syllabus.style";
 
 export default function SyllabusResultTable({ results }) {
   const navigate = useNavigate();
 
   const handleRowClick = (courseId) => {
-    navigate(`/syllabus/student/${courseId}`);
+    navigate(`/student/syllabus/${courseId}`);
   };
 
   if (results.length === 0) {
@@ -43,12 +18,12 @@ export default function SyllabusResultTable({ results }) {
     <Table>
       <thead>
         <tr>
-          <Th>학정번호</Th>
-          <Th>과목명</Th>
-          <Th>이수구분</Th>
-          <Th>학점</Th>
-          <Th>강의시간</Th>
-          <Th>교수</Th>
+          <CellHead>학정번호</CellHead>
+          <CellHead>과목명</CellHead>
+          <CellHead>이수구분</CellHead>
+          <CellHead>학점</CellHead>
+          <CellHead>강의시간</CellHead>
+          <CellHead>교수</CellHead>
         </tr>
       </thead>
       <tbody>
@@ -56,13 +31,14 @@ export default function SyllabusResultTable({ results }) {
           <Row
             key={course.course_id}
             onClick={() => handleRowClick(course.course_id)}
+            style={{ cursor: "pointer" }}
           >
-            <Td>{course.course_code}</Td>
-            <Td>{course.course_name}</Td>
-            <Td>{course.course_type}</Td>
-            <Td>{course.credit}</Td>
-            <Td>{formatTime(course.time)}</Td>
-            <Td>{facultyMap[course.faculty_id]}</Td>
+            <Cell>{course.course_code}</Cell>
+            <Cell>{course.course_name}</Cell>
+            <Cell>{course.course_type}</Cell>
+            <Cell>{course.credit}</Cell>
+            <Cell>{formatTime(course.time)}</Cell>
+            <Cell>{facultyMap[course.faculty_id]}</Cell>
           </Row>
         ))}
       </tbody>

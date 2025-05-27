@@ -3,36 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { courseData } from "../../mocks/courseData";
 import styled from "styled-components";
 import { useUser } from "../../context/UserContext"; // ✅ 추가
-
-const Container = styled.div`
-  margin: 24px auto;
-  padding: 30px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-`;
-
-const Title = styled.h2`
-  font-size: 30px;
-  font-weight: bold;
-  color: #003366;
-  border-bottom: 1px solid #003366;
-  padding-bottom: 20px;
-  margin-bottom: 25px;
-`;
-
-const CommonButton = styled.button`
-  background-color: #003366;
-  color: white;
-  border: none;
-  padding: 15px 25px;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #0055aa;
-  }
-`;
+import { Container, Title, Button as CommonButton } from "../../styles/Syllabus.style";
 
 const LectureCard = styled.div`
   border: 1px solid #ccc;

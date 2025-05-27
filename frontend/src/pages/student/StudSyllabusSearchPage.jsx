@@ -4,24 +4,7 @@ import { courseData } from "../../mocks/courseData";
 import SyllabusFilterForm from "../../components/Syllabus/SyllabusFilterForm";
 import SyllabusResultTable from "../../components/Syllabus/SyllabusResultTable";
 import { facultyMap } from "../../mocks/courseData";
-const PageWrapper = styled.div`
-  padding: 2rem;
-  width: 100%;
-`;
-
-const ContextBox = styled.div`
-  border: 1px solid #ccc;
-  padding: 2rem;
-`;
-
-const SectionTitle = styled.h2`
-  font-size: 30px;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  text-align: left;
-  border-bottom: 1px solid #000;
-  padding-bottom: 0.5rem;
-`;
+import { Container, Title } from "../../styles/Syllabus.style";
 
 export default function StudSyllabusSearchPage() {
   const [filters, setFilters] = useState({
@@ -42,10 +25,10 @@ export default function StudSyllabusSearchPage() {
   });
 
   return (
-    <PageWrapper>
-      <SectionTitle>강의계획서 조회</SectionTitle>
+    <Container>
+      <Title>강의계획서 조회</Title>
       <SyllabusFilterForm filters={filters} onChange={handleFilterChange} />
       <SyllabusResultTable results={filteredResults} />
-    </PageWrapper>
+    </Container>
   );
 }
