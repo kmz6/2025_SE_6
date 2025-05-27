@@ -80,6 +80,9 @@ const router = createBrowserRouter([
       { path: "dashboard", element: <DashboardPage /> },
       { path: "timetable", element: <TimetablePage /> },
       { path: "assignment/:lectureId/:postId", element: <AssignPostPage /> },
+      { path: "grade", element: <StudGradePage /> },
+      { path: "rank", element: <StudRankPage /> },
+      { path: "leave/request", element: <LeaveRequestPage /> },
     ],
   },
   {
@@ -119,6 +122,14 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: "grade/input/:courseId",
+        element: (
+          <ProtectedRoute allowedRoles={["faculty"]}>
+            <GradeInputPage />
+          </ProtectedRoute>
+        ),
+      }
       // 여기부터 추가가
     ],
   },
@@ -126,7 +137,9 @@ const router = createBrowserRouter([
     path: "/staff/",
     element: <RootLayout />,
     errorElement: <ErrorPage />,
-    children: [{ path: "management", element: <ManagementPage /> }],
+    children: [{ path: "management", element: <ManagementPage /> },
+    { path: "leave/approval", element: <LeaveApprovalPage /> }
+    ],
   },
 ]);
 

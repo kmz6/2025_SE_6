@@ -5,7 +5,7 @@ export const routeMap = {
     "강의 계획서 조회": "/syllabus/student",
     "수강/성적 조회": "/student/grade",
     "석차 조회": "/student/rank",
-    "휴복학 신청": "/leave-request",
+    "휴복학 신청": "/student/leave/request",
     "강의 종합": "/lectureroom/0",
     "온라인 강의 콘텐츠 시청": "",
     공지사항: "/notice",
@@ -18,7 +18,7 @@ export const routeMap = {
   faculty: {
     "출석 관리": "/attendance/professor",
     "강의 계획서 작성": "/syllabus/professor",
-    "성적 입력": "/gradeInput",
+    "성적 입력": "",
     "온라인 강의 콘텐츠 업로드": "",
     "공지사항 업로드": "",
     "자료실 업로드": "",
@@ -26,7 +26,7 @@ export const routeMap = {
     "마이 페이지": "/my",
   },
   staff: {
-    "학적 관리": "/leave-approval",
+    "학적 관리": "staff/leave/approval",
     "구성원 관리": "staff/management",
     "마이 페이지": "/my",
   },
