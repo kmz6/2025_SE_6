@@ -1,7 +1,6 @@
 import React from "react";
 import "./LectureRoomPage.css";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function LectureRoom() {
   const navigate = useNavigate();
