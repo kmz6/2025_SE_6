@@ -15,7 +15,9 @@ const mockSubjects = [
 ];
 
 // 과목명 중복 제거
-const courseList = [...new Set(mockSubjects.map((s) => s.name))];
+const courseList = Array.from(
+  new Map(mockSubjects.map((s) => [s.lectureId, { name: s.name, lectureId: s.lectureId }])).values()
+);
 
 const HomeWrapper = styled.div`
   padding: 30px;
@@ -49,6 +51,7 @@ const CourseRow = styled.div`
 const CourseName = styled.div`
   font-weight: bold;
   font-size: 16px;
+  cursor: pointer;
 `;
 
 const Button = styled.button`
@@ -87,30 +90,30 @@ function HomePage() {
       {/* 수강과목 */}
       <Section>
         <SectionTitle>수강과목</SectionTitle>
-        {courseList.map((name, index) => (
-          <CourseRow key={name}>
-            <CourseName>{name}</CourseName>
+        {courseList.map((course) => (
+          <CourseRow key={course.lectureId}>
+            <CourseName onClick={() => navigate(`/lectureroom/${course.lectureId}`)}>{course.name}</CourseName>
             <ButtonGroup>
               {/* 여기에 navigate 연결 */}
               <Button
                 bg="#a9d9b3"
-                onClick={() => navigate(`/notice/${encodeURIComponent(name)}`)}
+                onClick={() => navigate(`/notice/${encodeURIComponent(course.name)}`)}
               >
                 공지사항
               </Button>
 
-              <Button 
+              <Button
                 bg="#d0d7e5"
-                onClick={() => navigate(`/archives/${encodeURIComponent(name)}`)}
-                >
+                onClick={() => navigate(`/archives/${encodeURIComponent(course.name)}`)}
+              >
                 강의자료실
               </Button>
-              <Button 
+              <Button
                 bg="#f2c0c0"
-                onClick={() => navigate(`/archives/${encodeURIComponent(name)}`)}
-                >
-                  과제 제출
-                  </Button>
+                onClick={() => navigate(`/archives/${encodeURIComponent(course.name)}`)}
+              >
+                과제 제출
+              </Button>
             </ButtonGroup>
           </CourseRow>
         ))}
