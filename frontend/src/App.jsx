@@ -83,6 +83,10 @@ const router = createBrowserRouter([
       { path: "grade", element: <StudGradePage /> },
       { path: "rank", element: <StudRankPage /> },
       { path: "leave/request", element: <LeaveRequestPage /> },
+      { path: "attendance", element: <StudLectureList /> },
+      { path: "attendance/:lectureId", element: <StudAttendPage /> },
+      { path: "syllabus", element:<StudSyllabusSearchPage /> },
+      { path: "Syllabus/:lectureId", element: <StudSyllabusPage /> },
     ],
   },
   {
@@ -129,7 +133,39 @@ const router = createBrowserRouter([
             <GradeInputPage />
           </ProtectedRoute>
         ),
-      }
+      },
+      {
+        path: "attendance",
+        element: (
+          <ProtectedRoute allowedRoles={["faculty"]}>
+            <ProfLectureList />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: "attendance/lectureId",
+        element: (
+          <ProtectedRoute allowedRoles={["faculty"]}>
+            <ProfAttendPage />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: "syllabus",
+        element: (
+          <ProtectedRoute allowedRoles={["faculty"]}>
+            <ProfSyllabusListPage />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: "syllabus/:lectureId",
+        element: (
+          <ProtectedRoute allowdRoles={["faculty"]}>
+            <ProfSyllabusPage />
+          </ProtectedRoute>
+        )
+      },
       // 여기부터 추가가
     ],
   },
