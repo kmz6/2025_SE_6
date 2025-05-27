@@ -143,7 +143,7 @@ const router = createBrowserRouter([
         )
       },
       {
-        path: "attendance/lectureId",
+        path: "attendance/:lectureId",
         element: (
           <ProtectedRoute allowedRoles={["faculty"]}>
             <ProfAttendPage />
@@ -161,7 +161,7 @@ const router = createBrowserRouter([
       {
         path: "syllabus/:lectureId",
         element: (
-          <ProtectedRoute allowdRoles={["faculty"]}>
+          <ProtectedRoute allowedRoles={["faculty"]}>
             <ProfSyllabusPage />
           </ProtectedRoute>
         )

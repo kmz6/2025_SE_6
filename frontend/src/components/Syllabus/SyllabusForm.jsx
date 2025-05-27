@@ -1,62 +1,60 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { courseData } from "../../mocks/courseData";
 
-const TableWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2rem;
+const Container = styled.div`
+  margin: 24px auto;
+  padding: 30px;
+  border: 1px solid #ccc;
+  background-color: #fff;
 `;
 
-const StyledTable = styled.table`
+const Table = styled.table`
+  width: 100%;
   border-collapse: collapse;
-  width: 100%;
-  max-width: 1000px;
-  table-layout: fixed;
-  margin-bottom: 1.5rem;
-
-  td, th {
-    border: 1px solid #ccc;
-    padding: 10px;
-    text-align: center;
-    word-wrap: break-word;
-  }
-
-  td input {
-    width: 100%;
-    border: none;
-    text-align: center;
-    background-color: transparent;
-  }
-
-  td input:focus {
-    outline: none;
-    background-color: #f9f9f9;
-  }
-
-  th {
-    background-color: #e0e0e0;
-  }
+  margin-bottom: 70px;
 `;
 
-const SubmitButton = styled.button`
-  padding: 10px 20px;
+const Row = styled.tr`
+  border: 1px solid #ccc;
+`;
+
+const CellHead = styled.td`
+  width: 10%;
+  padding: 15px;
   font-weight: bold;
-  background-color: #1a73e8;
+  background-color: #f3f6f9;
+  border: 1px solid #ccc;
+`;
+
+const Cell = styled.td`
+  padding: 12px;
+  border: 1px solid #ccc;
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+`;
+
+const Button = styled.button`
+  background-color: #003366;
   color: white;
   border: none;
-  border-radius: 6px;
+  padding: 15px 25px;
+  border-radius: 4px;
+  font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.2s;
 
   &:hover {
-    background-color: #0f5ec5;
+    background-color: #0055aa;
   }
 `;
 
+
 const SyllabusForm = ({ initialData, onSubmit }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     courseName: initialData?.course_name || "",
     courseCode: initialData?.course_code || "",
@@ -83,60 +81,61 @@ const SyllabusForm = ({ initialData, onSubmit }) => {
 
   const handleSubmit = () => {
     console.log("제출된 데이터:", formData);
-    if (onSubmit) {
-      onSubmit(formData); // ProfSyllabusPage에서 넘겨준 함수 호출
-    }
+    if (onSubmit) onSubmit(formData);
+    alert("강의계획서가 제출되었습니다.");
+    navigate("/professor/syllabus");
   };
 
   return (
-    <TableWrapper>
-      <StyledTable>
+    <Container>
+      <Table>
         <tbody>
-          <tr>
-            <th>교과목명</th>
-            <td><input name="courseName" value={formData.courseName} onChange={handleChange} /></td>
-            <th>년도학기</th>
-            <td><input name="semester" value={formData.semester} onChange={handleChange} /></td>
-          </tr>
-          <tr>
-            <th>학정번호</th>
-            <td><input name="courseCode" value={formData.courseCode} onChange={handleChange} /></td>
-            <th>이수구분</th>
-            <td><input name="courseType" value={formData.courseType} onChange={handleChange} /></td>
-          </tr>
-          <tr>
-            <th>강의시간</th>
-            <td><input name="time" value={formData.time} onChange={handleChange} /></td>
-            <th>강의실</th>
-            <td><input name="room" value={formData.room} onChange={handleChange} /></td>
-          </tr>
-          <tr>
-            <th>담당교수</th>
-            <td><input name="professor" value={formData.professor} onChange={handleChange} /></td>
-            <th>학점</th>
-            <td><input name="credit" value={formData.credit} onChange={handleChange} type="number" /></td>
-          </tr>
-          <tr>
-            <th>출석 비율</th>
-            <td><input name="attendance" value={formData.attendance} onChange={handleChange} type="number" /></td>
-            <th>중간고사 비율</th>
-            <td><input name="midterm" value={formData.midterm} onChange={handleChange} type="number" /></td>
-          </tr>
-          <tr>
-            <th>기말고사 비율</th>
-            <td><input name="final" value={formData.final} onChange={handleChange} type="number" /></td>
-            <th>과제 비율</th>
-            <td><input name="assignment" value={formData.assignment} onChange={handleChange} type="number" /></td>
-          </tr>
-          <tr>
-            <th>기타 비율</th>
-            <td colSpan={3}><input name="etc" value={formData.etc} onChange={handleChange} type="number" /></td>
-          </tr>
+          <Row>
+            <CellHead>교과목명</CellHead>
+            <Cell><input name="courseName" value={formData.courseName} onChange={handleChange} /></Cell>
+            <CellHead>년도학기</CellHead>
+            <Cell><input name="semester" value={formData.semester} onChange={handleChange} /></Cell>
+          </Row>
+          <Row>
+            <CellHead>학정번호</CellHead>
+            <Cell><input name="courseCode" value={formData.courseCode} onChange={handleChange} /></Cell>
+            <CellHead>이수구분</CellHead>
+            <Cell><input name="courseType" value={formData.courseType} onChange={handleChange} /></Cell>
+          </Row>
+          <Row>
+            <CellHead>강의시간</CellHead>
+            <Cell><input name="time" value={formData.time} onChange={handleChange} /></Cell>
+            <CellHead>강의실</CellHead>
+            <Cell><input name="room" value={formData.room} onChange={handleChange} /></Cell>
+          </Row>
+          <Row>
+            <CellHead>담당교수</CellHead>
+            <Cell><input name="professor" value={formData.professor} onChange={handleChange} /></Cell>
+            <CellHead>학점</CellHead>
+            <Cell><input name="credit" value={formData.credit} onChange={handleChange} type="number" /></Cell>
+          </Row>
+          <Row>
+            <CellHead>출석 비율</CellHead>
+            <Cell><input name="attendance" value={formData.attendance} onChange={handleChange} type="number" /></Cell>
+            <CellHead>중간고사 비율</CellHead>
+            <Cell><input name="midterm" value={formData.midterm} onChange={handleChange} type="number" /></Cell>
+          </Row>
+          <Row>
+            <CellHead>기말고사 비율</CellHead>
+            <Cell><input name="final" value={formData.final} onChange={handleChange} type="number" /></Cell>
+            <CellHead>과제 비율</CellHead>
+            <Cell><input name="assignment" value={formData.assignment} onChange={handleChange} type="number" /></Cell>
+          </Row>
+          <Row>
+            <CellHead>기타 비율</CellHead>
+            <Cell colSpan={3}><input name="etc" value={formData.etc} onChange={handleChange} type="number" /></Cell>
+          </Row>
         </tbody>
-      </StyledTable>
-
-      <SubmitButton onClick={handleSubmit}>제출</SubmitButton>
-    </TableWrapper>
+      </Table>
+      <ButtonWrapper>
+        <Button onClick={handleSubmit}>제출</Button>
+      </ButtonWrapper>
+    </Container>
   );
 };
 
