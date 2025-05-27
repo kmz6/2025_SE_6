@@ -1,36 +1,5 @@
 import React from "react";
-import styled from "styled-components";
-
-const FormWrapper = styled.div`
-  border: 1px solid #ccc;
-  padding: 1rem;
-  margin-bottom: 2rem;
-`;
-
-const FormRow = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  align-items: center;
-`;
-
-const Label = styled.label`
-  width: 100px;
-  font-weight: bold;
-`;
-
-const Input = styled.input`
-  flex: 1;
-  padding: 6px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-`;
-
-const Select = styled.select`
-  padding: 6px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-`;
+import { FormBox, FormRow, Label, Input, Select } from "../../styles/Syllabus.style";
 
 export default function SyllabusFilterForm({ filters, onChange }) {
   const handleInputChange = (e) => {
@@ -42,7 +11,7 @@ export default function SyllabusFilterForm({ filters, onChange }) {
   };
 
   return (
-    <FormWrapper>
+    <FormBox>
       <FormRow>
         <Label>년도/학기</Label>
         <Select
@@ -76,6 +45,6 @@ export default function SyllabusFilterForm({ filters, onChange }) {
           placeholder="교수 이름"
         />
       </FormRow>
-    </FormWrapper>
+    </FormBox>
   );
 }
