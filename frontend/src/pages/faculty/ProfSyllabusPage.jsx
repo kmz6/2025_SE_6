@@ -1,7 +1,24 @@
-import React from "react"; // (필요 시 추가)
-import { useParams } from "react-router-dom"; // 라우터 파라미터 가져오기
-import CoursePlanForm from "../../components/Syllabus/SyllabusForm"; // 입력 폼
-import { courseData } from "../../mocks/courseData"; // 가짜 데이터 목록
+import React from "react";
+import { useParams } from "react-router-dom";
+import CoursePlanForm from "../../components/Syllabus/SyllabusForm";
+import { courseData } from "../../mocks/courseData";
+import styled from "styled-components";
+
+const Container = styled.div`
+  margin: 24px auto;
+  padding: 30px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+`;
+
+const Title = styled.h2`
+  font-size: 30px;
+  font-weight: bold;
+  color: #003366;
+  border-bottom: 1px solid #003366;
+  padding-bottom: 20px;
+  margin-bottom: 25px;
+`;
 
 export default function ProfSyllabusPage() {
   const { lectureId } = useParams();
@@ -16,13 +33,13 @@ export default function ProfSyllabusPage() {
   };
 
   if (!course) {
-    return <div className="p-6">해당 강의 정보를 찾을 수 없습니다.</div>;
+    return <Container>해당 강의 정보를 찾을 수 없습니다.</Container>;
   }
 
   return (
-    <div className="p-6 w-full">
-      <h1 className="text-2xl font-bold mb-6">강의계획서 작성</h1>
+    <Container>
+      <Title>강의계획서 작성</Title>
       <CoursePlanForm initialData={course} onSubmit={handleSubmit} />
-    </div>
+    </Container>
   );
 }
