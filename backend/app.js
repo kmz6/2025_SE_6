@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 require("dotenv").config();
 
 const authRouter = require("./routes/auth");
@@ -9,6 +10,7 @@ const PORT = process.env.PORT;
 
 app.use(cors());
 app.use(express.json());
+app.use("/images", express.static(path.join(__dirname, "public/images")));
 
 const indexRouter = require("./routes/index");
 app.use("/", indexRouter);
