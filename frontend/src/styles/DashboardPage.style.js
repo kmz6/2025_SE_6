@@ -4,9 +4,8 @@ import Calendar from "react-calendar";
 export const Container = styled.div`
   display: flex;
   padding: 30px;
-  height: calc(100vh - 120px);
+  height: calc(100vh - 80px);
   box-sizing: border-box;
-  overflow: hidden;
   width: 100%;
 `;
 
@@ -269,4 +268,142 @@ export const StyledCalendar = styled(Calendar)`
     text-decoration-thickness: 3px;
     text-underline-offset: 3px;
   }
+`;
+
+export const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+export const Modal = styled.div`
+  width: 90%;
+  max-width: 500px;
+  background-color: #f2f2f2;
+  border-radius: 16px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  padding: 24px 16px 0;
+  font-size: 19px;
+  font-weight: 600;
+  position: relative;
+`;
+
+export const ModalTitle = styled.h3`
+  margin: 0 0 20px 0;
+  color: #333;
+`;
+
+export const MemoTextarea = styled.textarea`
+  width: 100%;
+  height: 150px;
+  padding: 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  resize: vertical;
+  outline: none;
+  font-family: inherit;
+
+  &:focus {
+    border-color: rgb(174, 189, 206);
+  }
+`;
+
+export const ModalButtonContainer = styled.div`
+  display: flex;
+  margin-top: 20px;
+`;
+
+export const ModalButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  padding: 15px 20px;
+  border: none;
+  border-top: 1px solid #ccc;
+  background-color: #f2f2f2;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+
+  &:first-child {
+    color: #666;
+    border-right: 1px solid #ccc;
+  }
+
+  &:last-child {
+    color: #003366;
+  }
+`;
+
+export const AddMemoButton = styled.button`
+  padding: 10px 15px;
+  background-color: rgb(174, 189, 206);
+  color: white;
+  border: none;
+  border-radius: 7px;
+  font-size: 14px;
+  cursor: pointer;
+  overflow-y: hidden;
+
+  &:hover {
+    background-color: rgb(120, 131, 146);
+  }
+`;
+
+export const MemoSection = styled.div`
+  margin-top: 15px;
+  margin-left: 8px;
+`;
+
+export const MemoGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 8px;
+`;
+
+export const MemoCard = styled.div`
+  background-color: ${(props) => props.backgroundColor || "rgb(253, 251, 222)"};
+  width: 200px;
+  height: 180px;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-top: 8px;
+  position: relative;
+  overflow-y: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+`;
+
+export const MemoDate = styled.div`
+  font-size: 10px;
+  color: #666;
+  margin-bottom: 10px;
+`;
+
+export const MemoContent = styled.div`
+  font-size: 15px;
+  white-space: pre-wrap;
+  color: #333;
+`;
+
+export const MemoDeleteButton = styled.button`
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  color: rgb(237, 125, 155);
+  cursor: pointer;
 `;
