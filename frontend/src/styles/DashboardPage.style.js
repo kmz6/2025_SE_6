@@ -76,6 +76,54 @@ export const DateRange = styled.div`
   color: #777;
 `;
 
+export const ExamNotice = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #444;
+  font-weight: 600;
+  font-size: 20px;
+  margin-bottom: 16px;
+  position: relative;
+  padding-left: 0;
+
+  &::before {
+    content: "★";
+    color: rgb(250, 240, 152);
+    font-size: 25px;
+    flex-shrink: 0;
+  }
+
+  & > span {
+    border-bottom: 4px solid rgb(250, 240, 152);
+    padding-bottom: 2px;
+  }
+`;
+
+export const FestivalNotice = styled(ExamNotice)`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #444;
+  font-weight: 600;
+  font-size: 20px;
+  margin-bottom: 16px;
+  position: relative;
+  padding-left: 0;
+
+  &::before {
+    content: "🔥";
+    color: #b71c1c;
+    font-size: 25px;
+    flex-shrink: 0;
+  }
+
+  & > span {
+    border-bottom: 4px solid #b71c1c;
+    padding-bottom: 2px;
+  }
+`;
+
 export const StyledCalendar = styled(Calendar)`
   width: 700px !important;
   max-width: 100%;
@@ -86,6 +134,24 @@ export const StyledCalendar = styled(Calendar)`
   background-color: #fff;
   user-select: none;
   color: #1c1c1e;
+  overflow: hidden;
+
+  .react-calendar__viewContainer {
+    overflow: hidden;
+  }
+
+  .react-calendar__month-view {
+    overflow: hidden;
+  }
+
+  .react-calendar__month-view__days {
+    overflow: hidden;
+  }
+
+  .react-calendar__tile {
+    overflow: hidden;
+    position: relative;
+  }
 
   .react-calendar__navigation {
     display: flex;
@@ -144,17 +210,30 @@ export const StyledCalendar = styled(Calendar)`
   }
 
   .react-calendar__tile--now {
-    background: rgb(236, 250, 230);
-    color: #2a7a0a;
+    background: rgb(251, 243, 243);
+    color: rgb(97, 97, 97);
     font-weight: 700;
     border-radius: 14px;
   }
 
   .react-calendar__tile--active {
-    background: rgb(148, 200, 252);
+    background: rgb(209, 231, 253);
     color: white;
     font-weight: 700;
     border-radius: 14px;
-    box-shadow: 0 0 8px rgba(148, 200, 252, 0.6);
+  }
+
+  .react-calendar__tile.exam-underline {
+    text-decoration: underline;
+    text-decoration-color: #ffeb3b;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 3px;
+  }
+
+  .react-calendar__tile.festival-underline {
+    text-decoration: underline;
+    text-decoration-color: rgb(254, 30, 14);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 3px;
   }
 `;

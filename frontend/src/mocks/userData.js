@@ -1,11 +1,11 @@
 export const userData = {
-  user_id: "2022202063",
-  password: "0000",
+  user_id: "2020202020",
+  password: "1234",
   user_type: "student",
 };
 
 export const studentData = {
-  student_id: "2022202063",
+  student_id: "2020202020",
   name: "농담곰",
   enrollment_status: "enrolled",
   college: "인공지능융합대학",
@@ -16,7 +16,7 @@ export const studentData = {
 
 export const facultyData = [
   {
-    faculty_id: "2022000000",
+    faculty_id: "1111122222",
     name: "한교동",
     college: "인공지능융합대학",
     department: "컴퓨터정보공학부",
@@ -35,7 +35,7 @@ export const facultyData = [
 
 export const staffData = [
   {
-    staff_id: "2022111111",
+    staff_id: "3333344444",
     name: "스태프",
     department: "인공지능융합대학",
     telephone: "010-9999-9999",

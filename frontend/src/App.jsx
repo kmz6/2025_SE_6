@@ -22,7 +22,8 @@ import SugangPage from "./pages/student/SugangPage";
 import LeaveRequestPage from "./pages/student/LeaveRequestPage";
 import LeaveApprovalPage from "./pages/staff/LeaveApprovalPage";
 import ArchivesListPage from "./pages/studfac/ArchivesListPage";
-import ManagementPage from "./pages/staff/ManagementPage";
+import AddMemberPage from "./pages/staff/AddMemberPage";
+import DeleteMemberPage from "./pages/staff/DeleteMemberPage";
 import GradeInputPage from "./pages/faculty/GradeInputPage";
 import StudSyllabusPage from "./pages/student/StudSyllabusPage";
 import ProfSyllabusPage from "./pages/faculty/ProfSyllabusPage";
@@ -61,14 +62,17 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "home", element: <HomePage /> },
-      { path: "my", element: <MyPage /> },
+      { path: "my/:userId", element: <MyPage /> },
       { path: "lectureroom/:lectureId", element: <LectureHomePage /> },
       { path: "notice/:lectureId", element: <NoticeListPage /> },
       { path: "notice/:lectureId/:postId", element: <NoticePostPage /> },
       { path: "archives/:lectureId", element: <ArchivesListPage /> },
       { path: "archives/:lectureId/:postId", element: <ArchivesPostPage /> },
       { path: "assignment/:lectureId", element: <AssignListPage /> },
-      { path: "assignment/:lectureId/:postId/:studentId", element: <AssignSubmittedDetailPage /> },
+      {
+        path: "assignment/:lectureId/:postId/:studentId",
+        element: <AssignSubmittedDetailPage />,
+      },
     ],
   },
   {
@@ -85,7 +89,7 @@ const router = createBrowserRouter([
       { path: "leave/request", element: <LeaveRequestPage /> },
       { path: "attendance", element: <StudLectureList /> },
       { path: "attendance/:lectureId", element: <StudAttendPage /> },
-      { path: "syllabus", element:<StudSyllabusSearchPage /> },
+      { path: "syllabus", element: <StudSyllabusSearchPage /> },
       { path: "Syllabus/:lectureId", element: <StudSyllabusPage /> },
     ],
   },
@@ -140,7 +144,7 @@ const router = createBrowserRouter([
           <ProtectedRoute allowedRoles={["faculty"]}>
             <ProfLectureList />
           </ProtectedRoute>
-        )
+        ),
       },
       {
         path: "attendance/:lectureId",
@@ -148,7 +152,7 @@ const router = createBrowserRouter([
           <ProtectedRoute allowedRoles={["faculty"]}>
             <ProfAttendPage />
           </ProtectedRoute>
-        )
+        ),
       },
       {
         path: "syllabus",
@@ -156,7 +160,7 @@ const router = createBrowserRouter([
           <ProtectedRoute allowedRoles={["faculty"]}>
             <ProfSyllabusListPage />
           </ProtectedRoute>
-        )
+        ),
       },
       {
         path: "syllabus/:lectureId",
@@ -164,17 +168,18 @@ const router = createBrowserRouter([
           <ProtectedRoute allowedRoles={["faculty"]}>
             <ProfSyllabusPage />
           </ProtectedRoute>
-        )
+        ),
       },
-      // 여기부터 추가가
     ],
   },
   {
     path: "/staff/",
     element: <RootLayout />,
     errorElement: <ErrorPage />,
-    children: [{ path: "management", element: <ManagementPage /> },
-    { path: "leave/approval", element: <LeaveApprovalPage /> }
+    children: [
+      { path: "management/add", element: <AddMemberPage /> },
+      { path: "management/delete", element: <DeleteMemberPage /> },
+      { path: "leave/approval", element: <LeaveApprovalPage /> },
     ],
   },
 ]);

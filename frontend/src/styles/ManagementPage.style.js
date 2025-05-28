@@ -19,7 +19,7 @@ export const Title = styled.h2`
 export const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 70px;
+  margin-bottom: 40px;
 `;
 
 export const Row = styled.tr`
