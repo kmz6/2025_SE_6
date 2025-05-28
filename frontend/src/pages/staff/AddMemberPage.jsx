@@ -3,7 +3,7 @@ import * as S from "../../styles/ManagementPage.style";
 import { staffData } from "../../mocks/userData";
 import useEditInfoForm from "../../hooks/MyPage/useEditInfoForm";
 
-const ManagementPage = () => {
+const AddMemberPage = () => {
   const [formData, setFormData] = useState({
     staff_id: "",
     name: "",
@@ -233,4 +233,4 @@ const ManagementPage = () => {
   );
 };
 
-export default ManagementPage;
+export default AddMemberPage;
