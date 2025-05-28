@@ -62,7 +62,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "home", element: <HomePage /> },
-      { path: "my", element: <MyPage /> },
+      { path: "my/:userId", element: <MyPage /> },
       { path: "lectureroom/:lectureId", element: <LectureHomePage /> },
       { path: "notice/:lectureId", element: <NoticeListPage /> },
       { path: "notice/:lectureId/:postId", element: <NoticePostPage /> },

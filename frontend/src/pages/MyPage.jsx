@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as S from "../styles/MyPage.style";
 import {
   userData,
@@ -9,22 +9,45 @@ import {
 import { UserTableRows } from "../components/MyPage/UserTableRows";
 import EditInfo from "../components/MyPage/EditInfo";
 import EditPassword from "../components/MyPage/EditPassword";
+import { useParams } from "react-router-dom";
 
 const MyPage = () => {
-  const userType = userData.user_type;
+  const { userId } = useParams();
+  const [userType, setUserType] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
 
-  const initialUserInfo =
-    userType === "student"
-      ? studentData
-      : userType === "faculty"
-      ? facultyData
-      : userType === "staff"
-      ? staffData
-      : null;
+  useEffect(() => {
+    const id = userId;
 
-  const [userInfo, setUserInfo] = useState(initialUserInfo);
+    // studentData 객체(나머진 배열)
+    if (studentData.student_id === id) {
+      setUserType("student");
+      setUserInfo(studentData);
+      return;
+    }
+
+    let foundUser = facultyData.find((user) => user.faculty_id === id);
+    if (foundUser) {
+      setUserType("faculty");
+      setUserInfo(foundUser);
+      return;
+    }
+
+    foundUser = staffData.find((user) => user.staff_id === id);
+    if (foundUser) {
+      setUserType("staff");
+      setUserInfo(foundUser);
+      return;
+    }
+
+    setUserType(null);
+    setUserInfo(null);
+  }, [userId]);
+
   const [isEditingInfo, setIsEditingInfo] = useState(false);
   const [isEditingPassword, setIsEditingPassword] = useState(false);
+
+  if (!userInfo) return <div>사용자 정보를 찾을 수 없습니다.</div>;
 
   return (
     <S.Container>

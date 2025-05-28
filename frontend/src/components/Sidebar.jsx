@@ -48,9 +48,19 @@ const ExternalLink = styled.a`
   }
 `;
 
+// 파라미터 치환
+const replaceParams = (path, params) => {
+  let replaced = path;
+  Object.entries(params).forEach(([key, value]) => {
+    replaced = replaced.replace(`:${key}`, value);
+  });
+  return replaced;
+};
+
 const Sidebar = () => {
   const { user } = useUser();
   const userType = user?.user_type || "student";
+  const userId = user?.user_id || "defaultUserId";
   const navigate = useNavigate();
 
   // 클릭된 메뉴 상태
@@ -105,11 +115,14 @@ const Sidebar = () => {
           {/* 메뉴 타이틀 자체에 경로가 있으면 바로 navigate */}
           <MenuItem
             onClick={() => {
-              const directRoute = userRoutes[menuTitle];
+              let directRoute = userRoutes[menuTitle];
               if (directRoute) {
-                navigate(directRoute); // 서브 메뉴 없이 바로 이동
+                directRoute = replaceParams(directRoute, {
+                  userId: user?.user_id,
+                });
+                navigate(directRoute);
               } else {
-                handleToggle(menuTitle); // 서브 메뉴 열기/닫기
+                handleToggle(menuTitle);
               }
             }}
           >
