@@ -133,7 +133,9 @@ function DashboardPage() {
       </S.Left>
 
       <S.Right>
-        <h3>{formattedDate}</h3>
+        <h3>
+          <S.HighlightedDate>{formattedDate}</S.HighlightedDate>
+        </h3>
         {isInExamPeriod && (
           <S.ExamNotice>
             <span>기말고사 시험기간</span>

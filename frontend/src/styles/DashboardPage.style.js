@@ -81,8 +81,8 @@ export const ExamNotice = styled.div`
   align-items: center;
   gap: 5px;
   color: #444;
-  font-weight: 600;
-  font-size: 20px;
+  font-weight: 700;
+  font-size: 22px;
   margin-bottom: 16px;
   position: relative;
   padding-left: 0;
@@ -95,8 +95,14 @@ export const ExamNotice = styled.div`
   }
 
   & > span {
-    border-bottom: 4px solid rgb(250, 240, 152);
-    padding-bottom: 2px;
+    background: linear-gradient(
+      to top,
+      rgb(252, 244, 175) 120%,
+      transparent 50%
+    );
+    display: inline;
+    padding: 0 5px;
+    margin: 0 -4px;
   }
 `;
 
@@ -105,8 +111,8 @@ export const FestivalNotice = styled(ExamNotice)`
   align-items: center;
   gap: 5px;
   color: #444;
-  font-weight: 600;
-  font-size: 20px;
+  font-weight: 700;
+  font-size: 22px;
   margin-bottom: 16px;
   position: relative;
   padding-left: 0;
@@ -119,8 +125,35 @@ export const FestivalNotice = styled(ExamNotice)`
   }
 
   & > span {
-    border-bottom: 4px solid #b71c1c;
-    padding-bottom: 2px;
+    background: linear-gradient(
+      to top,
+      rgb(255, 198, 204) 120%,
+      transparent 50%
+    );
+    display: inline;
+    padding: 0 5px;
+    margin: 0 -4px;
+  }
+`;
+
+export const HighlightedDate = styled.span`
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  font-weight: 600;
+  padding: 0 5px;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.15em;
+    height: 0.6em;
+    background-color: #3f51b5;
+    background: linear-gradient(to top, #3f51b5 120%, transparent 50%);
+    opacity: 0.25;
+    z-index: -1;
   }
 `;
 
