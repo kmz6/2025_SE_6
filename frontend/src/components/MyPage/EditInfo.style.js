@@ -40,7 +40,7 @@ export const ButtonWrapper = styled.div`
 
 export const ConfirmButton = styled.button`
   padding: 13px 33px;
-  background-color: #fa5252;
+  background-color: #d61c4e;
   font-size: 16px;
   color: white;
   border: none;
@@ -48,7 +48,7 @@ export const ConfirmButton = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: #e03131;
+    background-color: rgb(226, 48, 96);
   }
 `;
 

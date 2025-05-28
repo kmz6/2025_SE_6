@@ -16,7 +16,7 @@ export const studentData = {
 
 export const facultyData = [
   {
-    faculty_id: "2022000000",
+    faculty_id: "1111122222",
     name: "한교동",
     college: "인공지능융합대학",
     department: "컴퓨터정보공학부",
