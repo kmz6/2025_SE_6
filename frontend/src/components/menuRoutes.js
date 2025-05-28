@@ -22,8 +22,8 @@ export const routeMap = {
       "마이 페이지": "/my",
     },
   staff: {
-    "학적 관리": "staff/leave/approval",
-    "구성원 관리": "staff/management",
+    "학적 관리": "/staff/leave/approval",
+    "구성원 관리": "/staff/management",
     "마이 페이지": "/my",
   },
 };
