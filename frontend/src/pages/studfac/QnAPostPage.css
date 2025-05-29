@@ -1,17 +1,9 @@
-.notice-detail-container {
+.qna-detail-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   border: 1px solid #ccc;
   padding: 30px;
-}
-
-.notice-header {
-  width: 80%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
 }
 
 .subject-info {

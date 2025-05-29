@@ -50,7 +50,10 @@ export default function LectureRoom() {
                 <span className="circle-label">온라인 강의</span>
               </div>
             </div>
-            <div className="circle-button">
+            <div
+              className="circle-button"
+              onClick={() => navigate(`/qna/${lectureId}`)}
+            >
               <div className="circle-icon">
                 ❓<br />
                 <span className="circle-label">Q&A</span>

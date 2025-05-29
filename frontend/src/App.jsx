@@ -41,6 +41,9 @@ import StudRankPage from "./pages/student/StudRankPage";
 import AssignSubmitListPage from "./pages/faculty/AssignSubmitListPage";
 import AssignSubmittedDetailPage from "./pages/studfac/AssignSubmittedDetailPage";
 import ResetPasswdPage from "./pages/studfac/ResetPasswdPage";
+import QnAListPage from "./pages/studfac/QnALIstPage";
+import QnAPostPage from "./pages/studfac/QnAPostPage";
+import QnAWritePage from "./pages/studfac/QnAWritePage";
 
 const router = createBrowserRouter([
   {
@@ -73,6 +76,9 @@ const router = createBrowserRouter([
         path: "assignment/:lectureId/:postId/:studentId",
         element: <AssignSubmittedDetailPage />,
       },
+      { path: "qna/:lectureId", element: <QnAListPage /> },
+      { path: "qna/:lectureId/:postId", element: <QnAPostPage /> },
+      { path: "qna/:lectureId/write", element: <QnAWritePage /> },
     ],
   },
   {
