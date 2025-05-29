@@ -18,7 +18,7 @@ export const Left = styled.div`
 
   h2 {
     font-size: 25px;
-    margin-bottom: 30px;
+    margin-bottom: 18px;
   }
 `;
 
@@ -30,12 +30,12 @@ export const Right = styled.div`
 
   h3 {
     font-size: 25px;
-    margin-bottom: 30px;
+    margin-bottom: 18px;
     flex-shrink: 0;
   }
 
   p {
-    margin-top: 21px;
+    margin-top: 20px;
     font-size: 18px;
     text-align: center;
     color: rgb(168, 168, 168);
@@ -162,7 +162,7 @@ export const StyledCalendar = styled(Calendar)`
   font-size: 20px;
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-  padding: 30px 40px;
+  padding: 20px 30px;
   background-color: #fff;
   user-select: none;
   color: #1c1c1e;
@@ -362,20 +362,20 @@ export const AddMemoButton = styled.button`
 `;
 
 export const MemoSection = styled.div`
-  margin-top: 15px;
+  margin-top: 12px;
   margin-left: 8px;
 `;
 
 export const MemoGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  margin-top: 8px;
+  margin-top: 4px;
 `;
 
 export const MemoCard = styled.div`
   background-color: ${(props) => props.backgroundColor || "rgb(253, 251, 222)"};
   width: 200px;
-  height: 180px;
+  height: 170px;
   border-radius: 8px;
   padding: 12px 16px;
   margin-top: 8px;
