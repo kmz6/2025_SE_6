@@ -1,4 +1,5 @@
 import { useState } from "react";
+import StudInfo from "../../components/StudInfo/StudInfo"
 import * as S from "../../styles/StudRankPage.style";
 
 import {
@@ -18,10 +19,10 @@ const StudRankPage = () => {
     userType === "student"
       ? studentData
       : userType === "faculty"
-      ? facultyData
-      : userType === "staff"
-      ? staffData
-      : null;
+        ? facultyData
+        : userType === "staff"
+          ? staffData
+          : null;
 
   const [userInfo, setUserInfo] = useState(initialUserInfo);
 
@@ -73,53 +74,30 @@ const StudRankPage = () => {
   return (
     <S.Container>
       <S.Title>학습 결과</S.Title>
-      {userType === "student" ? (
-        <>
-          <S.SubTitle>기본 정보</S.SubTitle>
-          <S.Table>
-            <S.Row>
-              <S.CellHead>이름</S.CellHead>
-              <S.Cell>{userInfo.name}</S.Cell>
-              <S.CellHead>학번</S.CellHead>
-              <S.Cell>{userInfo.student_id}</S.Cell>
-              <S.CellHead>학과</S.CellHead>
-              <S.Cell>{userInfo.department}</S.Cell>
-              <S.CellHead>학적상태</S.CellHead>
-              <S.Cell>
-                {userInfo.enrollment_status === "enrolled"
-                  ? "재학"
-                  : userInfo.enrollment_status === "on_leave"
-                  ? "휴학"
-                  : userInfo.enrollment_status}
-              </S.Cell>
-            </S.Row>
-          </S.Table>
+      <S.SubTitle>기본 정보</S.SubTitle>
+      <StudInfo user_id={userInfo.user_id}></StudInfo>
 
-          <S.SubTitle>석차 조회</S.SubTitle>
-          <S.Table>
-            <thead>
-              <S.Row>
-                <S.CellHead>학기</S.CellHead>
-                <S.CellHead>신청학점</S.CellHead>
-                <S.CellHead>평점</S.CellHead>
-                <S.CellHead>학과석차</S.CellHead>
-              </S.Row>
-            </thead>
-            <tbody>
-              {semesterResults.map(({ semester, totalCredits, totalScore }) => (
-                <S.Row key={semester}>
-                  <S.Cell>{semester}</S.Cell>
-                  <S.Cell>{totalCredits}</S.Cell>
-                  <S.Cell>{totalScore}</S.Cell>
-                  <S.Cell>등수 / 학생수</S.Cell>
-                </S.Row>
-              ))}
-            </tbody>
-          </S.Table>
-        </>
-      ) : (
-        <S.WarningMessage>학습결과 조회는 학생만 가능합니다.</S.WarningMessage>
-      )}
+      <S.SubTitle>석차 조회</S.SubTitle>
+      <S.Table>
+        <thead>
+          <S.Row>
+            <S.CellHead>학기</S.CellHead>
+            <S.CellHead>신청학점</S.CellHead>
+            <S.CellHead>평점</S.CellHead>
+            <S.CellHead>학과석차</S.CellHead>
+          </S.Row>
+        </thead>
+        <tbody>
+          {semesterResults.map(({ semester, totalCredits, totalScore }) => (
+            <S.Row key={semester}>
+              <S.Cell>{semester}</S.Cell>
+              <S.Cell>{totalCredits}</S.Cell>
+              <S.Cell>{totalScore}</S.Cell>
+              <S.Cell>등수 / 학생수</S.Cell>
+            </S.Row>
+          ))}
+        </tbody>
+      </S.Table>
     </S.Container>
   );
 };
