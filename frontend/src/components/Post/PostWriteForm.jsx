@@ -1,11 +1,15 @@
-// components/Post/PostWriteForm.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./PostWriteForm.css";
 
-export default function PostWriteForm({ onSubmit }) {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+export default function PostWriteForm({ onSubmit, initialValues = { title: "", content: "" } }) {
+  const [title, setTitle] = useState(initialValues.title);
+  const [content, setContent] = useState(initialValues.content);
   const [file, setFile] = useState(null);
+
+  useEffect(() => {
+    setTitle(initialValues.title);
+    setContent(initialValues.content);
+  }, [initialValues]);
 
   const handleSubmit = () => {
     if (!title.trim() || !content.trim()) {
@@ -51,7 +55,7 @@ export default function PostWriteForm({ onSubmit }) {
         onClick={handleSubmit}
         disabled={!title.trim() || !content.trim()}
       >
-        등록
+        {initialValues.title || initialValues.content ? "수정" : "등록"}
       </button>
     </div>
   );

@@ -1,7 +1,6 @@
-// routes/common/course.js
 const express = require('express');
 const router = express.Router();
-const db = require('../../config/db'); // 네가 쓰는 DB 연결 모듈로 바꿔줘
+const db = require('../../config/db');
 
 router.get('/:lectureId', async (req, res) => {
   const { lectureId } = req.params;

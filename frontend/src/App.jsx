@@ -79,6 +79,8 @@ const router = createBrowserRouter([
       { path: "qna/:lectureId", element: <QnAListPage /> },
       { path: "qna/:lectureId/:postId", element: <QnAPostPage /> },
       { path: "qna/:lectureId/write", element: <QnAWritePage /> },
+      { path: "/professor/notice/:lectureId/edit/:postId", element: <NoticeWritePage /> },
+      { path: "/professor/archives/:lectureId/edit/:postId", element: <ArchivesWritePage /> }
     ],
   },
   {
