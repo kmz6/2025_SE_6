@@ -10,6 +10,9 @@ const authRouter = require("./routes/auth");
 const studentRouter = require("./routes/student");
 const courseRouter = require("./routes/common/course");
 
+const noticeRouter = require('./routes/common/notice');
+const materialRouter = require('./routes/common/material');
+
 const app = express();
 const PORT = process.env.PORT;
 
@@ -22,6 +25,9 @@ app.use("/users", authRouter);
 
 app.use("/api/student", studentRouter);
 app.use("/api/courses", courseRouter);
+
+app.use("/api", noticeRouter);
+app.use('/api', materialRouter);
 
 // Start server
 app.listen(PORT, () => {

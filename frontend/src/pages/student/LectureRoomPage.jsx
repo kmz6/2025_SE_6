@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useMyLectures } from "../../hooks/useMyLectures";
 import { useLectureDetail } from "../../hooks/useLectureDetail";
 import { useUser } from "../../context/UserContext";
+import { FaBullhorn, FaQuestionCircle } from "react-icons/fa";
 
 export default function LectureRoom() {
   const navigate = useNavigate();
@@ -47,8 +48,8 @@ export default function LectureRoom() {
       <div className="container">
         <div className="layout">
           <div className="main">
-            <h2>수강 중인 과목이 없습니다.</h2>
-            <p>수강 신청을 진행해주세요.</p>
+            <h2>수강 중인 과목이나 관리하는 과목이 없습니다.</h2>
+            <p>수강 신청 혹은 과목 등록을 진행해주세요.</p>
           </div>
         </div>
       </div>
@@ -71,7 +72,7 @@ export default function LectureRoom() {
               <button
                 className="top-right-btn"
                 onClick={() =>
-                  navigate(`/attendance/student/${selectedLectureId}`)
+                  navigate(`/student/attendance/${selectedLectureId}`)
                 }
               >
                 출결 조회
@@ -79,7 +80,7 @@ export default function LectureRoom() {
               <button
                 className="top-right-btn"
                 onClick={() =>
-                  navigate(`/syllabus/student/${selectedLectureId}`)
+                  navigate(`/student/Syllabus/${selectedLectureId}`)
                 }
               >
                 강의계획서 조회
@@ -95,14 +96,8 @@ export default function LectureRoom() {
               onClick={() => navigate(`/notice/${selectedLectureId}`)}
             >
               <div className="circle-icon">
-                📢<br />
+                <FaBullhorn size={70} />
                 <span className="circle-label">공지사항</span>
-              </div>
-            </div>
-            <div className="circle-button">
-              <div className="circle-icon">
-                ▶️<br />
-                <span className="circle-label">온라인 강의</span>
               </div>
             </div>
             <div
@@ -110,7 +105,7 @@ export default function LectureRoom() {
               onClick={() => navigate(`/qna/${selectedLectureId}`)}
             >
               <div className="circle-icon">
-                ❓<br />
+                <FaQuestionCircle size={70} />
                 <span className="circle-label">Q&A</span>
               </div>
             </div>
