@@ -7,6 +7,9 @@ const path = require("path");
 const indexRouter = require("./routes/index");
 const authRouter = require("./routes/auth");
 
+const studentRouter = require("./routes/student");
+const courseRouter = require("./routes/common/course");
+
 const app = express();
 const PORT = process.env.PORT;
 
@@ -16,6 +19,9 @@ app.use("/images", express.static(path.join(__dirname, "public/images")));
 
 app.use("/", indexRouter);
 app.use("/users", authRouter);
+
+app.use("/api/student", studentRouter);
+app.use("/api/courses", courseRouter);
 
 // Start server
 app.listen(PORT, () => {
