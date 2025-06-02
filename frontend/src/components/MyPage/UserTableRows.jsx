@@ -39,7 +39,7 @@ export const UserTableRows = ({ userType, userInfo }) => {
         </S.Row>
         <S.Row>
           <S.CellHead>전화번호</S.CellHead>
-          <S.Cell colSpan="3">{formatPhoneNumber(userInfo.phone)}</S.Cell>
+          <S.Cell colSpan="3">{formatPhoneNumber(userInfo.telephone)}</S.Cell>
         </S.Row>
         <S.Row>
           <S.CellHead>이메일</S.CellHead>
