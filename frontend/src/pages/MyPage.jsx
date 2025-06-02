@@ -1,51 +1,31 @@
 import { useState, useEffect } from "react";
 import * as S from "../styles/MyPage.style";
-import {
-  userData,
-  studentData,
-  facultyData,
-  staffData,
-} from "../mocks/userData";
 import { UserTableRows } from "../components/MyPage/UserTableRows";
 import EditInfo from "../components/MyPage/EditInfo";
 import EditPassword from "../components/MyPage/EditPassword";
 import { useParams } from "react-router-dom";
+import { getMyInfo } from "../apis/my/my";
 
 const MyPage = () => {
   const { userId } = useParams();
   const [userType, setUserType] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
-
-  useEffect(() => {
-    const id = userId;
-
-    // studentData 객체(나머진 배열)
-    if (studentData.student_id === id) {
-      setUserType("student");
-      setUserInfo(studentData);
-      return;
-    }
-
-    let foundUser = facultyData.find((user) => user.faculty_id === id);
-    if (foundUser) {
-      setUserType("faculty");
-      setUserInfo(foundUser);
-      return;
-    }
-
-    foundUser = staffData.find((user) => user.staff_id === id);
-    if (foundUser) {
-      setUserType("staff");
-      setUserInfo(foundUser);
-      return;
-    }
-
-    setUserType(null);
-    setUserInfo(null);
-  }, [userId]);
-
   const [isEditingInfo, setIsEditingInfo] = useState(false);
   const [isEditingPassword, setIsEditingPassword] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { userType, userInfo } = await getMyInfo(userId);
+        setUserType(userType);
+        setUserInfo(userInfo);
+      } catch (err) {
+        console.error("사용자 정보 불러오기 실패:", err.message);
+        setUserInfo(null);
+      }
+    };
+    fetchData();
+  }, [userId]);
 
   if (!userInfo) return <div>사용자 정보를 찾을 수 없습니다.</div>;
 
@@ -63,7 +43,7 @@ const MyPage = () => {
 
       {isEditingInfo && (
         <EditInfo
-          initialPhone={userInfo.phone || userInfo.telephone}
+          initialPhone={userInfo.telephone}
           initialEmail={userInfo.email}
           onCancel={() => setIsEditingInfo(false)}
           onSave={(updatedData) => {
