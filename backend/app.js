@@ -6,7 +6,11 @@ const path = require("path");
 
 const indexRouter = require("./routes/index");
 const authRouter = require("./routes/auth");
+<<<<<<< HEAD
 const myRouter = require("./routes/my");
+=======
+const signupRouter = require("./routes/signup");
+>>>>>>> main
 
 const studentRouter = require("./routes/student");
 const courseRouter = require("./routes/common/course");
@@ -20,7 +24,6 @@ app.use("/images", express.static(path.join(__dirname, "public/images")));
 
 app.use("/", indexRouter);
 app.use("/users", authRouter);
-app.use("/my", myRouter);
 
 app.use("/api/student", studentRouter);
 app.use("/api/courses", courseRouter);
