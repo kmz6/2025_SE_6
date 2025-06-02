@@ -1,23 +1,77 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import PostHeader from "../../components/Post/PostHeader";
 import PostWriteForm from "../../components/Post/PostWriteForm";
 import "./NoticeWritePage.css";
+import axiosInstance from "../../apis/axiosInstance";
+import { useUser } from "../../context/UserContext";
 
 export default function NoticeWritePage() {
-  const { lectureId } = useParams();
+  const { lectureId, postId } = useParams();
   const navigate = useNavigate();
+  const { user } = useUser();
 
-  const handleSubmit = (formData, values) => {
-    console.log("공지사항 등록:", values);
-    navigate(`/notice/${lectureId}`);
+  const [courseName, setCourseName] = useState("");
+  const [initialValues, setInitialValues] = useState({ title: "", content: "" });
+  const isEdit = !!postId;
+
+  const fetchCourseName = async () => {
+    try {
+      const response = await axiosInstance.get(`/api/lectures/${lectureId}/info`);
+      setCourseName(response.data.course_name);
+    } catch (error) {
+      console.error("과목명 불러오기 실패:", error);
+    }
+  };
+
+  const fetchPost = async () => {
+    try {
+      const response = await axiosInstance.get(`/api/lectures/${lectureId}/notices/${postId}`);
+      setInitialValues({
+        title: response.data.title,
+        content: response.data.content,
+      });
+    } catch (error) {
+      console.error("게시글 불러오기 실패:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCourseName();
+    if (isEdit) {
+      fetchPost();
+    }
+  }, [lectureId, postId]);
+
+  const handleSubmit = async (formData, values) => {
+    try {
+      if (isEdit) {
+        await axiosInstance.put(`/api/lectures/${lectureId}/notices/${postId}`, {
+          title: values.title,
+          content: values.content,
+        });
+        alert("수정 완료");
+      } else {
+        await axiosInstance.post(`/api/lectures/${lectureId}/notices`, {
+          title: values.title,
+          content: values.content,
+          author_id: user.user_id,
+        });
+        alert("등록 완료");
+      }
+
+      navigate(`/notice/${lectureId}`);
+    } catch (error) {
+      console.error("전송 실패:", error);
+      alert(isEdit ? "수정 중 오류 발생" : "등록 중 오류 발생");
+    }
   };
 
   return (
     <div className="notice-write-container">
-      <h1 className="board-title">공지사항 작성</h1>
-      <PostHeader subjectName="과목명" subjectCode="학정번호" />
-      <PostWriteForm onSubmit={handleSubmit} />
+      <h1 className="board-title">{isEdit ? "공지사항 수정" : "공지사항 작성"}</h1>
+      <PostHeader subjectName={courseName} subjectCode="" />
+      <PostWriteForm onSubmit={handleSubmit} initialValues={initialValues} />
     </div>
   );
 }

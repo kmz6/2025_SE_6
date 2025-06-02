@@ -1,43 +1,88 @@
-import React from "react";
-//import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import PostHeader from "../../components/Post/PostHeader";
 import PostBox from "../../components/Post/PostBox";
-import CommentBox from "../../components/Post/CommentBox";
 import "./ArchivesPostPage.css";
 import { useUser } from "../../context/UserContext";
+import axiosInstance from "../../apis/axiosInstance";
 
 export default function ArchivesPostPage() {
-  //const { lectureId, postId } = useParams();
+  const { lectureId, postId } = useParams();
+  const navigate = useNavigate();
   const { user } = useUser();
   const currentUserId = user?.user_id;
 
-  const dummyComments = [
-    { meta: "작성자 이름 (학과/학번)", content: "댓글 내용입니다." },
-  ];
+  const [post, setPost] = useState(null);
+  const [courseName, setCourseName] = useState("");
 
-  const postAuthorId = "2022000000";  // 예시: 게시글 작성자의 학번 또는 ID
+  // 게시글 조회
+  const fetchPost = async () => {
+    try {
+      const response = await axiosInstance.get(`/api/lectures/${lectureId}/materials/${postId}`);
+      setPost(response.data);
+    } catch (error) {
+      console.error("자료실 상세 조회 실패:", error);
+    }
+  };
+
+  // 과목명 조회
+  const fetchCourseName = async () => {
+    try {
+      const response = await axiosInstance.get(`/api/lectures/${lectureId}/info`);
+      setCourseName(response.data.course_name);
+    } catch (error) {
+      console.error("과목명 불러오기 실패:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPost();
+    fetchCourseName();
+  }, [lectureId, postId]);
+
+  const handleEdit = () => {
+    if (!lectureId || !postId) {
+      console.error("잘못된 수정 요청: lectureId 또는 postId 없음");
+      return;
+    }
+    navigate(`/professor/archives/${lectureId}/edit/${postId}`);
+  };
+
+  const handleDelete = async () => {
+    const confirmed = window.confirm("정말 삭제하시겠습니까?");
+    if (!confirmed) return;
+
+    try {
+      await axiosInstance.delete(`/api/lectures/${lectureId}/materials/${postId}`);
+      alert("삭제되었습니다.");
+      navigate(`/archives/${lectureId}`);
+    } catch (error) {
+      console.error("삭제 실패:", error);
+      alert("삭제 중 오류가 발생했습니다.");
+    }
+  };
+
+  if (!post) return <div>로딩 중...</div>;
 
   return (
     <div className="archives-detail-container">
       <h1 className="board-title">강의 자료실</h1>
 
       <PostHeader
-        subjectName="[과목명]"
-        subjectCode="[학정번호]"
-        onEdit={() => console.log("수정")}
-        onDelete={() => console.log("삭제")}
-        authorId={postAuthorId}
+        subjectName={courseName}
+        subjectCode={""}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        authorId={post.author_id}
         currentUserId={currentUserId}
       />
 
       <PostBox
-        title="예시 제목"
-        author="홍길동"
-        date="2025-05-19"
-        content="여기 게시글의 본문 내용이 들어갑니다."
+        title={post.title}
+        author={post.author_id}
+        date={post.created_at?.slice(0, 10)}
+        content={post.content}
       />
-
-      <CommentBox comments={dummyComments} />
     </div>
   );
 }
