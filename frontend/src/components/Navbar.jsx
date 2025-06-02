@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 const Nav = styled.div`
-  width: 100vw; /* ✅ 스크롤바 생겨도 고정된 뷰포트 너비 기준 */
+  width: 100vw;
   height: 60px;
   background-color: #f9f9f9;
   border-bottom: 1px solid #ccc;

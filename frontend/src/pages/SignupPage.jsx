@@ -7,6 +7,7 @@ import {
   isValidEmail,
   isValidPassword,
 } from "../utils/validation";
+import { postSignup } from "../apis/signup/signup";
 
 const Container = styled.div`
   display: flex;
@@ -90,25 +91,24 @@ const Button = styled.button`
     background-color: #005fd1;
   }
 `;
-
 function SignupPage() {
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     const form = e.target;
 
-    const type = form[0].value;
-    const name = form[1].value;
+    const user_type = form[0].value;
+    const college = form[1].value;
     const department = form[2].value;
-    const id = form[3].value;
-    const email = form[4].value;
-    const phone = form[5].value;
-    const password = form[6].value;
-    const confirmPassword = form[7].value;
+    const user_id = form[3].value;
+    const name = form[4].value;
+    const email = form[5].value;
+    const phone = form[6].value;
+    const password = form[7].value;
+    const confirmPassword = form[8].value;
 
-    if (!type || !name || !department || !id || !email || !phone || !password || !confirmPassword) {
+    if (!user_type || !college || !department || !user_id || !name || !email || !phone || !password || !confirmPassword) {
       alert("모든 항목을 입력해 주세요.");
       return;
     }
@@ -133,8 +133,26 @@ function SignupPage() {
       alert(pwError);
       return;
     }
-    alert("회원가입이 완료되었습니다.");
-    navigate("/login");
+    try {
+      const res = await postSignup({
+        user_id,
+        password,
+        user_type,
+        name,
+        college,
+        department,
+        telephone: phone,
+        email,
+        enrollment_status: user_type === "student" ? "enrolled" : undefined,
+      });
+
+      alert(res.message);
+      navigate("/login");
+
+    } catch (err) {
+      console.error(err);
+      alert("회원가입 실패!");
+    }
   };
 
   return (
@@ -153,13 +171,21 @@ function SignupPage() {
             <option value="student">학생</option>
             <option value="professor">교수</option>
           </Select>
-
           <LabelGroup><span>학부</span></LabelGroup>
           <Select defaultValue="">
             <option value="" disabled>학부</option>
+            <option value="engineering">공과대학</option>
+            <option value="science">자연과학대학</option>
+            <option value="business">경영대학</option>
+          </Select>
+
+          <LabelGroup><span>학과</span></LabelGroup>
+          <Select defaultValue="">
+            <option value="" disabled>학과</option>
             <option value="ee">전자공학과</option>
             <option value="cs">컴퓨터공학과</option>
             <option value="me">기계공학과</option>
+            <option value="ba">경영학과</option>
           </Select>
 
           <LabelGroup><span>학번/사번</span></LabelGroup>
