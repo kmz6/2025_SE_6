@@ -16,9 +16,23 @@ const EditPassword = ({ onCancel, onSave, userCurrentPassword }) => {
     validate,
   } = useEditPasswordForm(userCurrentPassword);
 
-  const validateAndSave = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const validateAndSave = async () => {
     if (!validate()) return;
-    onSave({ newPwd });
+
+    setIsSubmitting(true);
+    try {
+      await onSave({ currentPwd, newPwd });
+    } catch (err) {
+      if (
+        err?.response?.data?.message === "현재 비밀번호가 일치하지 않습니다."
+      ) {
+        setServerCurrentPwdError("현재 비밀번호가 일치하지 않습니다.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -54,7 +68,9 @@ const EditPassword = ({ onCancel, onSave, userCurrentPassword }) => {
       </S.FieldGroup>
 
       <S.ButtonWrapper>
-        <S.ConfirmButton onClick={validateAndSave}>저장</S.ConfirmButton>
+        <S.ConfirmButton onClick={validateAndSave} disabled={isSubmitting}>
+          저장
+        </S.ConfirmButton>
         <S.CancelButton onClick={onCancel}>취소</S.CancelButton>
       </S.ButtonWrapper>
     </S.Container>
