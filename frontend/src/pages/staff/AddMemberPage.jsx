@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import * as S from "../../styles/ManagementPage.style";
 import { staffData } from "../../mocks/userData";
 import useEditInfoForm from "../../hooks/MyPage/useEditInfoForm";
+import { postMember } from "../../apis/management/management";
 
 const AddMemberPage = () => {
   const [formData, setFormData] = useState({
@@ -11,7 +12,7 @@ const AddMemberPage = () => {
   });
 
   const [showModal, setShowModal] = useState(false);
-
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [touched, setTouched] = useState({
     phone: false,
     email: false,
@@ -44,13 +45,13 @@ const AddMemberPage = () => {
     handleEmailChange(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 사번 중복 검사 (추후 수정)
     const isDuplicate = staffData.some(
       (staff) => staff.staff_id === formData.staff_id.trim()
     );
+
     if (isDuplicate) {
       setShowModal(true);
       return;
@@ -64,18 +65,23 @@ const AddMemberPage = () => {
       email: email,
     };
 
-    // 확인
-    console.log("제출된 구성원 정보:", submitData);
-    alert("구성원이 추가되었습니다.");
-
-    setFormData({
-      staff_id: "",
-      name: "",
-      department: "",
-    });
-    handlePhoneChange("");
-    handleEmailChange("");
-    setTouched({ phone: false, email: false });
+    try {
+      await postMember(submitData);
+      setFormData({
+        staff_id: "",
+        name: "",
+        department: "",
+      });
+      handlePhoneChange("");
+      handleEmailChange("");
+      setTouched({ phone: false, email: false });
+      setShowSuccessModal(true);
+    } catch (error) {
+      console.error("구성원 추가 실패:", error);
+      if (error?.response?.status === 400) {
+        setShowModal(true);
+      }
+    }
   };
 
   const renderCell = (field, placeholder) => (
@@ -224,6 +230,17 @@ const AddMemberPage = () => {
           <S.Modal>
             이미 등록된 사번입니다.
             <S.ModalCloseButton onClick={() => setShowModal(false)}>
+              닫기
+            </S.ModalCloseButton>
+          </S.Modal>
+        </S.ModalOverlay>
+      )}
+
+      {showSuccessModal && (
+        <S.ModalOverlay>
+          <S.Modal>
+            구성원이 성공적으로 추가되었습니다.
+            <S.ModalCloseButton onClick={() => setShowSuccessModal(false)}>
               닫기
             </S.ModalCloseButton>
           </S.Modal>
