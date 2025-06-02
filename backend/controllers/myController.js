@@ -21,7 +21,7 @@ exports.updateUserById = async (req, res) => {
 
   try {
     const result = await myModel.updateUserInfo(userId, { telephone, email });
-    if (!result) return res.status(404).json({ message: "사용자 없음" });
+    if (!result) return res.status(404).json({ message: "사용자 정보 없음" });
     res.json(result);
   } catch (err) {
     console.error("사용자 정보 수정 오류", err);
@@ -44,8 +44,6 @@ exports.updateUserPassword = async (req, res) => {
         .json({ message: "현재 비밀번호가 일치하지 않습니다." });
     }
     await myModel.updateUserPassword(userId, newPassword);
-    console.log("DB에서 조회한 비밀번호:", user.password);
-    console.log(user);
     return res.status(200).json({ message: "비밀번호가 변경되었습니다." });
   } catch (error) {
     console.error("비밀번호 변경 오류:", error);

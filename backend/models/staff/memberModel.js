@@ -30,7 +30,18 @@ async function createMember(data) {
   return result;
 }
 
+async function deleteMemberByStaffId(staff_id) {
+  const [result] = await db.execute("DELETE FROM STAFF_TB WHERE staff_id = ?", [
+    staff_id,
+  ]);
+
+  await db.execute("DELETE FROM USER_TB WHERE user_id = ?", [staff_id]);
+
+  return result;
+}
+
 module.exports = {
   findMemberByStaffId,
   createMember,
+  deleteMemberByStaffId,
 };
