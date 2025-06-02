@@ -169,23 +169,24 @@ function SignupPage() {
           <Select defaultValue="">
             <option value="" disabled>구분</option>
             <option value="student">학생</option>
-            <option value="professor">교수</option>
+            <option value="faculty">교수</option>
           </Select>
           <LabelGroup><span>학부</span></LabelGroup>
           <Select defaultValue="">
             <option value="" disabled>학부</option>
-            <option value="engineering">공과대학</option>
-            <option value="science">자연과학대학</option>
-            <option value="business">경영대학</option>
+            <option value="인공지능융합대학">인공지능융합대학</option>
+            <option value="자연과학대학">자연과학대학</option>
+            <option value="공과대학">공과대학</option>
+            <option value="정책법학대학">정책법학대학</option>
           </Select>
 
           <LabelGroup><span>학과</span></LabelGroup>
           <Select defaultValue="">
             <option value="" disabled>학과</option>
-            <option value="ee">전자공학과</option>
-            <option value="cs">컴퓨터공학과</option>
-            <option value="me">기계공학과</option>
-            <option value="ba">경영학과</option>
+            <option value="컴퓨터정보공학부">컴퓨터정보공학부</option>
+            <option value="전자바이오물리학과">전자바이오물리학과</option>
+            <option value="화학공학과">화학공학과</option>
+            <option value="법학부">법학부</option>
           </Select>
 
           <LabelGroup><span>학번/사번</span></LabelGroup>
