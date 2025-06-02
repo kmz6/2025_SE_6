@@ -88,3 +88,18 @@ exports.updateUserInfo = async (userId, { telephone, email }) => {
 
   return { telephone: newTelephone, email: newEmail };
 };
+
+exports.findUserPassword = async (userId) => {
+  const [rows] = await db.query(
+    `SELECT password FROM USER_TB WHERE user_id = ?`,
+    [userId]
+  );
+  return rows[0];
+};
+
+exports.updateUserPassword = async (userId, hashedPassword) => {
+  await db.query(`UPDATE USER_TB SET password = ? WHERE user_id = ?`, [
+    hashedPassword,
+    userId,
+  ]);
+};
