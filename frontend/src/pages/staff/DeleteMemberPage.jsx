@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import * as S from "../../styles/ManagementPage.style";
-import { staffData } from "../../mocks/userData";
+import { deleteMember } from "../../apis/management/management";
 
 const DeleteMemberPage = () => {
   const [staffIdToDelete, setStaffIdToDelete] = useState("");
@@ -12,29 +12,24 @@ const DeleteMemberPage = () => {
     setStaffIdToDelete(e.target.value);
   };
 
-  const handleDelete = (e) => {
+  const handleDelete = async (e) => {
     e.preventDefault();
 
-    const staffExists = staffData.some(
-      (staff) => staff.staff_id === staffIdToDelete.trim()
-    );
+    try {
+      await deleteMember(staffIdToDelete.trim());
 
-    if (!staffExists) {
+      setModalMessage("구성원이 삭제되었습니다.");
+      setIsError(false);
+      setShowModal(true);
+      setStaffIdToDelete("");
+    } catch (error) {
+      console.error("삭제 실패:", error);
       setModalMessage(
         "해당 사번의 구성원이 존재하지 않습니다. 다시 입력해주세요."
       );
       setIsError(true);
       setShowModal(true);
-      return;
     }
-
-    console.log("삭제된 사번:", staffIdToDelete);
-
-    setModalMessage("구성원이 삭제되었습니다.");
-    setIsError(false);
-    setShowModal(true);
-
-    setStaffIdToDelete("");
   };
 
   return (

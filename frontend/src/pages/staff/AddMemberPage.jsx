@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import * as S from "../../styles/ManagementPage.style";
-import { staffData } from "../../mocks/userData";
 import useEditInfoForm from "../../hooks/MyPage/useEditInfoForm";
 import { postMember } from "../../apis/management/management";
 
@@ -47,15 +46,6 @@ const AddMemberPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const isDuplicate = staffData.some(
-      (staff) => staff.staff_id === formData.staff_id.trim()
-    );
-
-    if (isDuplicate) {
-      setShowModal(true);
-      return;
-    }
 
     if (!validate()) return;
 
