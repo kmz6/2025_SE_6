@@ -22,7 +22,7 @@ async function userSignup(req, res) {
         // 2. 학생 또는 교수 분기
         if (user_type === 'student') {
             await signupModel.insertStudent(user_id, name, enrollment_status || 'enrolled', college, department, telephone, email);
-        } else if (user_type === 'professor') {
+        } else if (user_type === 'faculty') {
             await signupModel.insertFaculty(user_id, name, college, department, telephone, email);
         }
 

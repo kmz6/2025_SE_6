@@ -11,7 +11,7 @@ async function insertStudent(student_id, name, enrollment_status, college, depar
     const sql = `
         INSERT INTO STUDENT_TB 
         (student_id, name, enrollment_status, college, department, telephone, email)
-        VALUES (?, ?, 'enrolled', ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
     await db.query(sql, [student_id, name, enrollment_status, college, department, telephone, email]);
 }
