@@ -16,7 +16,7 @@ const EditInfo = ({ initialPhone, initialEmail, onCancel, onSave }) => {
   const validateAndSave = () => {
     if (!validate()) return;
     const rawPhone = phone.replace(/\D/g, "");
-    onSave({ phone: rawPhone, email });
+    onSave({ telephone: rawPhone, email });
   };
 
   return (

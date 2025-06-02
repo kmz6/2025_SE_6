@@ -19,12 +19,10 @@ const useEditPasswordForm = (userCurrentPassword) => {
 
     if (!currentPwd) {
       setCurrentPwdError("현재 비밀번호를 입력해주세요.");
-    } else if (currentPwd !== userCurrentPassword) {
-      setCurrentPwdError("현재 비밀번호가 올바르지 않습니다.");
     } else {
       setCurrentPwdError("");
     }
-  }, [currentPwd, touchedCurrent, userCurrentPassword]);
+  }, [currentPwd, touchedCurrent]);
 
   useEffect(() => {
     if (!touchedNew) return;
@@ -57,9 +55,6 @@ const useEditPasswordForm = (userCurrentPassword) => {
     if (!currentPwd) {
       setCurrentPwdError("현재 비밀번호를 입력해주세요.");
       valid = false;
-    } else if (currentPwd !== userCurrentPassword) {
-      setCurrentPwdError("현재 비밀번호가 올바르지 않습니다.");
-      valid = false;
     }
 
     if (!newPwd) {
@@ -79,6 +74,10 @@ const useEditPasswordForm = (userCurrentPassword) => {
     }
 
     return valid;
+  };
+
+  const setServerCurrentPwdError = (message) => {
+    setCurrentPwdError(message);
   };
 
   return {
@@ -101,6 +100,7 @@ const useEditPasswordForm = (userCurrentPassword) => {
       setConfirmPwd(val);
     },
     validate,
+    setServerCurrentPwdError, // 서버에서의 오류 반영을 위해 추가
   };
 };
 
