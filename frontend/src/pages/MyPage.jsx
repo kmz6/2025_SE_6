@@ -4,7 +4,7 @@ import { UserTableRows } from "../components/MyPage/UserTableRows";
 import EditInfo from "../components/MyPage/EditInfo";
 import EditPassword from "../components/MyPage/EditPassword";
 import { useParams } from "react-router-dom";
-import { getMyInfo } from "../apis/my/my";
+import { getMyInfo, patchMyInfo, patchMyPassword } from "../apis/my/my";
 
 const MyPage = () => {
   const { userId } = useParams();
@@ -46,20 +46,35 @@ const MyPage = () => {
           initialPhone={userInfo.telephone}
           initialEmail={userInfo.email}
           onCancel={() => setIsEditingInfo(false)}
-          onSave={(updatedData) => {
-            setUserInfo((prev) => ({ ...prev, ...updatedData }));
-            setIsEditingInfo(false);
+          onSave={async (updatedData) => {
+            try {
+              const updated = await patchMyInfo(userId, updatedData);
+              setUserInfo((prev) => ({ ...prev, ...updated }));
+              setIsEditingInfo(false);
+            } catch (err) {
+              console.error("개인정보 수정 실패:", err.message);
+            }
           }}
         />
       )}
 
       {isEditingPassword && (
         <EditPassword
-          userCurrentPassword={userData.password}
+          userCurrentPassword={userInfo.password}
           onCancel={() => setIsEditingPassword(false)}
-          onSave={(newPwdData) => {
-            console.log("비밀번호 변경 완료", newPwdData);
-            setIsEditingPassword(false);
+          onSave={async ({ currentPwd, newPwd }) => {
+            try {
+              await patchMyPassword(userId, {
+                currentPassword: currentPwd,
+                newPassword: newPwd,
+              });
+              setIsEditingPassword(false);
+            } catch (err) {
+              console.error(
+                "비밀번호 변경 실패:",
+                err.response?.data || err.message || err
+              );
+            }
           }}
         />
       )}
