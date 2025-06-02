@@ -1,11 +1,11 @@
 export const userData = {
-  user_id: "2020202020",
+  user_id: "789456",
   password: "1234",
   user_type: "student",
 };
 
 export const studentData = {
-  student_id: "2020202020",
+  student_id: "789456",
   name: "농담곰",
   enrollment_status: "enrolled",
   college: "인공지능융합대학",
