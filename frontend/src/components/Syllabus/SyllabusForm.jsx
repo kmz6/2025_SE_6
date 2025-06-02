@@ -58,10 +58,11 @@ const SyllabusForm = ({ initialData, onSubmit }) => {
   const [formData, setFormData] = useState({
     courseName: initialData?.course_name || "",
     courseCode: initialData?.course_code || "",
-    semester: "25-1",
+    semester: initialData?.semester || 
+          `${String(initialData?.course_year).slice(2)}-${initialData?.course_semester}` || "",
     courseType: initialData?.course_type || "",
-    time: initialData?.time?.map(t => `${t.course_day}${t.course_period}`).join(", ") || "",
-    room: `${initialData?.building_name} ${initialData?.room_number}` || "",
+    time: initialData?.course_times || "",
+    room: `${initialData?.building} ${initialData?.room}` || "",
     professor: initialData?.faculty_id || "",
     credit: initialData?.credit || "",
     attendance: initialData?.attendance || "",
@@ -80,8 +81,22 @@ const SyllabusForm = ({ initialData, onSubmit }) => {
   };
 
   const handleSubmit = () => {
-    console.log("제출된 데이터:", formData);
-    if (onSubmit) onSubmit(formData);
+    const [yearPart, semesterPart] = formData.semester.split("-");
+
+    const payload = {
+      building: formData.room.split(" ")[0],
+      room: formData.room.split(" ")[1] || "",
+      attendance: formData.attendance,
+      midterm_exam: formData.midterm,
+      final_exam: formData.final,
+      assignment: formData.assignment,
+      etc: formData.etc,
+      credit: formData.credit,
+      course_year: parseInt("20" + yearPart),
+      course_semester: parseInt(semesterPart),
+    };
+
+    if (onSubmit) onSubmit(payload);
     alert("강의계획서가 제출되었습니다.");
     navigate("/professor/syllabus");
   };

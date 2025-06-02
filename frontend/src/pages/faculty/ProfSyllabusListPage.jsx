@@ -1,9 +1,9 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
-import { courseData } from "../../mocks/courseData";
 import styled from "styled-components";
 import { useUser } from "../../context/UserContext"; // ✅ 추가
 import { Container, Title, Button as CommonButton } from "../../styles/Syllabus.style";
+import { getProfessorCourses } from "../../apis/syllabus/syllabus";
 
 const LectureCard = styled.div`
   border: 1px solid #ccc;
@@ -28,23 +28,27 @@ const TimeText = styled.div`
 const ProfSyllabusListPage = () => {
   const navigate = useNavigate();
   const { user } = useUser(); // ✅ 현재 로그인된 교수 정보
+  const [myLectures, setMyLectures] = useState([]);
+
+  useEffect(() => {
+    if (user) {
+      getProfessorCourses(user.user_id)
+        .then((data) => setMyLectures(data))
+        .catch((err) => console.error("강의 목록 불러오기 실패", err));
+    }
+  }, [user]);
 
   if (!user) return <Container>로딩 중...</Container>;
-
-  const myLectures = courseData.filter((c) => c.faculty_id === user.user_id);
 
   return (
     <Container>
       <Title>강의계획서 작성</Title>
 
       {myLectures.map((lec) => (
-        <LectureCard key={lec.course_id}>
+        <LectureCard key={lec.course_code}>
           <LectureName>{lec.course_name}</LectureName>
-          <TimeText>
-            시간:{" "}
-            {lec.time.map((t) => `${t.course_day}${t.course_period}`).join(", ")}
-          </TimeText>
-          <CommonButton onClick={() => navigate(`${lec.course_id}`)}>
+          <TimeText>강의코드: {lec.course_code}</TimeText>
+          <CommonButton onClick={() => navigate(`${lec.course_code}`)}>
             작성
           </CommonButton>
         </LectureCard>

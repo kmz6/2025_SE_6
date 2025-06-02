@@ -98,7 +98,7 @@ const router = createBrowserRouter([
       { path: "attendance", element: <StudLectureList /> },
       { path: "attendance/:lectureId", element: <StudAttendPage /> },
       { path: "syllabus", element: <StudSyllabusSearchPage /> },
-      { path: "Syllabus/:lectureId", element: <StudSyllabusPage /> },
+      { path: "syllabus/:lectureId", element: <StudSyllabusPage /> },
     ],
   },
   {

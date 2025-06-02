@@ -1,8 +1,8 @@
-import React from "react";
+import React, {useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import CoursePlanForm from "../../components/Syllabus/SyllabusForm";
-import { courseData } from "../../mocks/courseData";
 import styled from "styled-components";
+import { getCourseDetail, updateCourseDetail } from "../../apis/syllabus/syllabus";
 
 const Container = styled.div`
   margin: 24px auto;
@@ -22,14 +22,21 @@ const Title = styled.h2`
 
 export default function ProfSyllabusPage() {
   const { lectureId } = useParams();
+  const [course, setCourse] = useState(null);
 
-  const course = courseData.find(
-    (c) => String(c.course_id) === String(lectureId)
-  );
+  useEffect(() => {
+  getCourseDetail(lectureId)
+    .then((data) => {
+      console.log("받은 강의 데이터 👉", data); // 👈 이거 추가
+      setCourse(data);
+    })
+    .catch((err) => console.error("강의 정보 불러오기 실패", err));
+}, [lectureId]);
 
   const handleSubmit = (form) => {
-    console.log("제출된 강의계획서:", form);
-    // TODO: 나중에 fetch("/api/save-syllabus", ...) 등으로 백엔드 연동
+    updateCourseDetail(lectureId, form)
+      .then(() => alert("강의계획서가 저장되었습니다."))
+      .catch((err) => console.error("강의계획서 저장 실패", err));
   };
 
   if (!course) {

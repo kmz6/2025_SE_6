@@ -1,24 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { courseData, facultyMap } from "../../mocks/courseData";
-import { 
-  Container, 
-  Title, 
-  Table, 
-  TwoColRow, 
-  TwoColHead, 
+import {
+  Container,
+  Title,
+  Table,
+  TwoColRow,
+  TwoColHead,
   TwoColCell
- } from "../../styles/Syllabus.style";
+} from "../../styles/Syllabus.style";
+import { getCourseDetail } from "../../apis/syllabus/syllabus"; // ✅ 상세 조회용 함수로 수정
 
 export default function StudSyllabusPage() {
-  const { lectureId } = useParams();
+  const { lectureId } = useParams(); // URL에서 course_code 받기
+  const [course, setCourse] = useState(null);
 
-  const course = courseData.find(
-    (c) => String(c.course_id) === String(lectureId)
-  );
+  useEffect(() => {
+    if (!lectureId) return;
+    getCourseDetail(lectureId)
+      .then((data) => setCourse(data))
+      .catch((err) => console.error("강의계획서 로드 실패", err));
+  }, [lectureId]);
 
   if (!course) {
-    return <Container>해당 강의 정보를 찾을 수 없습니다.</Container>;
+    return <Container>강의 정보를 불러오는 중입니다...</Container>;
   }
 
   return (
@@ -30,7 +34,7 @@ export default function StudSyllabusPage() {
             label="교과목명"
             value={course.course_name}
             label2="년도학기"
-            value2="25-1"
+            value2={`${course.course_year}-${course.course_semester}`}
           />
           <TableRow
             label="학정번호"
@@ -40,13 +44,13 @@ export default function StudSyllabusPage() {
           />
           <TableRow
             label="강의시간"
-            value={formatTime(course.time)}
+            value={course.course_times}
             label2="강의실"
-            value2={`${course.building_name} ${course.room_number}`}
+            value2={`${course.building} ${course.room}`}
           />
           <TableRow
             label="담당교수"
-            value={facultyMap[course.faculty_id]}
+            value={course.faculty_name}
             label2="학점"
             value2={course.credit}
           />
@@ -81,9 +85,4 @@ function TableRow({ label, value, label2, value2 }) {
       <TwoColCell>{value2}</TwoColCell>
     </TwoColRow>
   );
-}
-
-function formatTime(timeArray) {
-  if (!timeArray || timeArray.length === 0) return "-";
-  return timeArray.map((t) => `${t.course_day}${t.course_period}`).join(", ");
 }
