@@ -1,6 +1,6 @@
 const gradeModel = require("../../models/student/gradeModel");
 const rankModel = require("../../models/student/rankModel");
-const { gradePoints } = require("../../constants/gradePoints");
+const gradePoints = require("../../constants/gradePoints");
 
 async function getSemData(req, res) {
     const { user_id } = req.params;
