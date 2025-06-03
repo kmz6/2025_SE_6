@@ -12,7 +12,7 @@ const memberRouter = require("./routes/staff/member");
 const resetpwdRouter = require("./routes/resetpwd");
 const studentRouter = require("./routes/student");
 const courseRouter = require("./routes/common/course");
-
+const sugangRouter = require("./routes/student/sugang");
 const noticeRouter = require("./routes/common/notice");
 const materialRouter = require("./routes/common/material");
 
@@ -38,7 +38,7 @@ app.use("/api/courses", courseRouter);
 
 app.use("/api", noticeRouter);
 app.use("/api", materialRouter);
-
+app.use("/sugang", sugangRouter);
 app.use("/timetable", timetableRouter);
 app.use("/api/syllabus", studsyllabusRouter);
 app.use("/api/syllabus/prof", profsyllabusRouter);
