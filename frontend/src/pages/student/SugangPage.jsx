@@ -14,14 +14,35 @@ function SugangPage() {
   const navigate = useNavigate();
   const { user, loading } = useUser();
   const [inputValue, setInputValue] = useState("");
+  const [allCourses, setAllCourses] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [selected, setSelected] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [favorites, setFavorites] = useState(() => {
+    const stored = localStorage.getItem("favorites");
+    return stored ? JSON.parse(stored) : [];
+  });
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const totalCredit = selected.reduce(
     (sum, course) => sum + (course.credit || 0),
     0
   );
+
+  useEffect(() => {
+    const fetchAllCourses = async () => {
+      try {
+        const results = await searchCourses("", user?.user_id);
+        setAllCourses(results);
+      } catch (err) {
+        console.log("전체 과목 불러오기 실패");
+      }
+    };
+    if (user) {
+      fetchAllCourses();
+    }
+  }, [user]);
+
   useEffect(() => {
     if (!loading && user) {
       (async () => {
@@ -37,9 +58,12 @@ function SugangPage() {
     }
   }, [user, loading]);
 
+  useEffect(() => {
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+  }, [favorites]);
+
   const handleApply = async (lecture) => {
     if (!user) return;
-
     const isConflict = selected.some((l) => {
       return l.course_times.some((lt) =>
         lecture.course_times.some(
@@ -66,13 +90,11 @@ function SugangPage() {
 
   const handleDelete = async (courseId) => {
     if (!user) return;
-
     try {
       const data = {
         user_id: user.user_id,
         course_id: courseId,
       };
-
       await deleteCourse(data);
       setSelected(selected.filter((l) => l.course_id !== courseId));
     } catch (err) {
@@ -83,7 +105,6 @@ function SugangPage() {
   const onSearchClick = async () => {
     if (!inputValue.trim()) return;
     setSearchTerm(inputValue.trim());
-
     try {
       if (!user) return;
       const results = await searchCourses(inputValue.trim(), user.user_id);
@@ -92,6 +113,24 @@ function SugangPage() {
       console.log("검색 중 오류");
     }
   };
+
+  const toggleFavorite = (courseId) => {
+    if (favorites.includes(courseId)) {
+      setFavorites(favorites.filter((id) => id !== courseId));
+    } else {
+      setFavorites([...favorites, courseId]);
+    }
+  };
+
+  const displayedCourses = showFavoritesOnly
+    ? allCourses.filter(
+        (course) =>
+          favorites.includes(course.course_id) &&
+          !selected.some((sel) => sel.course_id === course.course_id)
+      )
+    : searchResults.filter(
+        (course) => !selected.some((sel) => sel.course_id === course.course_id)
+      );
 
   if (loading) {
     return <p>로딩 중...</p>;
@@ -125,43 +164,50 @@ function SugangPage() {
             }}
           />
           <S.SearchButton onClick={onSearchClick}>검색</S.SearchButton>
+          <S.FavoriteToggleButton
+            onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+          >
+            {showFavoritesOnly ? "해제" : "즐겨찾기"}
+          </S.FavoriteToggleButton>
         </S.SearchWrapper>
 
         <S.SearchResults>
           {searchTerm === "" ? (
             <p>수강신청할 과목을 검색해주세요!</p>
-          ) : searchResults.length === 0 ? (
+          ) : displayedCourses.length === 0 ? (
             <p>검색 결과가 없습니다.</p>
           ) : (
-            searchResults
-              .filter(
-                (course) =>
-                  !selected.some((sel) => sel.course_id === course.course_id)
-              )
-              .map((course) => (
-                <S.LectureCard key={course.course_id}>
-                  <S.LectureInfo>
-                    <div>과목명: {course.course_name}</div>
-                    <div>담당교수: {course.faculty_name || "정보 없음"}</div>
-                    <div>
-                      요일/시간:{" "}
-                      {course.course_times && course.course_times.length > 0
-                        ? course.course_times
-                            .map(
-                              (t) => `${t.course_day} ${t.course_period}교시`
-                            )
-                            .join(", ")
-                        : "시간 정보 없음"}
-                    </div>
-                    <div>
-                      강의실: {course.building} {course.room}호
-                    </div>
-                  </S.LectureInfo>
-                  <S.ApplyButton onClick={() => handleApply(course)}>
-                    신청
-                  </S.ApplyButton>
-                </S.LectureCard>
-              ))
+            displayedCourses.map((course) => (
+              <S.LectureCard key={course.course_id}>
+                <S.LectureInfo>
+                  <S.LectureTitleRow>
+                    <S.FavoriteStar
+                      isFavorite={favorites.includes(course.course_id)}
+                      onClick={() => toggleFavorite(course.course_id)}
+                    >
+                      {favorites.includes(course.course_id) ? "★" : "☆"}
+                    </S.FavoriteStar>
+                    과목명: {course.course_name}
+                  </S.LectureTitleRow>
+
+                  <div>담당교수: {course.faculty_name || "정보 없음"}</div>
+                  <div>
+                    요일/시간:{" "}
+                    {course.course_times && course.course_times.length > 0
+                      ? course.course_times
+                          .map((t) => `${t.course_day} ${t.course_period}교시`)
+                          .join(", ")
+                      : "시간 정보 없음"}
+                  </div>
+                  <div>
+                    강의실: {course.building} {course.room}호
+                  </div>
+                </S.LectureInfo>
+                <S.ApplyButton onClick={() => handleApply(course)}>
+                  신청
+                </S.ApplyButton>
+              </S.LectureCard>
+            ))
           )}
         </S.SearchResults>
       </S.Left>
@@ -181,7 +227,16 @@ function SugangPage() {
           {selected.map((course) => (
             <S.LectureCard key={course.course_id}>
               <S.LectureInfo>
-                <div>과목명: {course.course_name}</div>
+                <S.LectureTitleRow>
+                  <S.FavoriteStar
+                    isFavorite={favorites.includes(course.course_id)}
+                    onClick={() => toggleFavorite(course.course_id)}
+                  >
+                    {favorites.includes(course.course_id) ? "★" : "☆"}
+                  </S.FavoriteStar>
+                  과목명: {course.course_name}
+                </S.LectureTitleRow>
+
                 <div>담당교수: {course.faculty_name || "정보 없음"}</div>
                 <div>
                   요일/시간:{" "}

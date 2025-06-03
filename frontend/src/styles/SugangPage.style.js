@@ -88,12 +88,22 @@ export const SearchButton = styled.button`
   }
 `;
 
+export const FavoriteToggleButton = styled(SearchButton)`
+  background-color: #ffbf00;
+  color: white;
+
+  &:hover {
+    background-color: #e68900;
+  }
+`;
+
 export const LectureCard = styled.div`
   border: 1px solid #ccc;
   margin-top: 15px;
   margin-bottom: 15px;
   padding: 22px;
   border-radius: 5px;
+  position: relative;
 `;
 
 export const LectureInfo = styled.div`
@@ -107,6 +117,25 @@ export const LectureInfo = styled.div`
   div:first-child {
     font-weight: bold;
     font-size: 18px;
+  }
+`;
+
+export const LectureTitleRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: bold;
+`;
+
+export const FavoriteStar = styled.span`
+  cursor: pointer;
+  font-size: 22px;
+  color: ${(props) => (props.isFavorite ? "#FFD700" : "#CCC")};
+  user-select: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #ffbf00;
   }
 `;
 
