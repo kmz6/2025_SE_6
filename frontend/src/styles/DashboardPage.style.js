@@ -46,7 +46,7 @@ export const AssignmentCard = styled.div`
   border: 1px solid #ccc;
   padding: 20px;
   border-radius: 8px;
-  margin-bottom: 15px;
+  margin-top: 15px;
   cursor: pointer;
   background-color: #f9f9f9;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -406,4 +406,36 @@ export const MemoDeleteButton = styled.button`
   font-size: 22px;
   color: rgb(237, 125, 155);
   cursor: pointer;
+`;
+
+export const SubmissionStatus = styled.span`
+  display: inline-flex;
+  align-items: center;
+  color: rgb(107, 219, 2);
+  background-color: rgba(19, 241, 15, 0.15);
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  float: right;
+  user-select: none;
+`;
+
+export const SubmissionRequired = styled.span`
+  display: inline-flex;
+  align-items: center;
+  color: #e74c3c;
+  background-color: rgba(231, 76, 60, 0.15);
+  font-weight: 700;
+  padding: 8px 11px;
+  border-radius: 12px;
+  font-size: 14px;
+  float: right;
+  user-select: none;
+`;
+
+export const HeaderContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
