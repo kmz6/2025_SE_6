@@ -136,7 +136,7 @@ const StudGradePage = () => {
               <S.Cell>{course.credit}</S.Cell>
               <S.Cell>
                 {course.grade === "N/A" //아직 성적이 없는 경우, 빈칸으로 표시
-                  ? ""
+                  ? "-"
                   : course.grade}
               </S.Cell>
             </S.Row>
