@@ -68,15 +68,38 @@
   color: #333;
 }
 
-.comment-content {
-  font-size: 15px;
-  line-height: 1.4;
-  color: #444;
+.comment-meta {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.meta-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .comment-actions {
   display: flex;
   gap: 6px;
+  align-items: center;
+  margin-left: 8px;
+}
+
+.meta-right {
+  color: #666;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.comment-content {
+  font-size: 15px;
+  line-height: 1.4;
+  color: #444;
 }
 
 .action-btn {

@@ -1,7 +1,16 @@
 import React, { useState } from "react";
 import "./CommentBox.css";
-export default function CommentBox({ comments, onAddComment, onEditComment, onDeleteComment }) {
+
+export default function CommentBox({
+  comments,
+  onAddComment,
+  onEditComment,
+  onDeleteComment,
+  currentUserId,
+}) {
   const [newComment, setNewComment] = useState("");
+  const [editingId, setEditingId] = useState(null);
+  const [editingContent, setEditingContent] = useState("");
 
   const handleCommentChange = (e) => {
     setNewComment(e.target.value);
@@ -10,16 +19,28 @@ export default function CommentBox({ comments, onAddComment, onEditComment, onDe
   const handleAddComment = (e) => {
     e.preventDefault();
     if (newComment.trim()) {
-      const newCommentObj = {
-        meta: "홍길동 (컴퓨터공학/2022202020)",
-        content: newComment,
-      };
-      onAddComment(newCommentObj);
+      onAddComment({ content: newComment });
       setNewComment("");
     }
   };
 
-  const isMine = (meta) => meta.includes("홍길동");  // 로그인 사용자 기준으로 조건 판단
+  const startEditing = (comment) => {
+    setEditingId(comment.comment_id);
+    setEditingContent(comment.content);
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditingContent("");
+  };
+
+  const saveEditing = () => {
+    if (editingContent.trim()) {
+      onEditComment(editingId, editingContent);
+      setEditingId(null);
+      setEditingContent("");
+    }
+  };
 
   return (
     <div className="comment-box">
@@ -38,20 +59,70 @@ export default function CommentBox({ comments, onAddComment, onEditComment, onDe
       </form>
 
       <div className="comment-list">
-        {comments.map((comment, idx) => (
-          <div key={idx} className="comment-item">
-            <div className="comment-meta">
-              {comment.meta}
-              {isMine(comment.meta) && (
-                <div className="comment-actions">
-                  <button onClick={() => onEditComment(idx)} className="action-btn">수정</button>
-                  <button onClick={() => onDeleteComment(idx)} className="action-btn">삭제</button>
+        {comments.map((comment) => {
+          const isMine = comment.author_id === currentUserId;
+          const isEditing = editingId === comment.comment_id;
+
+          return (
+            <div key={comment.comment_id} className="comment-item">
+              <div className="comment-meta">
+                <div className="meta-left">
+                  <strong>{comment.author_name}</strong>
+                  {isMine && (
+                    <div className="comment-actions">
+                      {!isEditing ? (
+                        <>
+                          <button
+                            className="action-btn"
+                            onClick={() => startEditing(comment)}
+                          >
+                            수정
+                          </button>
+                          <button
+                            className="action-btn"
+                            onClick={() => onDeleteComment(comment.comment_id)}
+                          >
+                            삭제
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            className="action-btn"
+                            onClick={saveEditing}
+                          >
+                            저장
+                          </button>
+                          <button
+                            className="action-btn"
+                            onClick={cancelEditing}
+                          >
+                            취소
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  )}
                 </div>
-              )}
+                <div className="meta-right">
+                  {new Date(comment.created_at).toLocaleString()}
+                </div>
+              </div>
+              <div className="comment-content">
+                {isEditing ? (
+                  <textarea
+                    value={editingContent}
+                    onChange={(e) => setEditingContent(e.target.value)}
+                    rows={3}
+                    style={{ width: "100%" }}
+                  />
+                ) : (
+                  comment.content
+                )}
+              </div>
             </div>
-            <div className="comment-content">{comment.content}</div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

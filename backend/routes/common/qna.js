@@ -129,4 +129,90 @@ router.put('/lectures/:courseId/qna/:postId', async (req, res) => {
   }
 });
 
+router.get('/lectures/:courseId/qna/:postId/comments', async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    const [rows] = await db.execute(
+      `SELECT
+        c.comment_id,
+        c.post_id,
+        c.author_id,
+        COALESCE(s.name, f.name, st.name, c.author_id) AS author_name,
+        c.content,
+        c.created_at,
+        c.updated_at
+      FROM QA_COMMENT_TB c
+      LEFT JOIN STUDENT_TB s ON c.author_id = s.student_id
+      LEFT JOIN FACULTY_TB f ON c.author_id = f.faculty_id
+      LEFT JOIN STAFF_TB st ON c.author_id = st.staff_id
+      WHERE c.post_id = ?
+      ORDER BY c.created_at ASC`,
+      [postId]
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error("댓글 조회 오류:", err);
+    res.status(500).json({ message: "댓글 조회 실패" });
+  }
+});
+
+router.post('/lectures/:courseId/qna/:postId/comments', async (req, res) => {
+  const { postId } = req.params;
+  const { author_id, content } = req.body;
+
+  try {
+    await db.execute(
+      `INSERT INTO QA_COMMENT_TB (post_id, author_id, content) VALUES (?, ?, ?)`,
+      [postId, author_id, content]
+    );
+    res.status(201).json({ message: "댓글 작성 성공" });
+  } catch (err) {
+    console.error("댓글 작성 오류:", err);
+    res.status(500).json({ message: "댓글 작성 실패" });
+  }
+});
+
+router.put('/lectures/:courseId/qna/:postId/comments/:commentId', async (req, res) => {
+  const { commentId } = req.params;
+  const { content } = req.body;
+
+  try {
+    const [result] = await db.execute(
+      `UPDATE QA_COMMENT_TB SET content = ? WHERE comment_id = ?`,
+      [content, commentId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "수정할 댓글이 없습니다." });
+    }
+
+    res.json({ message: "댓글 수정 성공" });
+  } catch (err) {
+    console.error("댓글 수정 오류:", err);
+    res.status(500).json({ message: "댓글 수정 실패" });
+  }
+});
+
+
+router.delete('/lectures/:courseId/qna/:postId/comments/:commentId', async (req, res) => {
+  const { commentId } = req.params;
+
+  try {
+    const [result] = await db.execute(
+      `DELETE FROM QA_COMMENT_TB WHERE comment_id = ?`,
+      [commentId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "삭제할 댓글이 없습니다." });
+    }
+
+    res.json({ message: "댓글 삭제 성공" });
+  } catch (err) {
+    console.error("댓글 삭제 오류:", err);
+    res.status(500).json({ message: "댓글 삭제 실패" });
+  }
+});
+
 module.exports = router;
