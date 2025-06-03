@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useUser } from "../../context/UserContext"; // ✅ 추가
+import { useUser } from "../../context/UserContext";
 import { Container, Title, Button as CommonButton } from "../../styles/Syllabus.style";
 import { getProfessorCourses } from "../../apis/syllabus/syllabus";
 
@@ -27,7 +27,7 @@ const TimeText = styled.div`
 
 const ProfSyllabusListPage = () => {
   const navigate = useNavigate();
-  const { user } = useUser(); // ✅ 현재 로그인된 교수 정보
+  const { user } = useUser(); // 현재 로그인된 교수 정보
   const [myLectures, setMyLectures] = useState([]);
 
   useEffect(() => {

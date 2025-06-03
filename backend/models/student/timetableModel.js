@@ -29,7 +29,7 @@ exports.getTimetableByStudentId = async (student_id) => {
     }
   });
 
-  // 색색
+  // 색
   return rows.map((r) => ({
     ...r,
     color: courseColorMap[r.lectureId],

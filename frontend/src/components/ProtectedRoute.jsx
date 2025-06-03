@@ -14,7 +14,7 @@ const ProtectedRoute = ({ allowedRoles, children }) => {
     }
   }, [user, allowedRoles]);
 
-  // 로딩 중일 땐 아무것도 보여주지 않음 (또는 로딩 스피너)
+  // 로딩 중일 땐 아무것도 보여주지 않음
   if (loading) {
     return <div>로딩 중...</div>;
   }
@@ -24,7 +24,7 @@ const ProtectedRoute = ({ allowedRoles, children }) => {
     return <navigate to="/" replace />;
   }
 
-  // 권한 없는 경우 (디자인 수정하기)
+  // 권한 없는 경우
   if (showModal) {
     return (
       <S.ModalOverlay>
