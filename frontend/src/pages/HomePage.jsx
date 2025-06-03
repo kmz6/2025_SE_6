@@ -5,24 +5,42 @@ import { HomeWrapper, Section, SectionTitle, CourseRow, CourseName, Button, Butt
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { courseData } from "../mocks/courseData";
+import { getTimetable } from "../apis/timetable/timetable";
+import { getProfessorCourses } from "../apis/syllabus/syllabus";
 
 function HomePage() {
   const navigate = useNavigate();
   const { user, loading } = useUser();
-
   const [subjects, setSubjects] = useState([]);
+  const [filters, setFilters] = useState({
+    year: "2025",
+    semester: "2",
+  }); // 현재 학기에 맞춰 수정
+  const filteredSubjects = subjects.filter(
+    (s) =>
+      s &&
+      s.course_year?.toString() === filters.year &&
+      s.course_semester?.toString() === filters.semester
+  );
 
   useEffect(() => {
-    if (user?.user_type === "student") {
-      axiosInstance
-        .get(`/timetable/${user.user_id}`)
-        .then((res) => {
-          setSubjects(res.data);
-        })
-        .catch((err) => {
-          console.error("시간표 로딩 실패:", err);
-        });
-    }
+    if (!user) return;
+
+    const fetchData = async () => {
+      try {
+        if (user.user_type === "student") {
+          const data = await getTimetable(user.user_id);
+          setSubjects(data);
+        } else if (user.user_type === "faculty") {
+          const data = await getProfessorCourses(user.user_id);
+          setSubjects(data);
+        }
+      } catch (err) {
+        console.error("데이터 로딩 실패:", err);
+      }
+    };
+
+    fetchData();
   }, [user]);
 
   if (loading) return <div>로딩 중...</div>;
@@ -32,13 +50,22 @@ function HomePage() {
   const isFaculty = user.user_type === "faculty";
   const isStaff = user.user_type === "staff";
 
-  const facultyCourses = isFaculty
-    ? courseData.filter((course) => course.faculty_id === user.user_id)
+  const filteredFacultyCourses = isFaculty
+    ? subjects.filter(
+      (s) =>
+        s &&
+        s.faculty_id === user.user_id &&
+        s.course_year?.toString() === filters.year &&
+        s.course_semester?.toString() === filters.semester
+    )
     : [];
-
-  // 중복 제거한 과목 리스트 생성
   const courseList = Array.from(
-    new Map(subjects.map((s) => [s.lectureId, { name: s.name, lectureId: s.lectureId }])).values()
+    new Map(
+      filteredSubjects.map((s) => [
+        s.lectureId,
+        { name: s.name, lectureId: s.lectureId },
+      ])
+    ).values()
   );
 
   return (
@@ -48,12 +75,19 @@ function HomePage() {
         <Section>
           <SectionTitle>시간표</SectionTitle>
           <div style={{ textAlign: "center", marginBottom: "10px" }}>
-            <select>
-              <option>2025년 1학기</option>
-              <option>2024년 2학기</option>
+            <select
+              value={`${filters.year}-${filters.semester}`}
+              onChange={(e) => {
+                const [year, semester] = e.target.value.split("-");
+                setFilters({ year, semester });
+              }}
+            >
+              <option value="2025-1">2025년 1학기</option>
+              <option value="2025-2">2025년 2학기</option>
+              <option value="2024-2">2024년 2학기</option>
             </select>
           </div>
-          <Timetable subjects={subjects} />
+          <Timetable subjects={filteredSubjects} />
         </Section>
       )}
 
@@ -67,19 +101,19 @@ function HomePage() {
               <ButtonGroup>
                 <Button
                   bg="#a9d9b3"
-                  onClick={() => navigate(`/notice/${encodeURIComponent(course.name)}`)}
+                  onClick={() => navigate(`/notice/${course.lectureId}`)}
                 >
                   공지사항
                 </Button>
                 <Button
                   bg="#d0d7e5"
-                  onClick={() => navigate(`/archives/${encodeURIComponent(course.name)}`)}
+                  onClick={() => navigate(`/archives/${course.lectureId}`)}
                 >
                   강의자료실
                 </Button>
                 <Button
                   bg="#f2c0c0"
-                  onClick={() => navigate(`/archives/${encodeURIComponent(course.name)}`)}
+                  onClick={() => navigate(`/assignment/${course.lectureId}`)}
                 >
                   과제 제출
                 </Button>
@@ -93,7 +127,7 @@ function HomePage() {
       {isFaculty && (
         <Section>
           <SectionTitle>강의 과목</SectionTitle>
-          {facultyCourses.map((course) => (
+          {filteredFacultyCourses.map((course) => (
             <CourseRow key={course.course_id}>
               <CourseName onClick={() => navigate(`/lectureroom/${course.course_id}`)}>
                 {course.course_name}

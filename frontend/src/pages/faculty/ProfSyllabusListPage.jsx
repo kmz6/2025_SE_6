@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useUser } from "../../context/UserContext";
@@ -27,8 +27,12 @@ const TimeText = styled.div`
 
 const ProfSyllabusListPage = () => {
   const navigate = useNavigate();
-  const { user } = useUser(); // 현재 로그인된 교수 정보
+  const { user } = useUser();
   const [myLectures, setMyLectures] = useState([]);
+  const [filters] = useState({
+    year: "2025",
+    semester: "2",
+  }); // 현재 학기에 맞춰 수정하면 됨
 
   useEffect(() => {
     if (user) {
@@ -40,11 +44,18 @@ const ProfSyllabusListPage = () => {
 
   if (!user) return <Container>로딩 중...</Container>;
 
+  const filteredLectures = myLectures.filter(
+    (lec) =>
+      lec &&
+      lec.course_year?.toString() === filters.year &&
+      lec.course_semester?.toString() === filters.semester
+  );
+
   return (
     <Container>
       <Title>강의계획서 작성</Title>
 
-      {myLectures.map((lec) => (
+      {filteredLectures.map((lec) => (
         <LectureCard key={lec.course_code}>
           <LectureName>{lec.course_name}</LectureName>
           <TimeText>강의코드: {lec.course_code}</TimeText>
@@ -56,5 +67,4 @@ const ProfSyllabusListPage = () => {
     </Container>
   );
 };
-
 export default ProfSyllabusListPage;
