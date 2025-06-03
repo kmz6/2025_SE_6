@@ -61,6 +61,7 @@ export default function QnAWritePage() {
         });
         alert("등록 완료");
       }
+      
       navigate(`/qna/${lectureId}`);
     } catch (error) {
       console.error("전송 실패:", error);
@@ -71,9 +72,15 @@ export default function QnAWritePage() {
   return (
     <div className="qna-write-container">
       <h1 className="board-title">{isEdit ? "Q&A 수정" : "Q&A 작성"}</h1>
-      <PostWriteHeader subjectName={courseName} subjectCode={courseCode} />
+      <PostWriteHeader
+        subjectName={courseName}
+        subjectCode={courseCode}
+      />
 
-      <PostWriteForm onSubmit={handleSubmit} initialValues={initialValues} />
+      <PostWriteForm
+        onSubmit={handleSubmit}
+        initialValues={initialValues}
+      />
     </div>
   );
 }
