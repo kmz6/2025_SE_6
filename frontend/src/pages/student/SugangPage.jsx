@@ -19,15 +19,35 @@ function SugangPage() {
   const [searchResults, setSearchResults] = useState([]);
   const [selected, setSelected] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [favorites, setFavorites] = useState(() => {
-    const stored = localStorage.getItem("favorites");
-    return stored ? JSON.parse(stored) : [];
-  });
+  const [favorites, setFavorites] = useState([]);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const totalCredit = selected.reduce(
     (sum, course) => sum + (course.credit || 0),
     0
   );
+
+  const loadFavorites = (userId) => {
+    if (!userId) return [];
+    try {
+      const stored = localStorage.getItem(`favorites_${userId}`);
+      return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+      console.log("즐겨찾기 로드 실패");
+      return [];
+    }
+  };
+
+  const saveFavorites = (userId, favoritesData) => {
+    if (!userId) return;
+    try {
+      localStorage.setItem(
+        `favorites_${userId}`,
+        JSON.stringify(favoritesData)
+      );
+    } catch (error) {
+      console.log("즐겨찾기 저장 실패");
+    }
+  };
 
   useEffect(() => {
     const fetchAllCourses = async () => {
@@ -59,8 +79,23 @@ function SugangPage() {
   }, [user, loading]);
 
   useEffect(() => {
-    localStorage.setItem("favorites", JSON.stringify(favorites));
-  }, [favorites]);
+    if (user?.user_id) {
+      const userFavorites = loadFavorites(user.user_id);
+      setFavorites(userFavorites);
+      setIsInitialLoad(false);
+    } else {
+      setFavorites([]);
+      setIsInitialLoad(true);
+    }
+  }, [user?.user_id]);
+
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  useEffect(() => {
+    if (user?.user_id && !isInitialLoad) {
+      saveFavorites(user.user_id, favorites);
+    }
+  }, [favorites, user?.user_id, isInitialLoad]);
 
   const handleApply = async (lecture) => {
     if (!user) return;
@@ -115,11 +150,15 @@ function SugangPage() {
   };
 
   const toggleFavorite = (courseId) => {
-    if (favorites.includes(courseId)) {
-      setFavorites(favorites.filter((id) => id !== courseId));
-    } else {
-      setFavorites([...favorites, courseId]);
-    }
+    if (!user?.user_id) return;
+
+    setFavorites((prevFavorites) => {
+      if (prevFavorites.includes(courseId)) {
+        return prevFavorites.filter((id) => id !== courseId);
+      } else {
+        return [...prevFavorites, courseId];
+      }
+    });
   };
 
   const displayedCourses = showFavoritesOnly
