@@ -27,7 +27,7 @@ export default function ProfSyllabusPage() {
   useEffect(() => {
   getCourseDetail(lectureId)
     .then((data) => {
-      console.log("받은 강의 데이터 👉", data); // 👈 이거 추가
+      console.log("받은 강의 데이터", data);
       setCourse(data);
     })
     .catch((err) => console.error("강의 정보 불러오기 실패", err));

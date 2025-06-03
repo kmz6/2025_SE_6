@@ -65,11 +65,11 @@ const Navbar = () => {
 
   const handleLogout = () => {
     setUser(null);
-    sessionStorage.removeItem("user"); // 이 줄 꼭 추가!
+    sessionStorage.removeItem("user");
     navigate("/login");
   };
   useEffect(() => {
-    console.log("✅ user 변경됨 → 현재 상태:", user);
+    console.log("user 변경됨 → 현재 상태:", user);
   }, [user]);
 
   return (

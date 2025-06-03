@@ -30,13 +30,13 @@ const RootLayout = () => {
 
   const isAuthPage = location.pathname === "/" || location.pathname === "/login" || location.pathname === "/signup";
 
-  // 🔐 로그인 안 했고 로그인/회원가입 페이지면: 로그인/회원가입 페이지만 보여줌
+  // 로그인 안 함
   if (!user && isAuthPage) {
     if (location.pathname === "/signup") return <SignupPage />;
     return <LoginPage />;
   }
 
-  // 🔓 로그인된 경우 또는 로그인 아닌 페이지면 전체 레이아웃 출력
+  // 로그인된 경우
   return (
     <LayoutContainer>
       <Navbar />

@@ -40,7 +40,7 @@ const SubjectBlock = styled.div`
 `;
 
 const Timetable = ({ subjects }) => {
-  const navigate = useNavigate(); // 추가
+  const navigate = useNavigate();
   const days = ["월", "화", "수", "목", "금", "토"];
   const timeSlots = [1, 2, 3, 4, 5, 6, 7];
 
