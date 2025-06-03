@@ -53,7 +53,7 @@ router.get('/lectures/:courseId/info', async (req, res) => {
 
   try {
     const [rows] = await db.execute(
-      `SELECT course_name
+      `SELECT course_name, course_code
        FROM COURSE_TB
        WHERE course_id = ?`,
       [courseId]

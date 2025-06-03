@@ -1,4 +1,4 @@
-export const gradePoints = {
+const gradePoints = {
     'A+': 4.5,
     'A0': 4.0,
     'B+': 3.5,
@@ -9,3 +9,5 @@ export const gradePoints = {
     'D0': 1.0,
     'F': 0.0,
 };
+
+module.exports = gradePoints;

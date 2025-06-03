@@ -18,6 +18,7 @@ export default function NoticeListPage() {
   const [searchResult, setSearchResult] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [courseName, setCourseName] = useState("");
+  const [courseCode, setCourseCode] = useState("");
 
   const postsPerPage = 10;
 
@@ -36,6 +37,7 @@ export default function NoticeListPage() {
     try {
       const response = await axiosInstance.get(`/api/lectures/${lectureId}/info`);
       setCourseName(response.data.course_name);
+      setCourseCode(response.data.course_code); 
     } catch (error) {
       console.error("과목명 불러오기 실패:", error);
     }
@@ -65,7 +67,7 @@ export default function NoticeListPage() {
 
       <BoardHeader
         subjectName={courseName}
-        subjectCode={""}
+        subjectCode={courseCode}
         onWrite={() => navigate(`/professor/notice/${lectureId}/write`)}
         userType={userType}
       />

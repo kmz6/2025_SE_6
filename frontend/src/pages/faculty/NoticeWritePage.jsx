@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import PostHeader from "../../components/Post/PostHeader";
 import PostWriteForm from "../../components/Post/PostWriteForm";
 import "./NoticeWritePage.css";
 import axiosInstance from "../../apis/axiosInstance";
 import { useUser } from "../../context/UserContext";
+import PostWriteHeader from "../../components/Post/PostWriteHeader";
 
 export default function NoticeWritePage() {
   const { lectureId, postId } = useParams();
@@ -12,6 +12,7 @@ export default function NoticeWritePage() {
   const { user } = useUser();
 
   const [courseName, setCourseName] = useState("");
+  const [courseCode, setCourseCode] = useState("");
   const [initialValues, setInitialValues] = useState({ title: "", content: "" });
   const isEdit = !!postId;
 
@@ -19,6 +20,7 @@ export default function NoticeWritePage() {
     try {
       const response = await axiosInstance.get(`/api/lectures/${lectureId}/info`);
       setCourseName(response.data.course_name);
+      setCourseCode(response.data.course_code); 
     } catch (error) {
       console.error("과목명 불러오기 실패:", error);
     }
@@ -70,8 +72,15 @@ export default function NoticeWritePage() {
   return (
     <div className="notice-write-container">
       <h1 className="board-title">{isEdit ? "공지사항 수정" : "공지사항 작성"}</h1>
-      <PostHeader subjectName={courseName} subjectCode="" />
-      <PostWriteForm onSubmit={handleSubmit} initialValues={initialValues} />
+      <PostWriteHeader
+        subjectName={courseName}
+        subjectCode={courseCode}
+      />
+
+      <PostWriteForm
+        onSubmit={handleSubmit}
+        initialValues={initialValues}
+      />
     </div>
   );
 }
