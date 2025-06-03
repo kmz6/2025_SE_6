@@ -20,6 +20,10 @@ const timetableRouter = require("./routes/student/timetable");
 const studsyllabusRouter = require("./routes/student/syllabus");
 const profsyllabusRouter = require("./routes/faculty/syllabus");
 
+const studInfoRouter = require("./routes/student/studentInfo");
+const gradeRouter = require("./routes/student/grade");
+const rankRouter = require("./routes/student/rank");
+
 const app = express();
 const PORT = process.env.PORT;
 
@@ -42,6 +46,10 @@ app.use("/sugang", sugangRouter);
 app.use("/timetable", timetableRouter);
 app.use("/api/syllabus", studsyllabusRouter);
 app.use("/api/syllabus/prof", profsyllabusRouter);
+
+app.use("/studInfo", studInfoRouter);
+app.use("/grade", gradeRouter);
+app.use("/rank", rankRouter);
 
 // Start server
 app.listen(PORT, () => {
