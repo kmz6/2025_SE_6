@@ -6,9 +6,9 @@ export const useUser = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // ✅ 추가
+  const [loading, setLoading] = useState(true);
 
-  // ✅ 첫 진입 시 sessionStorage에에 저장된 유저 불러오기
+  // 첫 진입 시 sessionStorage에에 저장된 유저 불러오기
   useEffect(() => {
     const storedUser = sessionStorage.getItem("user");
     if (storedUser) {
@@ -17,7 +17,7 @@ export const UserProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  // ✅ user 변경 시 sessionStorage에에 저장/삭제
+  // user 변경 시 sessionStorage에에 저장/삭제
   useEffect(() => {
     if (user) {
       sessionStorage.setItem("user", JSON.stringify(user));

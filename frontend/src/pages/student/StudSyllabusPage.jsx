@@ -8,10 +8,10 @@ import {
   TwoColHead,
   TwoColCell
 } from "../../styles/Syllabus.style";
-import { getCourseDetail } from "../../apis/syllabus/syllabus"; // ✅ 상세 조회용 함수로 수정
+import { getCourseDetail } from "../../apis/syllabus/syllabus";
 
 export default function StudSyllabusPage() {
-  const { lectureId } = useParams(); // URL에서 course_code 받기
+  const { lectureId } = useParams();
   const [course, setCourse] = useState(null);
 
   useEffect(() => {

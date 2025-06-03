@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../apis/axiosInstance";
 import Timetable from "../components/Timetable";
 import { HomeWrapper, Section, SectionTitle, CourseRow, CourseName, Button, ButtonGroup } from "../styles/HomePage.style";
 import { useNavigate } from "react-router-dom";
@@ -14,8 +14,8 @@ function HomePage() {
 
   useEffect(() => {
     if (user?.user_type === "student") {
-      axios
-        .get(`http://localhost:2025/timetable/${user.user_id}`)
+      axiosInstance
+        .get(`/timetable/${user.user_id}`)
         .then((res) => {
           setSubjects(res.data);
         })
