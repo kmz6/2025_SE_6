@@ -13,7 +13,7 @@ export default function WeeklySubmissionBarChart({
   return (
     <S.BarContainer>
       <S.BarTopRow>
-        <S.BarLabel>이번 주 과제 제출 현황</S.BarLabel>
+        <S.BarLabel>이번주 과제 제출 현황</S.BarLabel>
         <S.BarBackground>
           <S.BarFill width={percent} />
         </S.BarBackground>
