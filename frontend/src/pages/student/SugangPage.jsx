@@ -161,15 +161,18 @@ function SugangPage() {
     });
   };
 
-  const displayedCourses = showFavoritesOnly
-    ? allCourses.filter(
-        (course) =>
-          favorites.includes(course.course_id) &&
-          !selected.some((sel) => sel.course_id === course.course_id)
-      )
-    : searchResults.filter(
-        (course) => !selected.some((sel) => sel.course_id === course.course_id)
-      );
+  const displayedCourses = (
+    showFavoritesOnly
+      ? allCourses.filter((course) => favorites.includes(course.course_id))
+      : searchResults.length > 0
+      ? searchResults
+      : allCourses
+  ).filter(
+    (course) =>
+      course.course_year === 2025 &&
+      course.course_semester === 1 &&
+      !selected.some((sel) => sel.course_id === course.course_id)
+  );
 
   if (loading) {
     return <p>로딩 중...</p>;
