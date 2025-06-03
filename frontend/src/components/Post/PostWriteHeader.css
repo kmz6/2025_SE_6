@@ -1,0 +1,16 @@
+.write-header {
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.subject-info {
+  font-size: 18px;
+}
+
+.subject-name {
+  font-weight: bold;
+  margin-right: 8px;
+}

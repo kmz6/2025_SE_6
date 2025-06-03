@@ -14,6 +14,7 @@ export default function NoticePostPage() {
 
   const [post, setPost] = useState(null);
   const [courseName, setCourseName] = useState("");
+  const [courseCode, setCourseCode] = useState("");
 
   // 게시글 데이터
   const fetchPost = async () => {
@@ -30,6 +31,7 @@ export default function NoticePostPage() {
     try {
       const response = await axiosInstance.get(`/api/lectures/${lectureId}/info`);
       setCourseName(response.data.course_name);
+      setCourseCode(response.data.course_code); 
     } catch (error) {
       console.error("과목명 불러오기 실패:", error);
     }
@@ -71,7 +73,7 @@ export default function NoticePostPage() {
 
       <PostHeader
         subjectName={courseName}
-        subjectCode={""}
+        subjectCode={courseCode}
         onEdit={handleEdit}
         onDelete={handleDelete}
         authorId={post.author_id}
