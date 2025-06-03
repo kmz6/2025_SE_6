@@ -1,19 +1,33 @@
 import * as S from "../../styles/DashboardPage.style";
 import { useNavigate } from "react-router-dom";
+import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
+import WeeklySubmissionBarChart from "./Chart";
 
 export default function RightList({
   assignments,
   isInExamPeriod,
   isInFestivalPeriod,
   date,
+  selectedDate,
 }) {
   const navigate = useNavigate();
 
+  const dailyAssignments = assignments.filter(
+    (a) => a.end_date?.slice(0, 10) === date
+  );
+
   return (
     <>
-      <h3>
-        <S.HighlightedDate>{date}</S.HighlightedDate>
-      </h3>
+      <S.HeaderContainer>
+        <h3>
+          <S.HighlightedDate>{date}</S.HighlightedDate>
+        </h3>
+        <WeeklySubmissionBarChart
+          assignments={assignments}
+          selectedDate={selectedDate}
+        />
+      </S.HeaderContainer>
+
       {isInExamPeriod && (
         <S.ExamNotice>
           <span>기말고사 시험기간</span>
@@ -28,16 +42,28 @@ export default function RightList({
       {assignments.length === 0 && !isInExamPeriod && !isInFestivalPeriod ? (
         <p>해당 날짜에 일정이 없습니다.</p>
       ) : (
-        assignments.map((a) => (
+        dailyAssignments.map((a) => (
           <S.AssignmentCard
-            key={a.id}
-            onClick={() => navigate(`/assignments/${a.id}`)}
+            key={a.assignment_id}
+            onClick={() => navigate(`/assignment/${a.course_id}`)}
           >
-            <S.Subject>{a.subject}</S.Subject>
-            <S.Title>{a.title}</S.Title>
+            <S.Subject>{a.course_name}</S.Subject>
+            <S.Title>{a.assignment_title}</S.Title>
             <S.DateRange>
-              {a.startDate} ~ {a.dueDate}
+              {a.start_date.slice(0, 10)} ~ {a.end_date.slice(0, 10)}
             </S.DateRange>
+
+            {a.submission_id ? (
+              <S.SubmissionStatus>
+                <FaCheckCircle style={{ marginRight: 6 }} />
+                제출 완료
+              </S.SubmissionStatus>
+            ) : (
+              <S.SubmissionRequired>
+                <FaExclamationCircle style={{ marginRight: 6 }} />
+                제출 필요!
+              </S.SubmissionRequired>
+            )}
           </S.AssignmentCard>
         ))
       )}
