@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const Container = styled.div`
   display: flex;
   padding: 30px;
-  height: calc(100vh - 120px); /* Navbar 높이 고려(60x2) */
+  height: calc(100vh - 120px);
   box-sizing: border-box;
   overflow: hidden;
   width: 100%;
@@ -185,4 +185,19 @@ export const TimetableButton = styled.button`
   &:hover {
     background-color: rgb(184, 23, 63);
   }
+`;
+
+export const RightHeaderRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: -6px;
+`;
+
+export const Credit = styled.div`
+  font-size: 14px;
+  color: #666;
+  background-color: #f3f3f3;
+  padding: 7px 12px;
+  border-radius: 8px;
 `;
