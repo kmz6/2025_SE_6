@@ -1,5 +1,4 @@
 import "react-calendar/dist/Calendar.css";
-import { assignmentData } from "../../mocks/assignmentData";
 import * as S from "../../styles/DashboardPage.style";
 import MemoCard from "./MemoCard";
 
@@ -56,9 +55,11 @@ export default function LeftList({
             date.getMonth() + 1
           ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
-          const hasAssignment = assignmentData.some(
-            (a) => a.dueDate === dateStr
-          );
+          const hasAssignment = assignmentsDue?.some((a) => {
+            if (!a.end_date) return false;
+            const dueDateStr = a.end_date.slice(0, 10);
+            return dueDateStr === dateStr;
+          });
 
           const hasMemo = memos.some((memo) => memo.date === dateStr);
 
