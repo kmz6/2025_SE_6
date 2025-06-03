@@ -1,47 +1,98 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import PostHeader from "../../components/Post/PostHeader";
 import PostBox from "../../components/Post/PostBox";
 import CommentBox from "../../components/Post/CommentBox";
 import "./QnAPostPage.css";
 import { useUser } from "../../context/UserContext";
+import axiosInstance from "../../apis/axiosInstance";
 
 export default function QnAPostPage() {
+  const { lectureId, postId } = useParams();
+  const navigate = useNavigate();
   const { user } = useUser();
   const currentUserId = user?.user_id;
 
-  const [comments, setComments] = useState([
-    { meta: "홍길동 (컴퓨터공학/2022202020)", content: "댓글 내용입니다." },
-  ]);
+  const [post, setPost] = useState(null);
+  const [courseName, setCourseName] = useState("");
+  const [courseCode, setCourseCode] = useState("");
+  const [comments, setComments] = useState([]);
 
-  const postAuthorId = "2022000000";  // 예시: 게시글 작성자의 학번 또는 ID
-
-  // 댓글 추가 함수
-  const handleAddComment = (newComment) => {
-    setComments((prevComments) => [...prevComments, newComment]);
+  const fetchPost = async () => {
+    try {
+      const response = await axiosInstance.get(`/api/lectures/${lectureId}/qna/${postId}`);
+      setPost(response.data);
+    } catch (error) {
+      console.error("QnA 상세 조회 실패:", error);
+    }
   };
+
+  const fetchCourseName = async () => {
+    try {
+      const response = await axiosInstance.get(`/api/lectures/${lectureId}/info`);
+      setCourseName(response.data.course_name);
+      setCourseCode(response.data.course_code);
+    } catch (error) {
+      console.error("과목명 불러오기 실패:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPost();
+    fetchCourseName();
+  }, [lectureId, postId]);
+
+  const handleAddComment = (newComment) => {
+    setComments((prev) => [...prev, newComment]);
+  };
+
+  const handleEdit = () => {
+    if (!lectureId || !postId) {
+      console.error("잘못된 수정 요청: lectureId 또는 postId 없음");
+      return;
+    }
+    navigate(`/qna/${lectureId}/edit/${postId}`);
+  };
+
+  const handleDelete = async () => {
+    if (!window.confirm("정말 삭제하시겠습니까?")) return;
+
+    try {
+      await axiosInstance.delete(`/api/lectures/${lectureId}/qna/${postId}`);
+      alert("삭제되었습니다.");
+      navigate(`/qna/${lectureId}`);
+    } catch (error) {
+      console.error("삭제 실패:", error);
+      alert("삭제 중 오류가 발생했습니다.");
+    }
+  };
+
+  if (!post) return <div>로딩 중...</div>;
 
   return (
     <div className="qna-detail-container">
       <h1 className="board-title">Q&A 게시판</h1>
 
       <PostHeader
-        subjectName="[과목명]"
-        subjectCode="[학정번호]"
-        onEdit={() => console.log("수정")}
-        onDelete={() => console.log("삭제")}
-        authorId={postAuthorId}
+        subjectName={courseName}
+        subjectCode={courseCode}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        authorId={post.author_id}
         currentUserId={currentUserId}
       />
 
       <PostBox
-        title="예시 제목"
-        author="홍길동"
-        date="2025-05-19"
-        content="여기 게시글의 본문 내용이 들어갑니다."
+        title={post.title}
+        author={post.author_id}
+        date={post.created_at?.slice(0, 10)}
+        content={post.content}
       />
 
-      {/* 댓글 추가 및 댓글 목록 출력 */}
-      <CommentBox comments={comments} onAddComment={handleAddComment} />
+      <CommentBox
+        comments={comments}
+        onAddComment={handleAddComment}
+      />
     </div>
   );
 }
