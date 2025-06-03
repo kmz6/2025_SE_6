@@ -1,40 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useUser } from "../../context/UserContext";
 import StudInfo from "../../components/StudInfo/StudInfo"
 import * as S from "../../styles/StudRankPage.style";
 
-import {
-  userData,
-  studentData,
-  facultyData,
-  staffData,
-} from "../../mocks/userData";
-
-import { attendData } from "../../mocks/gradeData";
+import { gradePoints } from '../../constants/gradePoints';
 
 const StudRankPage = () => {
-  const userType = userData.user_type; //현재 사용자의 type 확인
+  const { user } = useUser(); // user 정보
 
-  //user type에 따라 정보 초기화
-  const initialUserInfo =
-    userType === "student"
-      ? studentData
-      : userType === "faculty"
-        ? facultyData
-        : userType === "staff"
-          ? staffData
-          : null;
+  const [rankData, setRankData] = useState([]); // 학기별 성적 정보
 
-  const [userInfo, setUserInfo] = useState(initialUserInfo);
+  if (!user) {
+    return <div>로딩 중...</div>;
+  }
 
-  //평점을 점수로 변환
-  const gradeToPoint = {
-    A: 4.0,
-    B: 3.0,
-    C: 2.0,
-    D: 1.0,
-    F: 0.0,
-  };
-
+  /*
   //학기별 학점 수 및 평점 계산
   function calculateScoreInfo(attendData) {
     const result = [];
@@ -70,12 +50,13 @@ const StudRankPage = () => {
   }
 
   const semesterResults = calculateScoreInfo(attendData);
+  */
 
   return (
     <S.Container>
       <S.Title>학습 결과</S.Title>
       <S.SubTitle>기본 정보</S.SubTitle>
-      <StudInfo user_id={userInfo.user_id}></StudInfo>
+      <StudInfo user_id={user.user_id}></StudInfo>
 
       <S.SubTitle>석차 조회</S.SubTitle>
       <S.Table>
@@ -88,14 +69,12 @@ const StudRankPage = () => {
           </S.Row>
         </thead>
         <tbody>
-          {semesterResults.map(({ semester, totalCredits, totalScore }) => (
-            <S.Row key={semester}>
-              <S.Cell>{semester}</S.Cell>
-              <S.Cell>{totalCredits}</S.Cell>
-              <S.Cell>{totalScore}</S.Cell>
-              <S.Cell>등수 / 학생수</S.Cell>
-            </S.Row>
-          ))}
+          <S.Row>
+            <S.Cell></S.Cell>
+            <S.Cell></S.Cell>
+            <S.Cell></S.Cell>
+            <S.Cell></S.Cell>
+          </S.Row>
         </tbody>
       </S.Table>
     </S.Container>
