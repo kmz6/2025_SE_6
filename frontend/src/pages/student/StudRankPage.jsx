@@ -1,56 +1,29 @@
 import { useEffect, useState } from "react";
 import { useUser } from "../../context/UserContext";
 import StudInfo from "../../components/StudInfo/StudInfo"
+import { getRank } from "../../apis/studinfo/rank";
 import * as S from "../../styles/StudRankPage.style";
-
-import { gradePoints } from '../../constants/gradePoints';
 
 const StudRankPage = () => {
   const { user } = useUser(); // user 정보
 
-  const [rankData, setRankData] = useState([]); // 학기별 성적 정보
+  const [rankData, setRankData] = useState([]); // 석차 정보
+
+  // 석차 정보 불러오기
+  useEffect(() => {
+    if (!user) return; //user 없어도 계속 hook 호출
+
+    const fetchRankData = async () => {
+      // 석차 정보 불러오기
+      const ranks = await getRank(user.user_id);
+      setRankData(ranks);
+    };
+    fetchRankData();
+  }, [user]);
 
   if (!user) {
     return <div>로딩 중...</div>;
   }
-
-  /*
-  //학기별 학점 수 및 평점 계산
-  function calculateScoreInfo(attendData) {
-    const result = [];
-
-    for (const semester in attendData) {
-      const courses = attendData[semester];
-
-      let totalCredits = 0;
-      let totalGradePoints = 0;
-
-      courses.forEach((course) => {
-        const credit = course.credit;
-        const grade = course.grade;
-        const gradePoint = gradeToPoint[grade] || 0;
-
-        totalCredits += credit;
-        totalGradePoints += gradePoint * credit;
-      });
-
-      const totalScore =
-        totalCredits > 0
-          ? (totalGradePoints / totalCredits).toFixed(2)
-          : "0.00";
-
-      result.push({
-        semester,
-        totalCredits,
-        totalScore,
-      });
-    }
-
-    return result;
-  }
-
-  const semesterResults = calculateScoreInfo(attendData);
-  */
 
   return (
     <S.Container>
@@ -69,15 +42,17 @@ const StudRankPage = () => {
           </S.Row>
         </thead>
         <tbody>
-          <S.Row>
-            <S.Cell></S.Cell>
-            <S.Cell></S.Cell>
-            <S.Cell></S.Cell>
-            <S.Cell></S.Cell>
-          </S.Row>
+          {rankData.map((rank) => (
+            <S.Row key={rank.semester}>
+              <S.Cell>{rank.semester}</S.Cell>
+              <S.Cell>{rank.totalCredits}</S.Cell>
+              <S.Cell>{rank.gpa}</S.Cell>
+              <S.Cell>{rank.rank}</S.Cell>
+            </S.Row>
+          ))}
         </tbody>
       </S.Table>
-    </S.Container>
+    </S.Container >
   );
 };
 
