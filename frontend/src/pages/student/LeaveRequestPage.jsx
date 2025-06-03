@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "../../context/UserContext";
 import StudInfo from "../../components/StudInfo/StudInfo"
 import { getStudInfo } from "../../apis/studinfo/student";
-import { getStudLeaveInfo, postLeaveRequest } from "../../apis/leave/leave";
+import { getStudLeaveInfo, postLeaveRequest } from "../../apis/leave/studLeave";
 import * as S from "../../styles/LeaveRequest.style";
 
 function LeaveRequestPage() {
