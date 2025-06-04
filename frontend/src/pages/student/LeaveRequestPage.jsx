@@ -67,7 +67,7 @@ function LeaveRequestPage() {
       <S.ButtonWrapper>
         <S.LeaveButton
           disabled={enrollStatus !== "enrolled"}
-          onClick={() => handleLeaveRequest("leave")}
+          onClick={() => handleLeaveRequest("on_leave")}
         >
           휴학 신청
         </S.LeaveButton>
@@ -90,13 +90,13 @@ function LeaveRequestPage() {
           </S.Row>
         </thead>
         {leaveData && leaveData.length > 0 ? (
-          leaveData.map((leave, index) => (
-            <S.Row key={index}>
+          leaveData.map((leave) => (
+            <S.Row key={leave.request_id}>
               <S.Cell>{leave.request_type === 'return' ? '복학' : '휴학'}</S.Cell>
               <S.Cell>{leave.request_date.split('T')[0]}</S.Cell>
               <S.Cell>
                 {leave.status === 'pending' ? '대기'
-                  : leave.status === 'approved' ? '승인' : '거부'}
+                  : leave.status === 'approved' ? '승인' : '반려'}
               </S.Cell>
             </S.Row>
           ))

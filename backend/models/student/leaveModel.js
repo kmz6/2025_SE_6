@@ -2,7 +2,7 @@ const db = require("../../config/db");
 
 // 휴복학 정보
 async function findLeaveById(user_id) {
-    const sql = `SELECT request_type, request_date, status
+    const sql = `SELECT request_id, request_type, request_date, status
                     FROM LEAVE_TB
                     WHERE student_id = ?
                     ORDER BY request_date DESC;`;

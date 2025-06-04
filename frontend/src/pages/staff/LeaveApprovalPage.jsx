@@ -1,11 +1,41 @@
 import { useEffect, useState } from "react";
 import * as S from "../../styles/LeaveApproval.style";
 
-import { getLeaveAll } from "../../apis/leave/staffLeave";
+import { getLeaveAll, patchLeaveApprove, patchLeaveReject } from "../../apis/leave/staffLeave";
 
 function LeaveApprovalPage() {
 
   const [requestData, setRequestData] = useState([]); // 휴복학 요청 정보
+
+  // 승인 버튼 클릭 시 요청 보내기
+  const handleLeaveApprove = async (req_id, req_type) => {
+    try {
+      const confirmed = window.confirm("승인하시겠습니까?");
+      if (!confirmed) return;
+
+      await patchLeaveApprove(req_id, req_type);
+      alert("요청이 완료되었습니다.");
+
+    } catch (error) {
+      alert("요청 중 오류가 발생했습니다.");
+      console.error(error);
+    }
+  };
+
+  // 반려 버튼 클릭 시 요청 보내기
+  const handleLeaveReject = async (req_id) => {
+    try {
+      const confirmed = window.confirm("반려하시겠습니까?");
+      if (!confirmed) return;
+
+      await patchLeaveReject(req_id);
+      alert("요청이 완료되었습니다.");
+
+    } catch (error) {
+      alert("요청 중 오류가 발생했습니다.");
+      console.error(error);
+    }
+  };
 
   // 휴복학 요청 정보 불러오기
   useEffect(() => {
@@ -33,8 +63,8 @@ function LeaveApprovalPage() {
         </thead>
         <tbody>
           {requestData && requestData.length > 0 ? (
-            requestData.map((request, index) => (
-              <S.Row key={index}>
+            requestData.map((request) => (
+              <S.Row key={request.request_id}>
                 <S.Cell>{request.name}</S.Cell>
                 <S.Cell>{request.student_id}</S.Cell>
                 <S.Cell>
@@ -42,16 +72,25 @@ function LeaveApprovalPage() {
                 </S.Cell>
                 <S.Cell>{request.request_date.split('T')[0]}</S.Cell>
                 <S.Cell>
-                  {request.status === "pending" ? (
-                    <S.ButtonWrapper>
-                      <S.ApproveButton>승인</S.ApproveButton>
-                      <S.RejectButton>반려</S.RejectButton>
-                    </S.ButtonWrapper>
-                  ) : request.status === "approved" ? (
-                    "승인"
-                  ) : (
-                    "반려"
-                  )}
+                  <S.StatusWrapper>
+                    {request.status === "pending" ? (
+                      <>
+                        <S.Pending>대기</S.Pending>
+                        <S.ButtonWrapper>
+                          <S.ApproveButton onClick={() => handleLeaveApprove(request.request_id, request.request_type)} >
+                            승인
+                          </S.ApproveButton>
+                          <S.RejectButton onClick={() => handleLeaveReject(request.request_id)}>
+                            반려
+                          </S.RejectButton>
+                        </S.ButtonWrapper>
+                      </>
+                    ) : request.status === "approved" ? (
+                      "승인"
+                    ) : (
+                      "반려"
+                    )}
+                  </S.StatusWrapper>
                 </S.Cell>
               </S.Row>
             ))
@@ -64,7 +103,7 @@ function LeaveApprovalPage() {
           )}
         </tbody>
       </S.Table>
-    </S.Container>
+    </S.Container >
   );
 }
 

@@ -24,7 +24,45 @@ async function getRequest(req, res) {
     }
 }
 
+// 휴복학 승인
+async function patchLeaveApprove(req, res) {
+    const { req_id, req_type } = req.params;
+    let enroll_status; // 상태 변화
+
+    if (req_type === "leave") {
+        enroll_status = "on_leave";
+    }
+    else {
+        enroll_status = "enrolled";
+    }
+
+    try {
+        const result = await leaveModel.leaveApprove(req_id, enroll_status);
+        return res.json({ message: "정상적으로 완료되었습니다." }); // 성공 메세지 반환
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "서버 오류가 발생했습니다." });
+    }
+}
+
+// 휴복학 반려
+async function patchLeaveReject(req, res) {
+    const { req_id } = req.params;
+
+    try {
+        const result = await leaveModel.leaveReject(req_id);
+        return res.json(result);
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "서버 오류가 발생했습니다." });
+    }
+}
+
 module.exports = {
     getCount,
-    getRequest
+    getRequest,
+    patchLeaveApprove,
+    patchLeaveReject
 };
