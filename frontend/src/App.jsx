@@ -165,7 +165,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "attendance/:lectureId",
+        path: "attendance/:courseId",
         element: (
           <ProtectedRoute allowedRoles={["faculty"]}>
             <ProfAttendPage />

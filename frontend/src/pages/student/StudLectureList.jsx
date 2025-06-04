@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useUser } from "../../context/UserContext";
+import { getStudentLectures } from "../../apis/attendance/attendance";
 
 const Container = styled.div`
   margin: 24px auto;
@@ -21,7 +23,7 @@ const Title = styled.h2`
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 70px;
+  margin-bottom: 30px;
 `;
 
 const Row = styled.tr`
@@ -41,25 +43,24 @@ const Cell = styled.td`
   border: 1px solid #ccc;
 `;
 
-const mockSubjects = [
-  { name: "정보보호이론", day: "월", time: 2, color: "#e7b4f0", lectureId: 1 },
-  { name: "소프트웨어공학", day: "월", time: 5, color: "#a0e2e2", lectureId: 2 },
-  { name: "생명과기술", day: "월", time: 6, color: "#f3cc7f", lectureId: 3 },
-  { name: "산학협력캡스톤설계", day: "화", time: 5, color: "#d9b4f0", lectureId: 4 },
-  { name: "생명과기술", day: "수", time: 5, color: "#f3cc7f", lectureId: 3 },
-  { name: "소프트웨어공학", day: "수", time: 6, color: "#a0e2e2", lectureId: 2 },
-  { name: "산학협력캡스톤설계", day: "목", time: 6, color: "#d9b4f0", lectureId: 4 },
-  { name: "클래식음악의역사", day: "토", time: 7, color: "#a4dfb7", lectureId: 5 },
-];
-
-const uniqueLectures = Array.from(
-  new Map(
-    mockSubjects.map((s) => [s.lectureId, { id: `${s.lectureId}`, name: s.name }])
-  ).values()
-);
-
 const StudentLectureList = () => {
   const navigate = useNavigate();
+  const { user } = useUser();
+  const [myLectures, setMyLectures] = useState([]);
+
+  useEffect(() => {
+    const fetchLectures = async () => {
+      if (user) {
+        const data = await getStudentLectures(user.user_id);
+        const filtered = data.filter((lec) => lec.semester === "25-1");
+        console.log(filtered);
+        setMyLectures(filtered);
+      }
+    };
+    fetchLectures();
+  }, [user]);
+
+  if (!user) return <div>로딩 중...</div>;
 
   return (
     <Container>
@@ -68,16 +69,18 @@ const StudentLectureList = () => {
         <thead>
           <Row>
             <CellHead>강의명</CellHead>
+            <CellHead>강의시간</CellHead>
           </Row>
         </thead>
         <tbody>
-          {uniqueLectures.map((lec) => (
+          {myLectures.map((lec) => (
             <Row
-              key={lec.id}
+              key={lec.course_id}
               style={{ cursor: "pointer" }}
-              onClick={() => navigate(`/student/attendance/${lec.id}`)}
+              onClick={() => navigate(`/student/attendance/${lec.course_id}`)}
             >
-              <Cell>{lec.name}</Cell>
+              <Cell>{lec.course_name}</Cell>
+              <Cell>{lec.course_times || "시간 미등록"}</Cell>
             </Row>
           ))}
         </tbody>

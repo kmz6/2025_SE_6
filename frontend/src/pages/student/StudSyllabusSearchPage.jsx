@@ -9,7 +9,7 @@ export default function StudSyllabusSearchPage() {
   const [filters, setFilters] = useState({
     courseName: "",
     professor: "",
-    semester: "2025-2",
+    semester: "2025-1",
   });
 
   const [courses, setCourses] = useState([]);

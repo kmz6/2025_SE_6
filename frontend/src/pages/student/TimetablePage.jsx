@@ -7,7 +7,7 @@ function TimetablePage() {
   const [subjects, setSubjects] = useState([]);
   const [filters, setFilters] = useState({
     year: "2025",
-    semester: "2",
+    semester: "1",
   });
 
   useEffect(() => {
@@ -45,7 +45,6 @@ function TimetablePage() {
           }}
         >
           <option value="2025-1">2025년 1학기</option>
-          <option value="2025-2">2025년 2학기</option>
           <option value="2024-2">2024년 2학기</option>
         </select>
       </div>

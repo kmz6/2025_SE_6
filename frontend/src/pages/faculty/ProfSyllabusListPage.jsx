@@ -31,7 +31,7 @@ const ProfSyllabusListPage = () => {
   const [myLectures, setMyLectures] = useState([]);
   const [filters] = useState({
     year: "2025",
-    semester: "2",
+    semester: "1",
   }); // 현재 학기에 맞춰 수정하면 됨
 
   useEffect(() => {
