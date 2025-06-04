@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import * as S from "./ProfGrade.style";
+import * as S from "./GradeInput.style";
 
 function courseList({ courses }) {
     const navigate = useNavigate();

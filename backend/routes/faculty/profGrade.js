@@ -11,4 +11,7 @@ router.get("/:course_id", gradeController.getCourseInfo);
 // GET /prof/grade/student/:course_id
 router.get("/student/:course_id", gradeController.getStudentInfo);
 
+// PATCH /prof/grade/update
+router.patch("/update", gradeController.updateScores);
+
 module.exports = router;

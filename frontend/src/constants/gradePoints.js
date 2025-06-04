@@ -9,3 +9,5 @@ export const gradePoints = {
     'D0': 1.0,
     'F': 0.0,
 };
+
+export const gradeLists = ['N/A', 'A+', 'A0', 'B+', 'B0', 'C+', 'C0', 'D+', 'D0', 'F'];

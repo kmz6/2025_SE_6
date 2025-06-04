@@ -17,3 +17,9 @@ export const getStudentData = async (course_id) => {
     const response = await axiosInstance.get(`/prof/grade/student/${course_id}`);
     return response.data;
 };
+
+// 학생 정보 업데이트
+export const patchStudentScore = async (student) => {
+    const response = await axiosInstance.patch(`/prof/grade/update`, { student });
+    return response.data;
+}

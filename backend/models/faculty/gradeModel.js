@@ -35,8 +35,18 @@ async function findStudentInfoById(course_id) {
     return results;
 }
 
+// 학생 점수 정보
+async function updateStudent(data) {
+    const sql = `UPDATE STUD_COURSE_TB
+                    SET attendance = ?, midterm_exam = ?, final_exam = ?, assignment = ?, etc = ?, grade = ?
+                    WHERE course_id = ? AND student_id = ?`;
+
+    await db.query(sql, data)
+}
+
 module.exports = {
     findCoursesById,
     findCourseInfoById,
     findStudentInfoById,
+    updateStudent
 };
