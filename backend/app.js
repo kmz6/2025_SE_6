@@ -33,6 +33,7 @@ const staffLeaveRouter = require("./routes/staff/leave");
 const proflecturelist = require("./routes/faculty/lecturelist");
 const profattendance = require("./routes/faculty/attendance");
 const studlecturelist = require("./routes/student/lecturelist");
+const studattendance = require("./routes/student/attendance");
 
 const app = express();
 const PORT = process.env.PORT;
@@ -70,6 +71,7 @@ app.use("/leave/staff", staffLeaveRouter);
 app.use("/api/faculty/lecturelist", proflecturelist);
 app.use("/api/faculty/attendance", profattendance);
 app.use("/api/student/lecturelist", studlecturelist);
+app.use("/api/student/attendance", studattendance);
 
 // Start server
 app.listen(PORT, () => {
