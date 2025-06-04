@@ -30,3 +30,14 @@ export const saveAttendanceData = async (courseId, week, session, attendance) =>
     throw err;
   }
 };
+
+// 학생용
+export const getStudentLectures = async (studentId) => {
+  try {
+    const res = await axiosInstance.get(`/api/student/lecturelist/${studentId}`);
+    return res.data;
+  } catch (err) {
+    console.error("학생 강의 목록 조회 실패:", err);
+    return [];
+  }
+};
