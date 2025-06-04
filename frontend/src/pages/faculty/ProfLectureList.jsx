@@ -55,7 +55,7 @@ const ProfLectureList = () => {
         const data = await getLectureList(user.user_id);
         console.log(data);
         // "25-1"만 필터링
-        const filtered = data.filter((lec) => lec.semester === "25-2");
+        const filtered = data.filter((lec) => lec.semester === "25-1");
         console.log("가져온 강의 목록: ", filtered);
         setMyLectures(filtered);
       }
