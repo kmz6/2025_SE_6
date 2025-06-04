@@ -14,7 +14,6 @@ function GradeListPage() {
         const fetchCourseData = async () => {
             // 강의 정보 불러오기
             const profCourses = await getProfCourse(user.user_id);
-            console.log(profCourses);
             setCourseList(profCourses);
         };
         fetchCourseData();
