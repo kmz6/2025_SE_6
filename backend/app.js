@@ -25,6 +25,7 @@ const profsyllabusRouter = require("./routes/faculty/syllabus");
 const studInfoRouter = require("./routes/student/studentInfo");
 const gradeRouter = require("./routes/student/grade");
 const rankRouter = require("./routes/student/rank");
+const dashboardRouter = require("./routes/student/dashboard");
 
 const studLeaveRouter = require("./routes/student/leave");
 const staffLeaveRouter = require("./routes/staff/leave");
@@ -57,6 +58,7 @@ app.use("/api/syllabus/prof", profsyllabusRouter);
 app.use("/studInfo", studInfoRouter);
 app.use("/grade", gradeRouter);
 app.use("/rank", rankRouter);
+app.use("/dashboard", dashboardRouter);
 
 app.use("/leave/student", studLeaveRouter);
 app.use("/leave/staff", staffLeaveRouter);

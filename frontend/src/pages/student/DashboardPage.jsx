@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import "react-calendar/dist/Calendar.css";
-import { assignmentData } from "../../mocks/assignmentData";
 import * as S from "../../styles/DashboardPage.style";
 import { examPeriods, festivalPeriod } from "../../constants/event";
 import MemoModal from "../../components/Dashboard/MemoModal";
 import LeftList from "../../components/Dashboard/LeftList";
 import RightList from "../../components/Dashboard/RightList";
 import { useUser } from "../../context/UserContext";
+import { getDashboard } from "../../apis/dashboard/dashboard";
 
 function isDateInRange(dateStr, start, end) {
   return dateStr >= start && dateStr <= end;
@@ -23,13 +23,15 @@ function DashboardPage() {
   const [showMemoModal, setShowMemoModal] = useState(false);
   const [memoText, setMemoText] = useState("");
   const [memos, setMemos] = useState([]);
+  const [assignments, setAssignments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const formattedDate = `${selectedDate.getFullYear()}-${String(
     selectedDate.getMonth() + 1
   ).padStart(2, "0")}-${String(selectedDate.getDate()).padStart(2, "0")}`;
-  const assignmentsDue = assignmentData.filter(
-    (a) => a.dueDate === formattedDate
+
+  const assignmentsDue = assignments.filter(
+    (a) => a.end_date?.slice(0, 10) === formattedDate
   );
   const isInExamPeriod = examPeriods.some((period) =>
     isDateInRange(formattedDate, period.start, period.end)
@@ -70,6 +72,23 @@ function DashboardPage() {
     }
   }, [memos, isLoading, storageKey]);
 
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchAssignments = async () => {
+      try {
+        const data = await getDashboard(user.user_id);
+        setAssignments(data);
+        console.log(data);
+      } catch (error) {
+        console.log("데이터 가져오기 실패");
+        setAssignments([]);
+      }
+    };
+
+    fetchAssignments();
+  }, [user]);
+
   const handleAddMemo = () => {
     if (!user) {
       return;
@@ -106,15 +125,16 @@ function DashboardPage() {
         memos={memos}
         onDeleteMemo={handleDeleteMemo}
         onShowMemoModal={handleAddMemo}
-        assignmentsDue={assignmentsDue}
+        assignmentsDue={assignments}
       />
 
       <S.Right>
         <RightList
-          assignments={assignmentsDue}
+          assignments={assignments}
           isInExamPeriod={isInExamPeriod}
           isInFestivalPeriod={isInFestivalPeriod}
           date={formattedDate}
+          selectedDate={selectedDate}
         />
       </S.Right>
 

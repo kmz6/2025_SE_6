@@ -20,7 +20,9 @@ export default function QnAPostPage() {
 
   const fetchPost = async () => {
     try {
-      const response = await axiosInstance.get(`/api/lectures/${lectureId}/qna/${postId}`);
+      const response = await axiosInstance.get(
+        `/api/lectures/${lectureId}/qna/${postId}`
+      );
       setPost(response.data);
     } catch (error) {
       console.error("QnA 상세 조회 실패:", error);
@@ -37,26 +39,71 @@ export default function QnAPostPage() {
     }
   };
 
+  const fetchComments = async () => {
+    try {
+      const response = await axiosInstance.get(
+        `/api/lectures/${lectureId}/qna/${postId}/comments`
+      );
+      setComments(response.data);
+    } catch (error) {
+      console.error("댓글 목록 불러오기 실패:", error);
+    }
+  };
+
   useEffect(() => {
     fetchPost();
     fetchCourseName();
+    fetchComments();
   }, [lectureId, postId]);
 
-  const handleAddComment = (newComment) => {
-    setComments((prev) => [...prev, newComment]);
+  const handleAddComment = async (newComment) => {
+    try {
+      await axiosInstance.post(
+        `/api/lectures/${lectureId}/qna/${postId}/comments`,
+        {
+          author_id: currentUserId,
+          content: newComment.content,
+        }
+      );
+      fetchComments();
+    } catch (error) {
+      console.error("댓글 작성 실패:", error);
+      alert("댓글 작성에 실패했습니다.");
+    }
+  };
+
+  const handleEditComment = async (commentId, newContent) => {
+  try {
+    await axiosInstance.put(
+      `/api/lectures/${lectureId}/qna/${postId}/comments/${commentId}`,
+      { content: newContent }
+    );
+    fetchComments();
+  } catch (error) {
+    console.error("댓글 수정 실패:", error);
+    alert("댓글 수정에 실패했습니다.");
+  }
+};
+
+  const handleDeleteComment = async (commentId) => {
+    if (!window.confirm("댓글을 삭제하시겠습니까?")) return;
+    try {
+      await axiosInstance.delete(
+        `/api/lectures/${lectureId}/qna/${postId}/comments/${commentId}`
+      );
+      fetchComments();
+    } catch (error) {
+      console.error("댓글 삭제 실패:", error);
+      alert("댓글 삭제에 실패했습니다.");
+    }
   };
 
   const handleEdit = () => {
-    if (!lectureId || !postId) {
-      console.error("잘못된 수정 요청: lectureId 또는 postId 없음");
-      return;
-    }
     navigate(`/qna/${lectureId}/edit/${postId}`);
   };
 
   const handleDelete = async () => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
-
     try {
       await axiosInstance.delete(`/api/lectures/${lectureId}/qna/${postId}`);
       alert("삭제되었습니다.");
@@ -92,6 +139,9 @@ export default function QnAPostPage() {
       <CommentBox
         comments={comments}
         onAddComment={handleAddComment}
+        onEditComment={handleEditComment}
+        onDeleteComment={handleDeleteComment}
+        currentUserId={currentUserId}
       />
     </div>
   );
