@@ -13,3 +13,11 @@
   margin-bottom: 16px;
   text-align: left;
 }
+
+.box-title {
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px;
+}

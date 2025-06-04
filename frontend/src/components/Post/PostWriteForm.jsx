@@ -9,6 +9,7 @@ export default function PostWriteForm({ onSubmit, initialValues = { title: "", c
   useEffect(() => {
     setTitle(initialValues.title);
     setContent(initialValues.content);
+    setFile(null); // Reset file when initial values change
   }, [initialValues]);
 
   const handleSubmit = () => {

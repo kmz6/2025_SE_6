@@ -17,6 +17,7 @@ const sugangRouter = require("./routes/student/sugang");
 const noticeRouter = require("./routes/common/notice");
 const materialRouter = require("./routes/common/material");
 const qnaRouter = require("./routes/common/qna");
+const assignmentRouter = require("./routes/common/assignment");
 
 const timetableRouter = require("./routes/student/timetable");
 const studsyllabusRouter = require("./routes/student/syllabus");
@@ -46,6 +47,7 @@ app.use("/api/courses", courseRouter);
 app.use("/api", noticeRouter);
 app.use("/api", materialRouter);
 app.use("/api", qnaRouter);
+app.use("/api", assignmentRouter);
 
 app.use("/sugang", sugangRouter);
 app.use("/timetable", timetableRouter);
