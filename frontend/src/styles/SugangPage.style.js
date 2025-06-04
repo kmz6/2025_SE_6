@@ -29,7 +29,7 @@ export const Right = styled.div`
   flex: 1;
   border-left: 1px solid #ccc;
   padding-left: 18px;
-  overflow-y: auto;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -198,6 +198,7 @@ export const RightHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: -8px;
+  flex-shrink: 0;
 `;
 
 export const TimetableButton = styled.button`

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { FaRegTrashAlt } from "react-icons/fa";
 
 export const Container = styled.div`
   margin: 24px auto;
@@ -23,6 +24,7 @@ export const CellHead = styled.td`
   font-weight: bold;
   background-color: #f3f6f9;
   border: 1px solid #ccc;
+  text-align: center;
 `;
 
 export const Cell = styled.td`
@@ -30,6 +32,7 @@ export const Cell = styled.td`
   border: 1px solid #ccc;
   min-width: 100px;
   max-width: 200px;
+  text-align: center;
 `;
 
 export const Title = styled.h1`
@@ -89,4 +92,18 @@ export const WarningMessage = styled.p`
   background-color: #fff5f5;
   border: 1px solid #ffa8a8;
   border-radius: 8px;
+`;
+
+export const PendingWrapper = styled.div`
+  position: relative;
+  text-align: center;
+`;
+
+export const TrashIcon = styled(FaRegTrashAlt)`
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: gray;
 `;
