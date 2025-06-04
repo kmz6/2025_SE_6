@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import axiosInstance from "../apis/axiosInstance";
 import Timetable from "../components/Timetable";
 import { HomeWrapper, Section, SectionTitle, CourseRow, CourseName, Button, ButtonGroup } from "../styles/HomePage.style";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
-import { courseData } from "../mocks/courseData";
 import { getTimetable } from "../apis/timetable/timetable";
 import { getProfessorCourses } from "../apis/syllabus/syllabus";
 import { getLeaveCount } from "../apis/leave/staffLeave";
@@ -16,7 +14,7 @@ function HomePage() {
   const [reqCount, setReqCount] = useState("");
   const [filters, setFilters] = useState({
     year: "2025",
-    semester: "2",
+    semester: "1",
   }); // 현재 학기에 맞춰 수정
   const filteredSubjects = subjects.filter(
     (s) =>
@@ -89,7 +87,6 @@ function HomePage() {
               }}
             >
               <option value="2025-1">2025년 1학기</option>
-              <option value="2025-2">2025년 2학기</option>
               <option value="2024-2">2024년 2학기</option>
             </select>
           </div>

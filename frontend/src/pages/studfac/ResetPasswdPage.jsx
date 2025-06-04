@@ -2,12 +2,6 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import AuthForm from "../../components/AuthForm/AuthForm";
-import {
-    userData,
-    studentData,
-    facultyData,
-    staffData,
-} from "../../mocks/userData";
 import { resetPassword } from "../../apis/resetpwd/resetpwd";
 
 const Container = styled.div`
@@ -34,7 +28,7 @@ function ResetPasswdPage() {
             navigate("/login");
         } catch (err) {
             alert("입력하신 정보가 일치하지 않습니다.");
-            console.error("❌ 초기화 실패:", err);
+            console.error("초기화 실패:", err);
         }
     };
 

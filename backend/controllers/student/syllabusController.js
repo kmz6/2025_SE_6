@@ -1,5 +1,6 @@
 const CourseModel = require("../../models/student/courseModel");
 
+// 모든 강의 목록 조회
 exports.getAllCourses = async (req, res) => {
   try {
     const courses = await CourseModel.getAllCourses();
@@ -10,6 +11,7 @@ exports.getAllCourses = async (req, res) => {
   }
 };
 
+// 강의 상세 정보 조회
 exports.getCourseByCode = async (req, res) => {
   try {
     const courseCode = req.params.courseCode;

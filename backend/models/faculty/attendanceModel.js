@@ -1,6 +1,7 @@
 const db = require("../../config/db");
 
 const profAttendanceModel = {
+    // 학생 출석 정보 조회
   getStudentsWithAttendance: async (courseId, week, session) => {
     const [rows] = await db.query(
       `SELECT s.student_id, s.name, a.attend_status
@@ -13,7 +14,7 @@ const profAttendanceModel = {
     );
     return rows;
   },
-
+  // 출석 정보 저장
   saveAttendance: async (courseId, week, session, records) => {
     const conn = await db.getConnection();
     try {

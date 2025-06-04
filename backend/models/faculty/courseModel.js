@@ -1,12 +1,14 @@
 const db = require("../../config/db");
 
 const CourseModel = {
+  // 교수 강의 목록 조회
     getCoursesByFaculty: async (facultyId) => {
         const [rows] = await db.query(`
       SELECT * FROM COURSE_TB WHERE faculty_id = ?
     `, [facultyId]);
         return rows;
     },
+    // 강의 상세 정보 조회
     getCourseByCode: async (courseCode) => {
         const [rows] = await db.query(`
     SELECT 
@@ -34,6 +36,7 @@ const CourseModel = {
   `, [courseCode]);
         return rows[0];
     },
+    // 강의 정보 업데이트
     updateCourse: async (courseCode, newData) => {
         const {
             building, room, attendance, midterm_exam, final_exam, assignment, course_year, course_semester, credit, etc

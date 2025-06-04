@@ -1,6 +1,7 @@
 const db = require("../../config/db");
 
 const attendanceModel = {
+    // 출석 메타 데이터
   getAttendanceMeta: async (lectureId) => {
     const [rows] = await db.query(`
       SELECT 
@@ -18,7 +19,7 @@ const attendanceModel = {
 
     return rows[0];
   },
-
+  // 출석 정보 조회
   getAttendanceStatus: async (lectureId, studentId) => {
     const [rows] = await db.query(`
       SELECT attend_week, attend_session, attend_status, DATE_FORMAT(updated_at, '%m/%d') AS date

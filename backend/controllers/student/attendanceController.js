@@ -1,5 +1,6 @@
 const attendanceModel = require("../../models/student/attendanceModel");
 
+// 출석 메타 정보 조회
 exports.getStudentAttendanceMeta = async (req, res) => {
   const lectureId = req.params.lectureId;
   try {
@@ -11,6 +12,7 @@ exports.getStudentAttendanceMeta = async (req, res) => {
   }
 };
 
+// 출석 현황 조회
 exports.getStudentAttendanceStatus = async (req, res) => {
   const lectureId = req.params.lectureId;
   const studentId = req.query.studentId;
