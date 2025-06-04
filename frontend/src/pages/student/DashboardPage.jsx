@@ -7,33 +7,13 @@ import LeftList from "../../components/Dashboard/LeftList";
 import RightList from "../../components/Dashboard/RightList";
 import { useUser } from "../../context/UserContext";
 import { getDashboard } from "../../apis/dashboard/dashboard";
-
-function parseDateString(dateStr) {
-  const [year, month, day] = dateStr.split("-").map(Number);
-  return new Date(year, month - 1, day);
-}
-
-function addOneDay(dateStr) {
-  const date = parseDateString(dateStr);
-  date.setDate(date.getDate() + 1);
-  return date;
-}
-
-function formatDate(date) {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-    2,
-    "0"
-  )}-${String(date.getDate()).padStart(2, "0")}`;
-}
-
-function isDateInRange(dateStr, start, end) {
-  return dateStr >= start && dateStr <= end;
-}
-
-function getRandomBackgroundColor() {
-  const hue = Math.floor(Math.random() * 360);
-  return `hsl(${hue}, 50%, 90%)`;
-}
+import {
+  parseDateString,
+  addOneDay,
+  formatDate,
+  isDateInRange,
+  getRandomBackgroundColor,
+} from "../../utils/date";
 
 function DashboardPage() {
   const { user } = useUser();
@@ -47,10 +27,6 @@ function DashboardPage() {
   const formattedDate = `${selectedDate.getFullYear()}-${String(
     selectedDate.getMonth() + 1
   ).padStart(2, "0")}-${String(selectedDate.getDate()).padStart(2, "0")}`;
-
-  const assignmentsDue = assignments.filter(
-    (a) => a.end_date?.slice(0, 10) === formattedDate
-  );
   const isInExamPeriod = examPeriods.some((period) =>
     isDateInRange(formattedDate, period.start, period.end)
   );
