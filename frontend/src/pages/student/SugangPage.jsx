@@ -21,10 +21,12 @@ function SugangPage() {
   const [showModal, setShowModal] = useState(false);
   const [favorites, setFavorites] = useState([]);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-  const totalCredit = selected.reduce(
-    (sum, course) => sum + (course.credit || 0),
-    0
-  );
+  const [modalMessage, setModalMessage] = useState("");
+  const totalCredit = selected
+    .filter(
+      (course) => course.course_year === 2025 && course.course_semester === 1
+    )
+    .reduce((sum, course) => sum + (course.credit || 0), 0);
 
   const loadFavorites = (userId) => {
     if (!userId) return [];
@@ -99,27 +101,40 @@ function SugangPage() {
 
   const handleApply = async (lecture) => {
     if (!user) return;
-    const isConflict = selected.some((l) => {
-      return l.course_times.some((lt) =>
-        lecture.course_times.some(
-          (t) =>
-            t.course_day === lt.course_day &&
-            t.course_period === lt.course_period
+
+    const isConflict = selected
+      .filter((l) => l.course_year === 2025 && l.course_semester === 1)
+      .some((l) =>
+        l.course_times.some((lt) =>
+          lecture.course_times.some(
+            (t) =>
+              t.course_day === lt.course_day &&
+              t.course_period === lt.course_period
+          )
         )
       );
-    });
+
     if (isConflict) {
+      setModalMessage("해당 시간에는 다른 강의가 있어 신청할 수 없습니다.");
       setShowModal(true);
-    } else {
-      try {
-        await registerCourse({
-          user_id: user.user_id,
-          course_id: lecture.course_id,
-        });
-        setSelected([...selected, lecture]);
-      } catch (err) {
-        console.log("수강 신청 실패");
-      }
+      return;
+    }
+
+    const creditAfterAdd = totalCredit + (lecture.credit || 0);
+    if (creditAfterAdd > 19) {
+      setModalMessage("신청할 수 있는 학점(19학점)을 초과하였습니다.");
+      setShowModal(true);
+      return;
+    }
+
+    try {
+      await registerCourse({
+        user_id: user.user_id,
+        course_id: lecture.course_id,
+      });
+      setSelected([...selected, lecture]);
+    } catch (err) {
+      console.log("수강 신청 실패");
     }
   };
 
@@ -183,9 +198,7 @@ function SugangPage() {
       {showModal && (
         <S.ModalOverlay>
           <S.Modal>
-            해당 시간에는 다른 강의가 있어 신청할 수 없습니다.
-            <div style={{ margin: "5px 0" }} />
-            다시 선택해주세요.
+            {modalMessage}
             <S.ModalCloseButton onClick={() => setShowModal(false)}>
               닫기
             </S.ModalCloseButton>
@@ -265,38 +278,47 @@ function SugangPage() {
           </S.RightHeaderRight>
         </S.RightHeader>
         <S.SelectedList>
-          {selected.length === 0 && <p>신청한 과목이 없습니다.</p>}
-          {selected.map((course) => (
-            <S.LectureCard key={course.course_id}>
-              <S.LectureInfo>
-                <S.LectureTitleRow>
-                  <S.FavoriteStar
-                    isFavorite={favorites.includes(course.course_id)}
-                    onClick={() => toggleFavorite(course.course_id)}
-                  >
-                    {favorites.includes(course.course_id) ? "★" : "☆"}
-                  </S.FavoriteStar>
-                  과목명: {course.course_name}
-                </S.LectureTitleRow>
+          {selected.filter(
+            (course) =>
+              course.course_year === 2025 && course.course_semester === 1
+          ).length === 0 && <p>신청한 과목이 없습니다.</p>}
 
-                <div>담당교수: {course.faculty_name || "정보 없음"}</div>
-                <div>
-                  요일/시간:{" "}
-                  {course.course_times && course.course_times.length > 0
-                    ? course.course_times
-                        .map((t) => `${t.course_day} ${t.course_period}교시`)
-                        .join(", ")
-                    : "시간 정보 없음"}
-                </div>
-                <div>
-                  강의실: {course.building} {course.room}호
-                </div>
-              </S.LectureInfo>
-              <S.ApplyButton onClick={() => handleDelete(course.course_id)}>
-                삭제
-              </S.ApplyButton>
-            </S.LectureCard>
-          ))}
+          {selected
+            .filter(
+              (course) =>
+                course.course_year === 2025 && course.course_semester === 1
+            )
+            .map((course) => (
+              <S.LectureCard key={course.course_id}>
+                <S.LectureInfo>
+                  <S.LectureTitleRow>
+                    <S.FavoriteStar
+                      isFavorite={favorites.includes(course.course_id)}
+                      onClick={() => toggleFavorite(course.course_id)}
+                    >
+                      {favorites.includes(course.course_id) ? "★" : "☆"}
+                    </S.FavoriteStar>
+                    과목명: {course.course_name}
+                  </S.LectureTitleRow>
+
+                  <div>담당교수: {course.faculty_name || "정보 없음"}</div>
+                  <div>
+                    요일/시간:{" "}
+                    {course.course_times && course.course_times.length > 0
+                      ? course.course_times
+                          .map((t) => `${t.course_day} ${t.course_period}교시`)
+                          .join(", ")
+                      : "시간 정보 없음"}
+                  </div>
+                  <div>
+                    강의실: {course.building} {course.room}호
+                  </div>
+                </S.LectureInfo>
+                <S.ApplyButton onClick={() => handleDelete(course.course_id)}>
+                  삭제
+                </S.ApplyButton>
+              </S.LectureCard>
+            ))}
         </S.SelectedList>
       </S.Right>
     </S.Container>
