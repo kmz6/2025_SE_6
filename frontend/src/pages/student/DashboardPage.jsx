@@ -7,15 +7,13 @@ import LeftList from "../../components/Dashboard/LeftList";
 import RightList from "../../components/Dashboard/RightList";
 import { useUser } from "../../context/UserContext";
 import { getDashboard } from "../../apis/dashboard/dashboard";
-
-function isDateInRange(dateStr, start, end) {
-  return dateStr >= start && dateStr <= end;
-}
-
-function getRandomBackgroundColor() {
-  const hue = Math.floor(Math.random() * 360);
-  return `hsl(${hue}, 50%, 90%)`;
-}
+import {
+  parseDateString,
+  addOneDay,
+  formatDate,
+  isDateInRange,
+  getRandomBackgroundColor,
+} from "../../utils/date";
 
 function DashboardPage() {
   const { user } = useUser();
@@ -29,10 +27,6 @@ function DashboardPage() {
   const formattedDate = `${selectedDate.getFullYear()}-${String(
     selectedDate.getMonth() + 1
   ).padStart(2, "0")}-${String(selectedDate.getDate()).padStart(2, "0")}`;
-
-  const assignmentsDue = assignments.filter(
-    (a) => a.end_date?.slice(0, 10) === formattedDate
-  );
   const isInExamPeriod = examPeriods.some((period) =>
     isDateInRange(formattedDate, period.start, period.end)
   );
@@ -78,8 +72,15 @@ function DashboardPage() {
     const fetchAssignments = async () => {
       try {
         const data = await getDashboard(user.user_id);
-        setAssignments(data);
-        console.log(data);
+        const fixedData = data.map((item) => {
+          return {
+            ...item,
+            start_date: formatDate(addOneDay(item.start_date.slice(0, 10))),
+            end_date: formatDate(addOneDay(item.end_date.slice(0, 10))),
+          };
+        });
+        setAssignments(fixedData);
+        console.log(fixedData);
       } catch (error) {
         console.log("데이터 가져오기 실패");
         setAssignments([]);
