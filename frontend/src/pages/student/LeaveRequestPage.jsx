@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "../../context/UserContext";
 import StudInfo from "../../components/StudInfo/StudInfo"
 import { getStudInfo } from "../../apis/studinfo/student";
-import { getStudLeaveInfo, postLeaveRequest } from "../../apis/leave/studLeave";
+import { getStudLeaveInfo, postLeaveRequest, deleteLeaveRequest } from "../../apis/leave/studLeave";
 import * as S from "../../styles/LeaveRequest.style";
 
 function LeaveRequestPage() {
@@ -26,6 +26,26 @@ function LeaveRequestPage() {
 
       await postLeaveRequest(user.user_id, type);
       alert(type === "on_leave" ? "휴학 신청이 완료되었습니다." : "복학 신청이 완료되었습니다.");
+
+      window.location.reload(); // 새로고침
+
+    } catch (error) {
+      alert("요청 중 오류가 발생했습니다.");
+      console.error(error);
+    }
+  };
+
+  // 휴복학 신청 취소
+  const handleCancel = async (req_id) => {
+    try {
+      // 요청 종류
+      const confirmed = window.confirm(
+        "신청을 취소하시겠습니까?"
+      );
+      if (!confirmed) return;
+
+      await deleteLeaveRequest(req_id);
+      alert("취소가 완료되었습니다.");
 
       window.location.reload(); // 새로고침
 
@@ -95,8 +115,15 @@ function LeaveRequestPage() {
               <S.Cell>{leave.request_type === 'return' ? '복학' : '휴학'}</S.Cell>
               <S.Cell>{leave.request_date.split('T')[0]}</S.Cell>
               <S.Cell>
-                {leave.status === 'pending' ? '대기'
-                  : leave.status === 'approved' ? '승인' : '반려'}
+                {leave.status === 'pending' ? (
+                  <S.PendingWrapper>
+                    대기
+                    <S.TrashIcon
+                      onClick={() => handleCancel(leave.request_id)}
+                      title="신청 취소"
+                    />
+                  </S.PendingWrapper>
+                ) : leave.status === 'approved' ? '승인' : '반려'}
               </S.Cell>
             </S.Row>
           ))

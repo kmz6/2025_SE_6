@@ -31,7 +31,15 @@ async function insertRequest(user_id, request_type) {
     const [results] = await db.query(sql, [user_id, request_type]);
 }
 
+// 휴복학 취소
+async function deleteRequest(req_id) {
+    const sql = `DELETE FROM LEAVE_TB WHERE request_id = ?`;
+
+    const [results] = await db.query(sql, [req_id]);
+}
+
 module.exports = {
     findLeaveById,
-    insertRequest
+    insertRequest,
+    deleteRequest
 };

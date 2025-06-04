@@ -37,7 +37,22 @@ async function requestLeaves(req, res) {
     }
 }
 
+// 휴복학 신청 취소
+async function requestCancel(req, res) {
+    const { req_id } = req.params;
+
+    try {
+        const result = await leaveModel.deleteRequest(req_id);
+        return res.json({ message: "정상적으로 취소되었습니다." }); // 성공 메세지 반환
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "서버 오류가 발생했습니다." });
+    }
+}
+
 module.exports = {
     getLeaves,
-    requestLeaves
+    requestLeaves,
+    requestCancel
 };

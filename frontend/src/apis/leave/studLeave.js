@@ -14,6 +14,12 @@ export const postLeaveRequest = async (user_id, request_type) => {
         throw new Error('잘못된 request_type입니다.');
     }
 
-    const response = await axiosInstance.post(`/leave/student/${user_id}/${request_type}`)
+    const response = await axiosInstance.post(`/leave/student/${user_id}/${request_type}`);
+    return response.data;
+}
+
+// 휴복학 신청 취소
+export const deleteLeaveRequest = async (req_id) => {
+    const response = await axiosInstance.delete(`/leave/student/cancel/${req_id}`);
     return response.data;
 }
