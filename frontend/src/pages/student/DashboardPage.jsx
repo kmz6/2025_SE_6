@@ -8,6 +8,24 @@ import RightList from "../../components/Dashboard/RightList";
 import { useUser } from "../../context/UserContext";
 import { getDashboard } from "../../apis/dashboard/dashboard";
 
+function parseDateString(dateStr) {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function addOneDay(dateStr) {
+  const date = parseDateString(dateStr);
+  date.setDate(date.getDate() + 1);
+  return date;
+}
+
+function formatDate(date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+    2,
+    "0"
+  )}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
 function isDateInRange(dateStr, start, end) {
   return dateStr >= start && dateStr <= end;
 }
@@ -78,8 +96,15 @@ function DashboardPage() {
     const fetchAssignments = async () => {
       try {
         const data = await getDashboard(user.user_id);
-        setAssignments(data);
-        console.log(data);
+        const fixedData = data.map((item) => {
+          return {
+            ...item,
+            start_date: formatDate(addOneDay(item.start_date.slice(0, 10))),
+            end_date: formatDate(addOneDay(item.end_date.slice(0, 10))),
+          };
+        });
+        setAssignments(fixedData);
+        console.log(fixedData);
       } catch (error) {
         console.log("데이터 가져오기 실패");
         setAssignments([]);
