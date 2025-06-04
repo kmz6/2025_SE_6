@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { courseData } from "../../mocks/courseData";
 import { useUser } from "../../context/UserContext";
+import { getLectureList } from "../../apis/attendance/lecturelist";
 
 const Container = styled.div`
   margin: 24px auto;
@@ -43,41 +43,27 @@ const Cell = styled.td`
   border: 1px solid #ccc;
 `;
 
-const mockSubjects = [
-  { name: "정보보호이론", day: "월", time: 2, color: "#e7b4f0", lectureId: 1 },
-  { name: "소프트웨어공학", day: "월", time: 5, color: "#a0e2e2", lectureId: 2 },
-  { name: "생명과기술", day: "월", time: 6, color: "#f3cc7f", lectureId: 3 },
-  { name: "산학협력캡스톤설계", day: "화", time: 5, color: "#d9b4f0", lectureId: 4 },
-  { name: "생명과기술", day: "수", time: 5, color: "#f3cc7f", lectureId: 3 },
-  { name: "소프트웨어공학", day: "수", time: 6, color: "#a0e2e2", lectureId: 2 },
-  { name: "산학협력캡스톤설계", day: "목", time: 6, color: "#d9b4f0", lectureId: 4 },
-  { name: "클래식음악의역사", day: "토", time: 7, color: "#a4dfb7", lectureId: 5 },
-];
-
-// 고유한 lectureId + name 추출
-const uniqueLectures = Array.from(
-  new Map(
-    mockSubjects.map((subj) => [
-      subj.lectureId,
-      {
-        id: `${subj.lectureId}`,
-        name: subj.name,
-      },
-    ])
-  ).values()
-);
-
-
 const ProfLectureList = () => {
   const navigate = useNavigate();
-  const { user } = useUser(); // 로그인한 유저 정보 (user.user_id === faculty_id)
+  const { user } = useUser();
+  const [myLectures, setMyLectures] = useState([]);
+
+  // 강의 목록 가져온 후 필터링
+  useEffect(() => {
+    const fetchLectures = async () => {
+      if (user) {
+        const data = await getLectureList(user.user_id);
+        console.log(data);
+        // "25-1"만 필터링
+        const filtered = data.filter((lec) => lec.semester === "25-2");
+        console.log("가져온 강의 목록: ", filtered);
+        setMyLectures(filtered);
+      }
+    };
+    fetchLectures();
+  }, [user]);
 
   if (!user) return <div>로딩 중...</div>;
-
-  // 교수 본인의 강의만 필터링
-  const myLectures = courseData.filter(
-    (course) => course.faculty_id === user.user_id
-  );
 
   return (
     <Container>
@@ -98,9 +84,7 @@ const ProfLectureList = () => {
             >
               <Cell>{lec.course_name}</Cell>
               <Cell>
-                {lec.time
-                  .map((t) => `${t.course_day}${t.course_period}`)
-                  .join(", ")}
+                {lec.course_times ? lec.course_times : "시간 미등록"}
               </Cell>
             </Row>
           ))}
