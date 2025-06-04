@@ -30,6 +30,8 @@ const dashboardRouter = require("./routes/student/dashboard");
 const studLeaveRouter = require("./routes/student/leave");
 const staffLeaveRouter = require("./routes/staff/leave");
 
+const profGradeRouter = require("./routes/faculty/profGrade");
+
 const app = express();
 const PORT = process.env.PORT;
 
@@ -62,6 +64,8 @@ app.use("/dashboard", dashboardRouter);
 
 app.use("/leave/student", studLeaveRouter);
 app.use("/leave/staff", staffLeaveRouter);
+
+app.use("/prof/grade", profGradeRouter);
 
 // Start server
 app.listen(PORT, () => {
