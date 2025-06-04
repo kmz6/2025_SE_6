@@ -7,11 +7,13 @@ import { useUser } from "../context/UserContext";
 import { courseData } from "../mocks/courseData";
 import { getTimetable } from "../apis/timetable/timetable";
 import { getProfessorCourses } from "../apis/syllabus/syllabus";
+import { getLeaveCount } from "../apis/leave/staffLeave";
 
 function HomePage() {
   const navigate = useNavigate();
   const { user, loading } = useUser();
   const [subjects, setSubjects] = useState([]);
+  const [reqCount, setReqCount] = useState("");
   const [filters, setFilters] = useState({
     year: "2025",
     semester: "2",
@@ -34,6 +36,10 @@ function HomePage() {
         } else if (user.user_type === "faculty") {
           const data = await getProfessorCourses(user.user_id);
           setSubjects(data);
+        }
+        else {
+          const data = await getLeaveCount();
+          setReqCount(data.count);
         }
       } catch (err) {
         console.error("데이터 로딩 실패:", err);
@@ -182,7 +188,7 @@ function HomePage() {
               onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#f5f5f5")}
             >
               <strong>학적 변경 요청</strong>
-              <p style={{ fontSize: "24px", marginTop: "10px", color: "#cc4400" }}>2건</p>
+              <p style={{ fontSize: "24px", marginTop: "10px", color: "#cc4400" }}>{reqCount}건</p>
             </div>
           </div>
         </Section>
