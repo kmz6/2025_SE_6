@@ -1,6 +1,7 @@
 const db = require("../../config/db");
 
 const CourseModel = {
+  // 모든 강의 정보 조회
     getAllCourses: async () => {
         const [rows] = await db.query(`
       SELECT 
@@ -24,6 +25,7 @@ const CourseModel = {
     `);
         return rows;
     },
+    // 강의 상세 정보 조회
     getCourseByCode: async (courseCode) => {
         const [rows] = await db.query(`
     SELECT 

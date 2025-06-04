@@ -1,6 +1,7 @@
 const db = require("../../config/db");
 
 const lecturelistModel = {
+  // 학생 수강 강의 조회
     getCoursesByStudent: async (studentId) => {
         const [rows] = await db.query(`
       SELECT 

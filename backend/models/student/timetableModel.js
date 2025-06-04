@@ -20,7 +20,7 @@ exports.getTimetableByStudentId = async (student_id) => {
 
   const colors = ["#8DBCC7", "#C4E1E6", "#CBDCEB", "#98ABEE", "#9EB8D9", "#A4CCD9", "#B8CFCE", "#8DD8FF"];
 
-  // course_id 기준으로 고유 색 매핑
+  // course_id 기준으로 색 매핑
   const courseColorMap = {};
   let colorIndex = 0;
 

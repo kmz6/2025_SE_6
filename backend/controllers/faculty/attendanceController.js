@@ -1,5 +1,6 @@
 const profAttendanceModel = require("../../models/faculty/attendanceModel");
 
+// 학생 출석 정보
 exports.getStudentsWithAttendance = async (req, res) => {
   const { courseId } = req.params;
   const { week, session } = req.query;
@@ -13,6 +14,7 @@ exports.getStudentsWithAttendance = async (req, res) => {
   }
 };
 
+// 출석 정보 저장
 exports.saveAttendance = async (req, res) => {
   const { courseId } = req.params;
   const { week, session, records } = req.body;

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useUser } from "../../context/UserContext";
-import { getStudentLectures } from "../../apis/attendance/attendance"; // 요거 바꿔야 해
+import { getStudentLectures } from "../../apis/attendance/attendance";
 
 const Container = styled.div`
   margin: 24px auto;
