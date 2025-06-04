@@ -15,7 +15,7 @@ export const routeMap = {
     "출석 관리": "/professor/attendance",
     "강의 계획서 작성": "/professor/syllabus",
     강의실: "/lectureroom/:lectureId",
-    "성적 처리": "/professor/grade/input/:courseId",
+    "성적 처리": "/professor/grade/input",
     마이페이지: "/my/:userId",
   },
   staff: {

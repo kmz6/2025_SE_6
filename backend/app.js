@@ -30,6 +30,8 @@ const dashboardRouter = require("./routes/student/dashboard");
 const studLeaveRouter = require("./routes/student/leave");
 const staffLeaveRouter = require("./routes/staff/leave");
 
+const profGradeRouter = require("./routes/faculty/profGrade");
+
 const proflecturelist = require("./routes/faculty/lecturelist");
 const profattendance = require("./routes/faculty/attendance");
 const studlecturelist = require("./routes/student/lecturelist");
@@ -67,6 +69,8 @@ app.use("/dashboard", dashboardRouter);
 
 app.use("/leave/student", studLeaveRouter);
 app.use("/leave/staff", staffLeaveRouter);
+
+app.use("/prof/grade", profGradeRouter);
 
 app.use("/api/faculty/lecturelist", proflecturelist);
 app.use("/api/faculty/attendance", profattendance);

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useUser } from "../../context/UserContext";
 import StudInfo from "../../components/StudInfo/StudInfo"
-import { getSemester, getCourse } from "../../apis/studinfo/grade";
+import { getSemester, getCourse } from "../../apis/grade/studGrade";
 import * as S from "../../styles/StudGradePage.style";
 
 import { gradePoints } from '../../constants/gradePoints';

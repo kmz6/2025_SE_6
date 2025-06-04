@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useUser } from "../../context/UserContext";
 import StudInfo from "../../components/StudInfo/StudInfo"
-import { getRank } from "../../apis/studinfo/rank";
+import { getRank } from "../../apis/grade/studRank";
 import * as S from "../../styles/StudRankPage.style";
 
 const StudRankPage = () => {

@@ -24,6 +24,7 @@ import LeaveApprovalPage from "./pages/staff/LeaveApprovalPage";
 import ArchivesListPage from "./pages/studfac/ArchivesListPage";
 import AddMemberPage from "./pages/staff/AddMemberPage";
 import DeleteMemberPage from "./pages/staff/DeleteMemberPage";
+import GradeListPage from "./pages/faculty/GradeListPage";
 import GradeInputPage from "./pages/faculty/GradeInputPage";
 import StudSyllabusPage from "./pages/student/StudSyllabusPage";
 import ProfSyllabusPage from "./pages/faculty/ProfSyllabusPage";
@@ -138,6 +139,14 @@ const router = createBrowserRouter([
             <AssignSubmitListPage />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "grade/input/",
+        element: (
+          <ProtectedRoute allowedRoles={["faculty"]}>
+            <GradeListPage />
+          </ProtectedRoute>
+        )
       },
       {
         path: "grade/input/:courseId",
