@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import { courseData } from "../../mocks/courseData";
+import { fetchAttendanceData, saveAttendanceData } from "../../apis/attendance/attendance";
 
 const Container = styled.div`
   margin: 24px auto;
@@ -61,40 +61,103 @@ const Button = styled.button`
   }
 `;
 
-const mockStudents = [
-  { id: "2022202100", name: "안태규", major: "컴퓨터정보공학부" },
-  { id: "2022202101", name: "편성현", major: "컴퓨터정보공학부" },
-  { id: "2022202102", name: "권세혁", major: "컴퓨터정보공학부" },
-  { id: "2022202103", name: "고강훈", major: "컴퓨터정보공학부" },
-];
+const OptionBox = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 20px;
+  font-size: 16px;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  select {
+    padding: 6px 12px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+  }
+`;
 
 const attendanceOptions = ["출석", "지각", "결석", "공결"];
 
 const ProfAttend = () => {
-  const { courseId } = useParams(); // URL에서 course_id 받아오기
+  const { courseId } = useParams();
+  const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState({});
+  const [week, setWeek] = useState(1);
+  const [session, setSession] = useState(1);
 
-  // 해당 강의 정보 찾기
-  const lecture = courseData.find(
-    (c) => String(c.course_id) === String(courseId)
-  );
+  const loadAttendance = async () => {
+    const data = await fetchAttendanceData(courseId, week, session);
+    setStudents(data);
+    const existing = {};
+    data.forEach((stu) => {
+      if (stu.attend_status) existing[stu.student_id] = mapStatusToKorean(stu.attend_status);
+    });
+    setAttendance(existing);
+  };
+
+  useEffect(() => {
+    console.log("useParams 결과:", courseId);
+    loadAttendance();
+  }, [courseId, week, session]);
 
   const handleChange = (studentId, value) => {
     setAttendance((prev) => ({ ...prev, [studentId]: value }));
   };
 
-  const handleSave = () => {
-    alert("저장되었습니다.");
+  const handleReset = () => {
+    setAttendance({});
+  };
+
+  const handleSave = async () => {
+    try {
+      const mapped = Object.fromEntries(
+        Object.entries(attendance).map(([id, status]) => [id, mapKoreanToStatus(status)])
+      );
+      await saveAttendanceData(courseId, week, session, mapped);
+      alert("저장 완료!");
+    } catch {
+      alert("저장 실패!");
+    }
   };
 
   return (
     <Container>
       <Title>출석부</Title>
 
+      <OptionBox>
+        <label>
+          주차:
+          <select value={week} onChange={(e) => setWeek(Number(e.target.value))}>
+            {[...Array(16)].map((_, i) => (
+              <option key={i} value={i + 1}>
+                {i + 1}주차
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          회차:
+          <select value={session} onChange={(e) => setSession(Number(e.target.value))}>
+            {[1, 2, 3, 4].map((num) => (
+              <option key={num} value={num}>
+                {num}회차
+              </option>
+            ))}
+          </select>
+        </label>
+      </OptionBox>
+
       <Table>
         <thead>
           <Row>
-            <CellHead>학과</CellHead>
             <CellHead>학번</CellHead>
             <CellHead>이름</CellHead>
             <CellHead>출석 선택</CellHead>
@@ -102,36 +165,66 @@ const ProfAttend = () => {
           </Row>
         </thead>
         <tbody>
-          {mockStudents.map((stu) => (
-            <Row key={stu.id}>
-              <Cell>{stu.major}</Cell>
-              <Cell>{stu.id}</Cell>
+          {students.map((stu) => (
+            <Row key={stu.student_id}>
+              <Cell>{stu.student_id}</Cell>
               <Cell>{stu.name}</Cell>
               <Cell>
                 {attendanceOptions.map((opt) => (
-                  <label key={opt} style={{ margin: "0 5px" }}>
+                  <label key={opt} style={{ marginRight: "5px" }}>
                     <input
                       type="radio"
-                      name={`attend-${stu.id}`}
+                      name={`attend-${stu.student_id}`}
                       value={opt}
-                      checked={attendance[stu.id] === opt}
-                      onChange={(e) => handleChange(stu.id, e.target.value)}
+                      checked={attendance[stu.student_id] === opt}
+                      onChange={(e) => handleChange(stu.student_id, e.target.value)}
                     />
                     {opt}
                   </label>
                 ))}
               </Cell>
-              <Cell>{attendance[stu.id] || " "}</Cell>
+              <Cell>{attendance[stu.student_id] || " "}</Cell>
             </Row>
           ))}
         </tbody>
       </Table>
 
       <ButtonWrapper>
+        <Button onClick={handleReset}>초기화</Button>
         <Button onClick={handleSave}>저장</Button>
       </ButtonWrapper>
     </Container>
   );
+};
+
+const mapStatusToKorean = (status) => {
+  switch (status) {
+    case "attend":
+      return "출석";
+    case "late":
+      return "지각";
+    case "absent":
+      return "결석";
+    case "excused":
+      return "공결";
+    default:
+      return "";
+  }
+};
+
+const mapKoreanToStatus = (kor) => {
+  switch (kor) {
+    case "출석":
+      return "attend";
+    case "지각":
+      return "late";
+    case "결석":
+      return "absent";
+    case "공결":
+      return "excused";
+    default:
+      return null;
+  }
 };
 
 export default ProfAttend;
