@@ -253,7 +253,7 @@ export default function AssignPostPage() {
       />
       {deadlineStatus && (
         <div className={`deadline-status ${deadlineStatus.className}`}>
-          마감: {deadlineStatus.text}
+          과제 기한: {deadlineStatus.text}
         </div>
       )}
       {submissionExists && (

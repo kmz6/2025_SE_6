@@ -76,7 +76,7 @@
   text-align: center;
 }
 
-/* 제출일 */
+/* 제출 상태 */
 .submit-table th:nth-child(5),
 .submit-table td:nth-child(5) {
   width: 10%;
