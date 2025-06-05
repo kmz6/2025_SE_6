@@ -34,8 +34,8 @@ const StudGradePage = () => {
 
       // 학점 수 정보
       const creditInfo = await getCredits(user.user_id);
-      const majorCredit = Number(creditInfo.find(c => c.course_type === "전공")?.total_credit); // 전공 학점
-      const generalCredit = Number(creditInfo.find(c => c.course_type === "교양")?.total_credit); // 교양 학점
+      const majorCredit = Number(creditInfo.find(c => c.course_type === "전공")?.total_credit) || 0; // 전공 학점
+      const generalCredit = Number(creditInfo.find(c => c.course_type === "교양")?.total_credit) || 0; // 교양 학점
 
       setCredits({
         major: majorCredit,
