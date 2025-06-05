@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { useUser } from "../../context/UserContext";
 import StudInfo from "../../components/StudInfo/StudInfo"
-import { getSemester, getCourse } from "../../apis/grade/studGrade";
-import * as S from "../../styles/StudGradePage.style";
-
+import { getSemester, getCourse, getCredits, getGpas } from "../../apis/grade/studGrade";
 import { gradePoints } from '../../constants/gradePoints';
+import * as S from "../../styles/StudGradePage.style";
 
 const StudGradePage = () => {
   const { user } = useUser(); // user 정보
@@ -12,35 +11,8 @@ const StudGradePage = () => {
   const [semesters, setSemesters] = useState([]); // 학기 정보
   const [selectedSemester, setSelectedSemester] = useState(""); // 선택한 학기
   const [courses, setCourses] = useState([]); // 수강 과목 및 성적 정보
-  const [creditInfo, setCreditInfo] = useState({ total: 0, major: 0, general: 0, gpa: 0 }); // 이수학점
-
-  //학점 수, 평량 평균 계산
-  const calculateCreditGpa = (courses) => {
-    let totalCredit = 0; //전체
-    let majorCredit = 0; //전공
-    let generalCredit = 0; //교양
-    let totalGradePoints = 0; //평량 평균
-
-    courses.forEach((course) => {
-      const credit = course.credit; //과목의 학점 수
-      const grade = course.grade; //과목 성적
-
-      //성적이 나온 과목들만 처리
-      if (grade != "N/A") {
-        if (course.course_type === "전공") {
-          majorCredit += credit; //전공 학점 수
-        } else if (course.course_type === "교양") {
-          generalCredit += credit; //교양 학점 수
-        }
-        totalCredit += credit; //전체 학점 수
-        totalGradePoints += (gradePoints[grade] ?? 0) * credit; //평량 평균
-      }
-    });
-
-    totalGradePoints /= totalCredit;
-
-    return { total: totalCredit, major: majorCredit, general: generalCredit, gpa: totalGradePoints };
-  };
+  const [credits, setCredits] = useState([]); // 학점 수
+  const [gpa, setGpa] = useState({ gpa: 0 }); // 이수학점
 
   // 학기 정보, 수강 과목 및 성적 정보 불러오기
   useEffect(() => {
@@ -60,8 +32,20 @@ const StudGradePage = () => {
       const courseData = await getCourse(user.user_id);
       setCourses(courseData);
 
-      //학점 수, 평량 평균 계산
-      setCreditInfo(calculateCreditGpa(courseData));
+      // 학점 수 정보
+      const creditInfo = await getCredits(user.user_id);
+      const majorCredit = Number(creditInfo.find(c => c.course_type === "전공")?.total_credit); // 전공 학점
+      const generalCredit = Number(creditInfo.find(c => c.course_type === "교양")?.total_credit); // 교양 학점
+
+      setCredits({
+        major: majorCredit,
+        general: generalCredit,
+        total: majorCredit + generalCredit
+      });
+
+      //학기별, 전체 평량 평균 정보
+      const { courses, overallGpa } = await getGpas(user.user_id);
+      setGpa({ gpa: overallGpa });
     };
     fetchData();
   }, [user]);
@@ -94,10 +78,10 @@ const StudGradePage = () => {
         </thead>
         <tbody>
           <S.Row>
-            <S.Cell>{creditInfo.total}</S.Cell>
-            <S.Cell>{creditInfo.major}</S.Cell>
-            <S.Cell>{creditInfo.general}</S.Cell>
-            <S.Cell>{creditInfo.gpa}</S.Cell>
+            <S.Cell>{credits.total}</S.Cell>
+            <S.Cell>{credits.major}</S.Cell>
+            <S.Cell>{credits.general}</S.Cell>
+            <S.Cell>{gpa.gpa}</S.Cell>
           </S.Row>
         </tbody>
       </S.Table>
