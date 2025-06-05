@@ -45,6 +45,8 @@ import ResetPasswdPage from "./pages/studfac/ResetPasswdPage";
 import QnAListPage from "./pages/studfac/QnALIstPage";
 import QnAPostPage from "./pages/studfac/QnAPostPage";
 import QnAWritePage from "./pages/studfac/QnAWritePage";
+import MyInfoPage from "./pages/MyInfoPage";
+import MyPwdPage from "./pages/MyPwdPage";
 
 const router = createBrowserRouter([
   {
@@ -67,6 +69,8 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: "home", element: <HomePage /> },
       { path: "my/:userId", element: <MyPage /> },
+      { path: "my/:userId/editinfo", element: <MyInfoPage /> },
+      { path: "my/:userId/editpassword", element: <MyPwdPage /> },
       { path: "lectureroom/:lectureId", element: <LectureHomePage /> },
       { path: "notice/:lectureId", element: <NoticeListPage /> },
       { path: "notice/:lectureId/:postId", element: <NoticePostPage /> },

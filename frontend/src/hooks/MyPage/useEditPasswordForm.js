@@ -100,7 +100,7 @@ const useEditPasswordForm = (userCurrentPassword) => {
       setConfirmPwd(val);
     },
     validate,
-    setServerCurrentPwdError, // 서버에서의 오류 반영을 위해 추가
+    setServerCurrentPwdError,
   };
 };
 

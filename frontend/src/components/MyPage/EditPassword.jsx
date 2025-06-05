@@ -14,6 +14,7 @@ const EditPassword = ({ onCancel, onSave, userCurrentPassword }) => {
     setNewPwd,
     setConfirmPwd,
     validate,
+    setServerCurrentPwdError,
   } = useEditPasswordForm(userCurrentPassword);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
