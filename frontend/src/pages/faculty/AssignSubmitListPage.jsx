@@ -132,8 +132,7 @@ export default function AssignSubmitListPage() {
         alert("이미 삭제된 과제이거나 존재하지 않는 과제입니다.");
       } else {
         alert(
-          `과제 삭제 중 오류가 발생했습니다: ${
-            error.response?.data?.message || error.message
+          `과제 삭제 중 오류가 발생했습니다: ${error.response?.data?.message || error.message
           }`
         );
       }
@@ -177,7 +176,7 @@ export default function AssignSubmitListPage() {
 
       <PostBox
         title={assignment.title}
-        author={assignment.author_id || "교수명"}
+        author={assignment.name || "교수명"}
         date={`제출 기간: ${formatDate(assignment.start_date)} ~ ${formatDate(
           assignment.end_date
         )}`}
@@ -235,9 +234,8 @@ export default function AssignSubmitListPage() {
                   <td>{studentName}</td>
                   <td>{formatDateTime(submission.created_at)}</td>
                   <td
-                    className={`status-cell ${
-                      status === "제출 완료" ? "submitted" : "not-submitted"
-                    }`}
+                    className={`status-cell ${status === "제출 완료" ? "submitted" : "not-submitted"
+                      }`}
                   >
                     {status}
                   </td>

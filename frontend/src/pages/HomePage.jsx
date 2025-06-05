@@ -156,7 +156,7 @@ function HomePage() {
                 </S.Button>
                 <S.Button
                   bg="#abd7eb"
-                  onClick={() => navigate(`/professor/assignment/${course.course_id}`)}
+                  onClick={() => navigate(`/assignment/${course.course_id}`)}
                 >
                   과제
                 </S.Button>
