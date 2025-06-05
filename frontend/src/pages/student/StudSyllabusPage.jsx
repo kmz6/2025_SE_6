@@ -1,17 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import * as S from "../../styles/Syllabus.style"
+import * as S from "../../styles/Syllabus.style";
 import { getCourseDetail } from "../../apis/syllabus/syllabus";
+import axiosInstance from "../../apis/axiosInstance";
 
 export default function StudSyllabusPage() {
   const { lectureId } = useParams();
   const [course, setCourse] = useState(null);
 
   useEffect(() => {
-    if (!lectureId) return;
-    getCourseDetail(lectureId)
-      .then((data) => setCourse(data))
-      .catch((err) => console.error("강의계획서 로드 실패", err));
+    const fetchCourseDetail = async () => {
+      try {
+        // 정수면 course_id → 변환
+        let courseCode = lectureId;
+
+        if (!isNaN(Number(lectureId))) {
+          const res = await axiosInstance.get(`/api/course/${lectureId}/code`);
+          courseCode = res.data.course_code;
+        }
+
+        const courseData = await getCourseDetail(courseCode);
+        setCourse(courseData);
+      } catch (err) {
+        console.error("강의계획서 로드 실패", err);
+      }
+    };
+
+    if (lectureId) fetchCourseDetail();
   }, [lectureId]);
 
   if (!course) {

@@ -40,6 +40,8 @@ const profsyllabus = require("./routes/faculty/syllabus");
 const studlecturelist = require("./routes/student/lecturelist");
 const studattendance = require("./routes/student/attendance");
 
+const studcourseRouter = require("./routes/student/course");
+
 const app = express();
 const PORT = process.env.PORT;
 
@@ -82,6 +84,9 @@ app.use("/api/faculty/syllabus", profsyllabus);
 app.use("/api/faculty/attendance", profattendance);
 app.use("/api/student/lecturelist", studlecturelist);
 app.use("/api/student/attendance", studattendance);
+
+// course_id -> course_code 변환용
+app.use("/api/course", studcourseRouter);
 
 // Start server
 app.listen(PORT, () => {
