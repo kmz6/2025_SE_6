@@ -2,6 +2,18 @@ const express = require("express");
 const router = express.Router();
 const db = require("../../config/db");
 
+const path = require("path");
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "..", "uploads")); // 파일 업로드 위치
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname);
+    cb(null, path.basename(file.originalname, ext) + "-" + Date.now() + ext); // 파일명
+  }
+})
+var upload = multer({ storage: storage });
+
 router.get('/lectures/:courseId/notices', async (req, res) => {
   const { courseId } = req.params;
 
