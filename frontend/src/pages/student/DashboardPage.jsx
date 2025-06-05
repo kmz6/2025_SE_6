@@ -14,10 +14,11 @@ import {
   isDateInRange,
   getRandomBackgroundColor,
 } from "../../utils/date";
+import useSelectedDate from "../../hooks/Dashboard/useSelectedDate";
 
 function DashboardPage() {
   const { user } = useUser();
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useSelectedDate(user);
   const [showMemoModal, setShowMemoModal] = useState(false);
   const [memoText, setMemoText] = useState("");
   const [memos, setMemos] = useState([]);
@@ -72,13 +73,11 @@ function DashboardPage() {
     const fetchAssignments = async () => {
       try {
         const data = await getDashboard(user.user_id);
-        const fixedData = data.map((item) => {
-          return {
-            ...item,
-            start_date: formatDate(addOneDay(item.start_date.slice(0, 10))),
-            end_date: formatDate(addOneDay(item.end_date.slice(0, 10))),
-          };
-        });
+        const fixedData = data.map((item) => ({
+          ...item,
+          start_date: formatDate(addOneDay(item.start_date.slice(0, 10))),
+          end_date: formatDate(addOneDay(item.end_date.slice(0, 10))),
+        }));
         setAssignments(fixedData);
         console.log(fixedData);
       } catch (error) {
@@ -91,9 +90,7 @@ function DashboardPage() {
   }, [user]);
 
   const handleAddMemo = () => {
-    if (!user) {
-      return;
-    }
+    if (!user) return;
     setShowMemoModal(true);
   };
 
