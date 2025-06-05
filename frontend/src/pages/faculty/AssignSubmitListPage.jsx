@@ -12,11 +12,32 @@ export default function AssignSubmitListPage() {
   const navigate = useNavigate();
   const { user } = useUser();
   const currentUserId = user?.user_id;
+  const [courseInfo, setCourseInfo] = useState({ name: "", code: "" });
 
   const [assignment, setAssignment] = useState(null);
   const [submittedAssignments, setSubmittedAssignments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const fetchCourseInfo = async () => {
+    try {
+      const res = await axiosInstance.get(`/api/lectures/${lectureId}/info`);
+      if (res.data.success) {
+        setCourseInfo({
+          name: res.data.data.course_name || res.data.course_name,
+          code: res.data.data.course_code || res.data.course_code,
+        });
+      } else {
+        setCourseInfo({
+          name: res.data.course_name,
+          code: res.data.course_code,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      setError("과목 정보를 불러오는데 실패했습니다.");
+    }
+  };
 
   const formatDate = (dateStr) => {
     if (!dateStr) return "-";
@@ -80,6 +101,7 @@ export default function AssignSubmitListPage() {
 
   useEffect(() => {
     if (lectureId && assignmentId && user) {
+      fetchCourseInfo();
       fetchAssignment();
       fetchSubmittedAssignments();
     }
@@ -145,10 +167,8 @@ export default function AssignSubmitListPage() {
       <h1 className="board-title">제출된 과제 목록</h1>
 
       <PostHeader
-        subjectName={assignment.title}
-        subjectCode={`${formatDate(assignment.start_date)} ~ ${formatDate(
-          assignment.end_date
-        )}`}
+        subjectName={courseInfo.name}
+        subjectCode={courseInfo.code}
         authorId={assignment.author_id}
         currentUserId={currentUserId}
         onEdit={handleEditAssignment}
@@ -164,11 +184,6 @@ export default function AssignSubmitListPage() {
         content={assignment.content}
         attachment={null}
       />
-
-      <div className="submission-summary">
-        <h3>제출 현황</h3>
-        <p>총 제출 건수: {submittedAssignments.length}건</p>
-      </div>
 
       {error && (
         <div
@@ -194,7 +209,6 @@ export default function AssignSubmitListPage() {
               <th>No.</th>
               <th>학번</th>
               <th>이름</th>
-              <th>제출 제목</th>
               <th>제출일시</th>
               <th>제출상태</th>
             </tr>
@@ -203,7 +217,6 @@ export default function AssignSubmitListPage() {
             {submittedAssignments.map((submission, idx) => {
               const studentId = submission.author_id;
               const studentName = submission.student_name || "-";
-              const submissionTitle = submission.title || "-";
               const status = submission.status || "제출 완료";
 
               return (
@@ -220,7 +233,6 @@ export default function AssignSubmitListPage() {
                   <td>{idx + 1}</td>
                   <td>{studentId}</td>
                   <td>{studentName}</td>
-                  <td className="submission-title">{submissionTitle}</td>
                   <td>{formatDateTime(submission.created_at)}</td>
                   <td
                     className={`status-cell ${
@@ -235,15 +247,6 @@ export default function AssignSubmitListPage() {
           </tbody>
         </table>
       )}
-
-      <div className="action-buttons">
-        <button
-          onClick={() => navigate(`/assignment/${lectureId}`)}
-          className="back-button"
-        >
-          과제 목록으로 돌아가기
-        </button>
-      </div>
     </div>
   );
 }

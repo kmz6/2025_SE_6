@@ -228,43 +228,13 @@ export default function AssignSubmittedDetailPage() {
             content={submission.content}
             attachment={null}
           />
-
-          <div className="submission-info">
-            <div className="submission-status">
-              <span className="status-label">제출 상태:</span>
-              <span className="status-value success">제출 완료</span>
-            </div>
-            <div className="submission-date">
-              <span className="date-label">제출일시:</span>
-              <span className="date-value">
-                {formatDateTime(submission.created_at)}
-              </span>
-            </div>
-          </div>
         </>
       ) : (
         <div className="no-submission">
           <h2 className="box-title">학생 제출 과제</h2>
           <div className="no-submission-message">
             <p>아직 제출된 과제가 없습니다.</p>
-            <p className="submission-deadline">
-              제출 마감: {formatDateTime(assignment?.end_date)}
-            </p>
           </div>
-        </div>
-      )}
-
-      {assignment && (
-        <div className="assignment-deadline-info">
-          {new Date() > new Date(assignment.end_date) ? (
-            <div className="deadline-passed">
-              <span>제출 마감일이 지났습니다</span>
-            </div>
-          ) : (
-            <div className="deadline-active">
-              <span>제출 마감: {formatDateTime(assignment.end_date)}</span>
-            </div>
-          )}
         </div>
       )}
     </div>

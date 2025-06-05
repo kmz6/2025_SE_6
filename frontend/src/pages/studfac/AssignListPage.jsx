@@ -239,7 +239,21 @@ export default function AssignListPage() {
                     {formatDate(assignment.end_date)}
                   </td>
                   {userType === "faculty" ? (
-                    <td>{submitRate}</td>
+                    <td>
+                      <div className="submit-rate-wrapper">
+                        <div className="submit-rate-bar-container">
+                          <div
+                            className="submit-rate-bar"
+                            style={{ width: submitRate === "-" ? "0%" : submitRate }}
+                          >
+                            {submitRate !== "-" && (
+                              <span className="submit-rate-label">{submitRate}</span>
+                            )}
+                          </div>
+                        </div>
+                        <span className="submit-rate-text">{submitRate}</span>
+                      </div>
+                    </td>
                   ) : (
                     <td
                       className={`status-cell ${
@@ -248,7 +262,7 @@ export default function AssignListPage() {
                     >
                       {status}
                       {isOverdue && status === "미제출" && (
-                        <span className="overdue-text"> (기한 만료)</span>
+                        <span className="overdue-text"> <br/>(기한 만료)</span>
                       )}
                     </td>
                   )}
