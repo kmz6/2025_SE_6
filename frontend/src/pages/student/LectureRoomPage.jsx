@@ -14,8 +14,16 @@ export default function LectureRoomPage() {
   const role = user?.user_type === "faculty" ? "faculty" : "student";
   const userId = user?.user_id;
 
-  const { data: lectures = [], isLoading } = useMyLectures(userId, role);
+  const { data: allLectures = [], isLoading } = useMyLectures(userId, role);
+
+  // 25-1 필터링링
+  const lectures = allLectures.filter(
+    (lec) => lec.course_year === 2025 && lec.course_semester === 1
+  );
   const [selectedLectureId, setSelectedLectureId] = useState(paramLectureId);
+  useEffect(() => {
+    console.log("전체 강의 목록 확인:", lectures);
+  }, [lectures]);
 
   useEffect(() => {
     if (!isLoading && lectures.length === 0) {
