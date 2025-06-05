@@ -7,7 +7,7 @@ router.get("/:studentId/lectures", async (req, res) => {
 
   try {
     const [rows] = await db.query(`
-      SELECT c.course_id, c.course_name
+      SELECT c.course_id, c.course_name, c.course_year, c.course_semester
       FROM STUD_COURSE_TB sc
       JOIN COURSE_TB c ON sc.course_id = c.course_id
       WHERE sc.student_id = ?
