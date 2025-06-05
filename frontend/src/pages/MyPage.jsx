@@ -1,17 +1,13 @@
 import { useState, useEffect } from "react";
 import * as S from "../styles/MyPage.style";
 import { UserTableRows } from "../components/MyPage/UserTableRows";
-import EditInfo from "../components/MyPage/EditInfo";
-import EditPassword from "../components/MyPage/EditPassword";
 import { useParams } from "react-router-dom";
-import { getMyInfo, patchMyInfo, patchMyPassword } from "../apis/my/my";
+import { getMyInfo } from "../apis/my/my";
 
 const MyPage = () => {
   const { userId } = useParams();
   const [userType, setUserType] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
-  const [isEditingInfo, setIsEditingInfo] = useState(false);
-  const [isEditingPassword, setIsEditingPassword] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,70 +31,9 @@ const MyPage = () => {
 
       <S.Table>
         <tbody>
-          {!isEditingInfo && !isEditingPassword && (
-            <UserTableRows userType={userType} userInfo={userInfo} />
-          )}
+          <UserTableRows userType={userType} userInfo={userInfo} />
         </tbody>
       </S.Table>
-
-      {isEditingInfo && (
-        <EditInfo
-          initialPhone={userInfo.telephone}
-          initialEmail={userInfo.email}
-          onCancel={() => setIsEditingInfo(false)}
-          onSave={async (updatedData) => {
-            try {
-              const updated = await patchMyInfo(userId, updatedData);
-              setUserInfo((prev) => ({ ...prev, ...updated }));
-              setIsEditingInfo(false);
-            } catch (err) {
-              console.error("개인정보 수정 실패:", err.message);
-            }
-          }}
-        />
-      )}
-
-      {isEditingPassword && (
-        <EditPassword
-          userCurrentPassword={userInfo.password}
-          onCancel={() => setIsEditingPassword(false)}
-          onSave={async ({ currentPwd, newPwd }) => {
-            try {
-              await patchMyPassword(userId, {
-                currentPassword: currentPwd,
-                newPassword: newPwd,
-              });
-              setIsEditingPassword(false);
-            } catch (err) {
-              console.error(
-                "비밀번호 변경 실패:",
-                err.response?.data || err.message || err
-              );
-            }
-          }}
-        />
-      )}
-
-      {!isEditingInfo && !isEditingPassword && (
-        <S.ButtonWrapper>
-          <S.Button
-            onClick={() => {
-              setIsEditingInfo(true);
-              setIsEditingPassword(false);
-            }}
-          >
-            개인정보 수정
-          </S.Button>
-          <S.Button
-            onClick={() => {
-              setIsEditingPassword(true);
-              setIsEditingInfo(false);
-            }}
-          >
-            비밀번호 변경
-          </S.Button>
-        </S.ButtonWrapper>
-      )}
     </S.Container>
   );
 };

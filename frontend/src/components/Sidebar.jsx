@@ -34,19 +34,19 @@ const Sidebar = () => {
       "학적 관리": ["휴복학 신청"],
       "학습 지원": ["강의 종합"],
       "대시 보드": [],
-      마이페이지: [],
+      마이페이지: ["내 정보 확인", "개인정보 수정", "비밀번호 변경"],
       "수강 신청": [],
     },
     faculty: {
       "강의 계획": ["출석 관리", "강의 계획서 작성"],
       강의실: [],
       "성적 처리": [],
-      마이페이지: [],
+      마이페이지: ["내 정보 확인", "개인정보 수정", "비밀번호 변경"],
     },
     staff: {
       "학적 관리": [],
       "구성원 관리": ["구성원 추가", "구성원 삭제"],
-      마이페이지: [],
+      마이페이지: ["내 정보 확인", "개인정보 수정", "비밀번호 변경"],
     },
   };
 
@@ -86,8 +86,11 @@ const Sidebar = () => {
               <S.SubMenuItem
                 key={subItem}
                 onClick={() => {
-                  const route = userRoutes[subItem];
-                  if (route) navigate(route);
+                  let route = userRoutes[subItem];
+                  if (route) {
+                    route = replaceParams(route, { userId: user?.user_id });
+                    navigate(route);
+                  }
                 }}
               >
                 {subItem}
