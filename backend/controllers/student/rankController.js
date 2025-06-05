@@ -41,7 +41,7 @@ async function getSemData(req, res) {
         if (hasNA) {
             return {
                 totalCredits: semData.totalCredits,
-                gpa: semData.gpa,
+                gpa: semData.gpa.toFixed(2),
                 rank: "-"
             };
         }
