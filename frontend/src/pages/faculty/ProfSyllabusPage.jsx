@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import CoursePlanForm from "../../components/Syllabus/SyllabusForm";
 import { getCourseDetail, updateCourseDetail } from "../../apis/syllabus/syllabus";
@@ -9,13 +9,13 @@ export default function ProfSyllabusPage() {
   const [course, setCourse] = useState(null);
 
   useEffect(() => {
-  getCourseDetail(lectureId)
-    .then((data) => {
-      console.log("받은 강의 데이터", data);
-      setCourse(data);
-    })
-    .catch((err) => console.error("강의 정보 불러오기 실패", err));
-}, [lectureId]);
+    getCourseDetail(lectureId)
+      .then((data) => {
+        console.log("받은 강의 데이터", data);
+        setCourse(data);
+      })
+      .catch((err) => console.error("강의 정보 불러오기 실패", err));
+  }, [lectureId]);
 
   const handleSubmit = (form) => {
     updateCourseDetail(lectureId, form)
