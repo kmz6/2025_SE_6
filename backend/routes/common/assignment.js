@@ -217,10 +217,10 @@ router.get("/assignments/:assignmentId/attachments", async (req, res) => {
 
   try {
     const [rows] = await db.execute(
-      `SELECT file_id, file_name, file_path, created_at
+      `SELECT file_id, file_name, file_path, uploaded_at
        FROM ASSIGNMENTS_ATTACHMENT_TB 
        WHERE assignment_id = ?
-       ORDER BY created_at DESC`,
+       ORDER BY uploaded_at DESC`,
       [assignmentId]
     );
 
@@ -253,7 +253,7 @@ router.post("/assignments/:assignmentId/attachments", async (req, res) => {
 
   try {
     const [result] = await db.execute(
-      `INSERT INTO ASSIGNMENTS_ATTACHMENT_TB (assignment_id, file_name, file_path, created_at) 
+      `INSERT INTO ASSIGNMENTS_ATTACHMENT_TB (assignment_id, file_name, file_path, uploaded_at) 
        VALUES (?, ?, ?, NOW())`,
       [assignmentId, file_name, file_path]
     );
