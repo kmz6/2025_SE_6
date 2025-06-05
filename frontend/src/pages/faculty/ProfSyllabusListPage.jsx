@@ -1,29 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
 import { useUser } from "../../context/UserContext";
-import { Container, Title, Button as CommonButton } from "../../styles/Syllabus.style";
+import * as S from "../../styles/Syllabus.style";
+import { Button as CommonButton } from "../../styles/Syllabus.style";
 import { getProfessorCourses } from "../../apis/syllabus/syllabus";
-
-const LectureCard = styled.div`
-  border: 1px solid #ccc;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  border-radius: 6px;
-  background-color: #f9f9f9;
-`;
-
-const LectureName = styled.div`
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 0.3rem;
-`;
-
-const TimeText = styled.div`
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 0.5rem;
-`;
 
 const ProfSyllabusListPage = () => {
   const navigate = useNavigate();
@@ -52,19 +32,19 @@ const ProfSyllabusListPage = () => {
   );
 
   return (
-    <Container>
-      <Title>강의계획서 작성</Title>
+    <S.Container>
+      <S.Title>강의계획서 작성</S.Title>
 
       {filteredLectures.map((lec) => (
-        <LectureCard key={lec.course_code}>
-          <LectureName>{lec.course_name}</LectureName>
-          <TimeText>강의코드: {lec.course_code}</TimeText>
+        <S.LectureCard key={lec.course_code}>
+          <S.LectureName>{lec.course_name}</S.LectureName>
+          <S.TimeText>강의코드: {lec.course_code}</S.TimeText>
           <CommonButton onClick={() => navigate(`${lec.course_code}`)}>
             작성
           </CommonButton>
-        </LectureCard>
+        </S.LectureCard>
       ))}
-    </Container>
+    </S.Container>
   );
 };
 export default ProfSyllabusListPage;

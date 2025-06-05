@@ -1,88 +1,7 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { fetchAttendanceData, saveAttendanceData } from "../../apis/attendance/attendance";
-
-const Container = styled.div`
-  margin: 24px auto;
-  padding: 30px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-`;
-
-const Title = styled.h2`
-  font-size: 30px;
-  font-weight: bold;
-  color: #003366;
-  border-bottom: 1px solid #003366;
-  padding-bottom: 20px;
-  margin-bottom: 25px;
-`;
-
-const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 30px;
-`;
-
-const Row = styled.tr`
-  border: 1px solid #ccc;
-`;
-
-const CellHead = styled.td`
-  width: 10%;
-  padding: 15px;
-  font-weight: bold;
-  background-color: #f3f6f9;
-  border: 1px solid #ccc;
-`;
-
-const Cell = styled.td`
-  padding: 12px;
-  border: 1px solid #ccc;
-`;
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 50px;
-`;
-
-const Button = styled.button`
-  background-color: #003366;
-  color: white;
-  border: none;
-  padding: 15px 25px;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #0055aa;
-  }
-`;
-
-const OptionBox = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 30px;
-  margin-bottom: 20px;
-  font-size: 16px;
-
-  label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  select {
-    padding: 6px 12px;
-    font-size: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #fff;
-  }
-`;
+import * as S from "../../styles/Attend.style";
 
 const attendanceOptions = ["출석", "지각", "결석", "공결"];
 
@@ -129,10 +48,9 @@ const ProfAttend = () => {
   };
 
   return (
-    <Container>
-      <Title>출석부</Title>
-
-      <OptionBox>
+    <S.Container>
+      <S.Title>출석부</S.Title>
+      <S.OptionBox>
         <label>
           주차:
           <select value={week} onChange={(e) => setWeek(Number(e.target.value))}>
@@ -153,23 +71,23 @@ const ProfAttend = () => {
             ))}
           </select>
         </label>
-      </OptionBox>
+      </S.OptionBox>
 
-      <Table>
+      <S.Table>
         <thead>
-          <Row>
-            <CellHead>학번</CellHead>
-            <CellHead>이름</CellHead>
-            <CellHead>출석 선택</CellHead>
-            <CellHead>상태</CellHead>
-          </Row>
+          <S.Row>
+            <S.CellHead>학번</S.CellHead>
+            <S.CellHead>이름</S.CellHead>
+            <S.CellHead>출석 선택</S.CellHead>
+            <S.CellHead>상태</S.CellHead>
+          </S.Row>
         </thead>
         <tbody>
           {students.map((stu) => (
-            <Row key={stu.student_id}>
-              <Cell>{stu.student_id}</Cell>
-              <Cell>{stu.name}</Cell>
-              <Cell>
+            <S.Row key={stu.student_id}>
+              <S.Cell>{stu.student_id}</S.Cell>
+              <S.Cell>{stu.name}</S.Cell>
+              <S.Cell>
                 {attendanceOptions.map((opt) => (
                   <label key={opt} style={{ marginRight: "5px" }}>
                     <input
@@ -182,18 +100,18 @@ const ProfAttend = () => {
                     {opt}
                   </label>
                 ))}
-              </Cell>
-              <Cell>{attendance[stu.student_id] || " "}</Cell>
-            </Row>
+              </S.Cell>
+              <S.Cell>{attendance[stu.student_id] || " "}</S.Cell>
+            </S.Row>
           ))}
         </tbody>
-      </Table>
+      </S.Table>
 
-      <ButtonWrapper>
-        <Button onClick={handleReset}>초기화</Button>
-        <Button onClick={handleSave}>저장</Button>
-      </ButtonWrapper>
-    </Container>
+      <S.ButtonWrapper>
+        <S.Button onClick={handleReset}>초기화</S.Button>
+        <S.Button onClick={handleSave}>저장</S.Button>
+      </S.ButtonWrapper>
+    </S.Container>
   );
 };
 
