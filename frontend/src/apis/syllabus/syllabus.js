@@ -16,6 +16,6 @@ export const getProfessorCourses = async (facultyId) => {
 };
 
 export const updateCourseDetail = async (courseCode, updatedData) => {
-  const res = await axiosInstance.put(`/api/syllabus/prof/update/${courseCode}`, updatedData);
+  const res = await axiosInstance.put(`/api/faculty/syllabus/update/${courseCode}`, updatedData);
   return res.data;
 };

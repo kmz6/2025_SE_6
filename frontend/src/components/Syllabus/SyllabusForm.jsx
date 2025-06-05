@@ -7,12 +7,13 @@ const SyllabusForm = ({ initialData, onSubmit }) => {
   const [formData, setFormData] = useState({
     courseName: initialData?.course_name || "",
     courseCode: initialData?.course_code || "",
-    semester: initialData?.semester || 
-          `${String(initialData?.course_year).slice(2)}-${initialData?.course_semester}` || "",
+    semester: initialData?.semester ||
+      `${String(initialData?.course_year).slice(2)}-${initialData?.course_semester}` || "",
     courseType: initialData?.course_type || "",
     time: initialData?.course_times || "",
     room: `${initialData?.building} ${initialData?.room}` || "",
-    professor: initialData?.faculty_id || "",
+    faculty_id: initialData?.faculty_id || "",
+    faculty_name: initialData?.faculty_name || "",
     credit: initialData?.credit || "",
     attendance: initialData?.attendance || "",
     midterm: initialData?.midterm_exam || "",
@@ -30,8 +31,23 @@ const SyllabusForm = ({ initialData, onSubmit }) => {
   };
 
   const handleSubmit = () => {
-    const [yearPart, semesterPart] = formData.semester.split("-");
+    const { time, room } = formData;
 
+    // 입력 조건 지정
+    const timePattern = /^[가-힣]+\s?\d+교시,\s?[가-힣]+\s?\d+교시$/;
+    const roomPattern = /^[가-힣]+\s\d+$/;
+
+    if (!timePattern.test(time)) {
+      alert("강의시간 형식이 잘못되었습니다.\n예시: 월 1교시, 수 2교시");
+      return;
+    }
+
+    if (!roomPattern.test(room)) {
+      alert("강의실 형식이 잘못되었습니다.\n예시: 새빛관 101");
+      return;
+    }
+
+    const [yearPart, semesterPart] = formData.semester.split("-");
     const payload = {
       building: formData.room.split(" ")[0],
       room: formData.room.split(" ")[1] || "",
@@ -43,9 +59,11 @@ const SyllabusForm = ({ initialData, onSubmit }) => {
       credit: formData.credit,
       course_year: parseInt("20" + yearPart),
       course_semester: parseInt(semesterPart),
+      faculty_id: formData.faculty_id,
     };
 
     if (onSubmit) onSubmit(payload);
+    console.log("payload faculty_id:", payload.faculty_id);
     alert("강의계획서가 제출되었습니다.");
     navigate("/professor/syllabus");
   };
@@ -56,15 +74,15 @@ const SyllabusForm = ({ initialData, onSubmit }) => {
         <tbody>
           <S.Row>
             <S.CellHead>교과목명</S.CellHead>
-            <S.Cell><input name="courseName" value={formData.courseName} onChange={handleChange} /></S.Cell>
+            <S.Cell><span>{formData.courseName}</span></S.Cell>
             <S.CellHead>년도학기</S.CellHead>
-            <S.Cell><input name="semester" value={formData.semester} onChange={handleChange} /></S.Cell>
+            <S.Cell><span>{formData.semester}</span></S.Cell>
           </S.Row>
           <S.Row>
             <S.CellHead>학정번호</S.CellHead>
-            <S.Cell><input name="courseCode" value={formData.courseCode} onChange={handleChange} /></S.Cell>
+            <S.Cell><span>{formData.courseCode}</span></S.Cell>
             <S.CellHead>이수구분</S.CellHead>
-            <S.Cell><input name="courseType" value={formData.courseType} onChange={handleChange} /></S.Cell>
+            <S.Cell><span>{formData.courseType}</span></S.Cell>
           </S.Row>
           <S.Row>
             <S.CellHead>강의시간</S.CellHead>
@@ -74,24 +92,25 @@ const SyllabusForm = ({ initialData, onSubmit }) => {
           </S.Row>
           <S.Row>
             <S.CellHead>담당교수</S.CellHead>
-            <S.Cell><input name="professor" value={formData.professor} onChange={handleChange} /></S.Cell>
+            <S.Cell><span>{formData.faculty_name}</span></S.Cell>
+            <input type="hidden" name="faculty_id" value={formData.faculty_id} />
             <S.CellHead>학점</S.CellHead>
-            <S.Cell><input name="credit" value={formData.credit} onChange={handleChange} type="number" /></S.Cell>
+            <S.Cell><span>{formData.credit}</span></S.Cell>
           </S.Row>
           <S.Row>
-            <S.CellHead>출석 비율</S.CellHead>
+            <S.CellHead>출석 비율 (%)</S.CellHead>
             <S.Cell><input name="attendance" value={formData.attendance} onChange={handleChange} type="number" /></S.Cell>
-            <S.CellHead>중간고사 비율</S.CellHead>
+            <S.CellHead>중간고사 비율 (%)</S.CellHead>
             <S.Cell><input name="midterm" value={formData.midterm} onChange={handleChange} type="number" /></S.Cell>
           </S.Row>
           <S.Row>
-            <S.CellHead>기말고사 비율</S.CellHead>
+            <S.CellHead>기말고사 비율 (%)</S.CellHead>
             <S.Cell><input name="final" value={formData.final} onChange={handleChange} type="number" /></S.Cell>
-            <S.CellHead>과제 비율</S.CellHead>
+            <S.CellHead>과제 비율 (%)</S.CellHead>
             <S.Cell><input name="assignment" value={formData.assignment} onChange={handleChange} type="number" /></S.Cell>
           </S.Row>
           <S.Row>
-            <S.CellHead>기타 비율</S.CellHead>
+            <S.CellHead>기타 비율 (%)</S.CellHead>
             <S.Cell colSpan={3}><input name="etc" value={formData.etc} onChange={handleChange} type="number" /></S.Cell>
           </S.Row>
         </tbody>
