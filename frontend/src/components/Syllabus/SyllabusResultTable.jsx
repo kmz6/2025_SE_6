@@ -4,8 +4,8 @@ import * as S from "../../styles/Syllabus.style";
 export default function SyllabusResultTable({ results }) {
   const navigate = useNavigate();
 
-  const handleRowClick = (courseCode) => {
-    navigate(`/student/syllabus/${courseCode}`);
+  const handleRowClick = (courseId) => {
+    navigate(`/student/syllabus/${courseId}`);
   };
 
   if (results.length === 0) {
@@ -27,8 +27,8 @@ export default function SyllabusResultTable({ results }) {
       <tbody>
         {results.map((course) => (
           <S.Row
-            key={course.course_code}
-            onClick={() => handleRowClick(course.course_code)}
+            key={course.course_id}
+            onClick={() => handleRowClick(course.course_id)} // <- 수정
             style={{ cursor: "pointer" }}
           >
             <S.Cell>{course.course_code}</S.Cell>

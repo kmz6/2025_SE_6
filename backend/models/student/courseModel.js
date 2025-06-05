@@ -5,6 +5,7 @@ const CourseModel = {
     getAllCourses: async () => {
         const [rows] = await db.query(`
       SELECT 
+        c.course_id,
         c.course_code,
         c.course_name,
         c.course_type,
