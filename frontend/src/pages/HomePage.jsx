@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Timetable from "../components/Timetable";
-import { HomeWrapper, Section, SectionTitle, CourseRow, CourseName, Button, ButtonGroup } from "../styles/HomePage.style";
+import * as S from "../styles/HomePage.style";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { getTimetable } from "../apis/timetable/timetable";
@@ -73,11 +73,11 @@ function HomePage() {
   );
 
   return (
-    <HomeWrapper>
+    <S.HomeWrapper>
       {/* 시간표 */}
       {isStudent && (
-        <Section>
-          <SectionTitle>시간표</SectionTitle>
+        <S.Section>
+          <S.SectionTitle>시간표</S.SectionTitle>
           <div style={{ textAlign: "center", marginBottom: "10px" }}>
             <select
               value={`${filters.year}-${filters.semester}`}
@@ -91,85 +91,85 @@ function HomePage() {
             </select>
           </div>
           <Timetable subjects={filteredSubjects} />
-        </Section>
+        </S.Section>
       )}
 
       {/* 수강과목 */}
       {isStudent && (
-        <Section>
-          <SectionTitle>수강과목</SectionTitle>
+        <S.Section>
+          <S.SectionTitle>수강과목</S.SectionTitle>
           {courseList.map((course) => (
-            <CourseRow key={course.lectureId}>
-              <CourseName onClick={() => navigate(`/lectureroom/${course.lectureId}`)}>{course.name}</CourseName>
-              <ButtonGroup>
-                <Button
+            <S.CourseRow key={course.lectureId}>
+              <S.CourseName onClick={() => navigate(`/lectureroom/${course.lectureId}`)}>{course.name}</S.CourseName>
+              <S.ButtonGroup>
+                <S.Button
                   bg="#a9d9b3"
                   onClick={() => navigate(`/notice/${course.lectureId}`)}
                 >
                   공지사항
-                </Button>
-                <Button
+                </S.Button>
+                <S.Button
                   bg="#d0d7e5"
                   onClick={() => navigate(`/archives/${course.lectureId}`)}
                 >
                   강의자료실
-                </Button>
-                <Button
+                </S.Button>
+                <S.Button
                   bg="#f2c0c0"
                   onClick={() => navigate(`/assignment/${course.lectureId}`)}
                 >
                   과제 제출
-                </Button>
-              </ButtonGroup>
-            </CourseRow>
+                </S.Button>
+              </S.ButtonGroup>
+            </S.CourseRow>
           ))}
-        </Section>
+        </S.Section>
       )}
 
       {/* 강의과목 (교수용) */}
       {isFaculty && (
-        <Section>
-          <SectionTitle>강의 과목</SectionTitle>
+        <S.Section>
+          <S.SectionTitle>강의 과목</S.SectionTitle>
           {filteredFacultyCourses.map((course) => (
-            <CourseRow key={course.course_id}>
-              <CourseName onClick={() => navigate(`/lectureroom/${course.course_id}`)}>
+            <S.CourseRow key={course.course_id}>
+              <S.CourseName onClick={() => navigate(`/lectureroom/${course.course_id}`)}>
                 {course.course_name}
-              </CourseName>
-              <ButtonGroup>
-                <Button
+              </S.CourseName>
+              <S.ButtonGroup>
+                <S.Button
                   bg="#a9d9b3"
                   onClick={() => navigate(`/professor/attendance/${course.course_id}`)}
                 >
                   출석
-                </Button>
-                <Button
+                </S.Button>
+                <S.Button
                   bg="#d0d7e5"
                   onClick={() => navigate(`/professor/notice/${course.course_id}/write`)}
                 >
                   공지
-                </Button>
-                <Button
+                </S.Button>
+                <S.Button
                   bg="#f2c0c0"
                   onClick={() => navigate(`/professor/grade/input/${course.course_id}`)}
                 >
                   성적
-                </Button>
-                <Button
+                </S.Button>
+                <S.Button
                   bg="#abd7eb"
                   onClick={() => navigate(`/professor/assignment/${course.course_id}`)}
                 >
                   과제
-                </Button>
-              </ButtonGroup>
-            </CourseRow>
+                </S.Button>
+              </S.ButtonGroup>
+            </S.CourseRow>
           ))}
-        </Section>
+        </S.Section>
       )}
 
       {/* 교직원 알림 */}
       {isStaff && (
-        <Section>
-          <SectionTitle>알림</SectionTitle>
+        <S.Section>
+          <S.SectionTitle>알림</S.SectionTitle>
           <div style={{ display: "flex", gap: "20px", marginBottom: "30px", flexWrap: "wrap" }}>
             <div
               onClick={() => navigate("/staff/leave/approval")}
@@ -188,7 +188,7 @@ function HomePage() {
               <p style={{ fontSize: "24px", marginTop: "10px", color: "#cc4400" }}>{reqCount}건</p>
             </div>
           </div>
-        </Section>
+        </S.Section>
       )}
 
       {isStaff && (
@@ -212,7 +212,7 @@ function HomePage() {
           />
         </div>
       )}
-    </HomeWrapper>
+    </S.HomeWrapper>
   );
 }
 
