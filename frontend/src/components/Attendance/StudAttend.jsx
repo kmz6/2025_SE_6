@@ -1,52 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import styled from "styled-components";
 import axiosInstance from "../../apis/axiosInstance";
+import * as S from "../../styles/Attend.style";
 
-const Container = styled.div`
-  margin: 24px auto;
-  padding: 30px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-`;
-
-const Title = styled.h2`
-  font-size: 30px;
-  font-weight: bold;
-  color: #003366;
-  border-bottom: 1px solid #003366;
-  padding-bottom: 20px;
-  margin-bottom: 25px;
-`;
-
-const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 30px;
-`;
-
-const Row = styled.tr`
-  border: 1px solid #ccc;
-`;
-
-const CellHead = styled.td`
-  width: 10%;
-  padding: 15px;
-  font-weight: bold;
-  background-color: #f3f6f9;
-  border: 1px solid #ccc;
-`;
-
-const Cell = styled.td`
-  padding: 12px;
-  border: 1px solid #ccc;
-`;
 const statusToSymbol = {
   attend: "O",
   absent: "X",
   late: "L",
   excused: "A",
 };
+
 const StudAttend = () => {
   const { lectureId } = useParams();
   const [meta, setMeta] = useState({});
@@ -87,31 +50,31 @@ const StudAttend = () => {
   }, [lectureId]);
 
   return (
-    <Container>
-      <Title>{meta.subject} 출석 현황</Title>
-      <Table>
+    <S.Container>
+      <S.Title>{meta.subject} 출석 현황</S.Title>
+      <S.Table>
         <tbody>
-          <Row>
-            <CellHead>교과목명</CellHead>
-            <Cell>{meta.subject}</Cell>
-            <CellHead>년도/학기</CellHead>
-            <Cell>{meta.yearSemester}</Cell>
-          </Row>
-          <Row>
-            <CellHead>학점/시간</CellHead>
-            <Cell>{meta.credit}</Cell>
-            <CellHead>강의시간</CellHead>
-            <Cell>{meta.time}</Cell>
-          </Row>
-          <Row>
-            <CellHead>담당교수</CellHead>
-            <Cell>{meta.professor}</Cell>
-            <Cell colSpan="2" style={{ fontWeight: "bold" }}>
+          <S.Row>
+            <S.CellHead>교과목명</S.CellHead>
+            <S.Cell>{meta.subject}</S.Cell>
+            <S.CellHead>년도/학기</S.CellHead>
+            <S.Cell>{meta.yearSemester}</S.Cell>
+          </S.Row>
+          <S.Row>
+            <S.CellHead>학점/시간</S.CellHead>
+            <S.Cell>{meta.credit}</S.Cell>
+            <S.CellHead>강의시간</S.CellHead>
+            <S.Cell>{meta.time}</S.Cell>
+          </S.Row>
+          <S.Row>
+            <S.CellHead>담당교수</S.CellHead>
+            <S.Cell>{meta.professor}</S.Cell>
+            <S.Cell colSpan="2" style={{ fontWeight: "bold" }}>
               ※ 출석기호: O:출석 / X:결석 / L:지각 / A:공결
-            </Cell>
-          </Row>
+            </S.Cell>
+          </S.Row>
         </tbody>
-      </Table>
+      </S.Table>
 
       <div style={{ marginBottom: "20px", fontSize: "14px", color: "#555" }}>
         ※ 온라인과목 출결기준<br />
@@ -122,31 +85,31 @@ const StudAttend = () => {
         - 출석인정기간에 보는 것 시작했으나 완료 못한 경우 : <b>(공란)결석</b>
       </div>
 
-      <Table>
+      <S.Table>
         <thead>
-          <Row>
-            <CellHead>주차</CellHead>
+          <S.Row>
+            <S.CellHead>주차</S.CellHead>
             {[1, 2, 3, 4].map((n) => (
-              <CellHead key={n}>회차 {n}</CellHead>
+              <S.CellHead key={n}>회차 {n}</S.CellHead>
             ))}
-          </Row>
+          </S.Row>
         </thead>
         <tbody>
           {Array.from({ length: 16 }, (_, i) => (
-            <Row key={i}>
-              <Cell>{i + 1}주차</Cell>
+            <S.Row key={i}>
+              <S.Cell>{i + 1}주차</S.Cell>
               {[0, 1, 2, 3].map((j) => (
-                <Cell key={j}>
+                <S.Cell key={j}>
                   {statusToSymbol[attendanceTable[i]?.[j]] || " "}
                   <br />
                   {attendanceDates[i]?.[j] ? `(${attendanceDates[i][j]})` : ""}
-                </Cell>
+                </S.Cell>
               ))}
-            </Row>
+            </S.Row>
           ))}
         </tbody>
-      </Table>
-    </Container>
+      </S.Table>
+    </S.Container>
   );
 };
 

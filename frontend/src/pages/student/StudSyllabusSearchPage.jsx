@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
 import SyllabusFilterForm from "../../components/Syllabus/SyllabusFilterForm";
 import SyllabusResultTable from "../../components/Syllabus/SyllabusResultTable";
 import { Container, Title } from "../../styles/Syllabus.style";

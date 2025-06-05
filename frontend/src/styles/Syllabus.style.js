@@ -110,3 +110,23 @@ export const TwoColCell = styled.td`
   width: 35%;
   word-break: break-word;
 `;
+
+export const LectureCard = styled.div`
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+`;
+
+export const LectureName = styled.div`
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+`;
+
+export const TimeText = styled.div`
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 0.5rem;
+`;

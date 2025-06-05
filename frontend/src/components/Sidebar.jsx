@@ -1,52 +1,8 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { routeMap } from "./menuRoutes";
-
-const SidebarContainer = styled.div`
-  width: 200px;
-  background-color: #f5f5f5;
-  border-right: 1px solid #ccc;
-  padding-top: 20px;
-  font-family: sans-serif;
-`;
-
-const MenuItem = styled.div`
-  padding: 12px 20px;
-  font-size: 15px;
-  font-weight: bold;
-  color: #333;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #e6e6e6;
-  }
-`;
-
-const SubMenuItem = styled.div`
-  padding: 10px 30px;
-  font-size: 14px;
-  color: #555;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #ddd;
-  }
-`;
-
-const ExternalLink = styled.a`
-  display: block;
-  padding: 12px 20px;
-  font-size: 15px;
-  font-weight: bold;
-  color: #333;
-  text-decoration: none;
-
-  &:hover {
-    background-color: #e6e6e6;
-  }
-`;
+import * as S from "../styles/Sidebar.style";
 
 // 파라미터 치환
 const replaceParams = (path, params) => {
@@ -103,11 +59,11 @@ const Sidebar = () => {
   ];
 
   return (
-    <SidebarContainer>
+    <S.SidebarContainer>
       {Object.entries(menuItems).map(([menuTitle, subItems]) => (
         <div key={menuTitle}>
           {/* 메뉴 타이틀 자체에 경로가 있으면 바로 navigate */}
-          <MenuItem
+          <S.MenuItem
             onClick={() => {
               let directRoute = userRoutes[menuTitle];
               if (directRoute) {
@@ -121,13 +77,13 @@ const Sidebar = () => {
             }}
           >
             {menuTitle}
-          </MenuItem>
+          </S.MenuItem>
 
           {/* 서브 메뉴 있는 경우에만 펼침 */}
           {openMenu === menuTitle &&
             subItems.length > 0 &&
             subItems.map((subItem) => (
-              <SubMenuItem
+              <S.SubMenuItem
                 key={subItem}
                 onClick={() => {
                   let route = userRoutes[subItem];
@@ -138,22 +94,22 @@ const Sidebar = () => {
                 }}
               >
                 {subItem}
-              </SubMenuItem>
+              </S.SubMenuItem>
             ))}
         </div>
       ))}
 
       {externalLinks.map(({ label, url }) => (
-        <ExternalLink
+        <S.ExternalLink
           key={label}
           href={url}
           target="_blank"
           rel="noopener noreferrer"
         >
           {label}
-        </ExternalLink>
+        </S.ExternalLink>
       ))}
-    </SidebarContainer>
+    </S.SidebarContainer>
   );
 };
 

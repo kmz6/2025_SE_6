@@ -1,47 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
 import { useUser } from "../../context/UserContext";
 import { getLectureList } from "../../apis/attendance/lecturelist";
-
-const Container = styled.div`
-  margin: 24px auto;
-  padding: 30px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-`;
-
-const Title = styled.h2`
-  font-size: 30px;
-  font-weight: bold;
-  color: #003366;
-  border-bottom: 1px solid #003366;
-  padding-bottom: 20px;
-  margin-bottom: 25px;
-`;
-
-const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 30px;
-`;
-
-const Row = styled.tr`
-  border: 1px solid #ccc;
-`;
-
-const CellHead = styled.td`
-  width: 10%;
-  padding: 15px;
-  font-weight: bold;
-  background-color: #f3f6f9;
-  border: 1px solid #ccc;
-`;
-
-const Cell = styled.td`
-  padding: 12px;
-  border: 1px solid #ccc;
-`;
+import * as S from "../../styles/LectureList.style.js";
 
 const ProfLectureList = () => {
   const navigate = useNavigate();
@@ -66,31 +27,31 @@ const ProfLectureList = () => {
   if (!user) return <div>로딩 중...</div>;
 
   return (
-    <Container>
-      <Title>담당 강의 목록</Title>
-      <Table>
+    <S.Container>
+      <S.Title>담당 강의 목록</S.Title>
+      <S.Table>
         <thead>
-          <Row>
-            <CellHead>강의명</CellHead>
-            <CellHead>강의시간</CellHead>
-          </Row>
+          <S.Row>
+            <S.CellHead>강의명</S.CellHead>
+            <S.CellHead>강의시간</S.CellHead>
+          </S.Row>
         </thead>
         <tbody>
           {myLectures.map((lec) => (
-            <Row
+            <S.Row
               key={lec.course_id}
               style={{ cursor: "pointer" }}
               onClick={() => navigate(`/professor/attendance/${lec.course_id}`)}
             >
-              <Cell>{lec.course_name}</Cell>
-              <Cell>
+              <S.Cell>{lec.course_name}</S.Cell>
+              <S.Cell>
                 {lec.course_times ? lec.course_times : "시간 미등록"}
-              </Cell>
-            </Row>
+              </S.Cell>
+            </S.Row>
           ))}
         </tbody>
-      </Table>
-    </Container>
+      </S.Table>
+    </S.Container>
   );
 };
 

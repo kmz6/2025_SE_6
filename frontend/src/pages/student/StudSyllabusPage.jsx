@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import {
-  Container,
-  Title,
-  Table,
-  TwoColRow,
-  TwoColHead,
-  TwoColCell
-} from "../../styles/Syllabus.style";
+import * as S from "../../styles/Syllabus.style"
 import { getCourseDetail } from "../../apis/syllabus/syllabus";
 
 export default function StudSyllabusPage() {
@@ -22,13 +15,13 @@ export default function StudSyllabusPage() {
   }, [lectureId]);
 
   if (!course) {
-    return <Container>강의 정보를 불러오는 중입니다...</Container>;
+    return <S.Container>강의 정보를 불러오는 중입니다...</S.Container>;
   }
 
   return (
-    <Container>
-      <Title>강의계획서 조회</Title>
-      <Table>
+    <S.Container>
+      <S.Title>강의계획서 조회</S.Title>
+      <S.Table>
         <tbody>
           <TableRow
             label="교과목명"
@@ -66,23 +59,23 @@ export default function StudSyllabusPage() {
             label2="과제 비율"
             value2={course.assignment}
           />
-          <TwoColRow>
-            <TwoColHead>기타 비율</TwoColHead>
-            <TwoColCell colSpan={3}>{course.etc}</TwoColCell>
-          </TwoColRow>
+          <S.TwoColRow>
+            <S.TwoColHead>기타 비율</S.TwoColHead>
+            <S.TwoColCell colSpan={3}>{course.etc}</S.TwoColCell>
+          </S.TwoColRow>
         </tbody>
-      </Table>
-    </Container>
+      </S.Table>
+    </S.Container>
   );
 }
 
 function TableRow({ label, value, label2, value2 }) {
   return (
-    <TwoColRow>
-      <TwoColHead>{label}</TwoColHead>
-      <TwoColCell>{value}</TwoColCell>
-      <TwoColHead>{label2}</TwoColHead>
-      <TwoColCell>{value2}</TwoColCell>
-    </TwoColRow>
+    <S.TwoColRow>
+      <S.TwoColHead>{label}</S.TwoColHead>
+      <S.TwoColCell>{value}</S.TwoColCell>
+      <S.TwoColHead>{label2}</S.TwoColHead>
+      <S.TwoColCell>{value2}</S.TwoColCell>
+    </S.TwoColRow>
   );
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { FormBox, FormRow, Label, Input, Select } from "../../styles/Syllabus.style";
+import * as S from "../../styles/Syllabus.style";
 
 export default function SyllabusFilterForm({ filters, onChange }) {
   const handleInputChange = (e) => {
@@ -11,40 +11,40 @@ export default function SyllabusFilterForm({ filters, onChange }) {
   };
 
   return (
-    <FormBox>
-      <FormRow>
-        <Label>년도/학기</Label>
-        <Select
+    <S.FormBox>
+      <S.FormRow>
+        <S.Label>년도/학기</S.Label>
+        <S.Select
           name="semester"
           value={filters.semester}
           onChange={handleInputChange}
         >
           <option value="2025-1">2025년 1학기</option>
           <option value="2024-2">2024년 2학기</option>
-        </Select>
-      </FormRow>
+        </S.Select>
+      </S.FormRow>
 
-      <FormRow>
-        <Label>과목명</Label>
-        <Input
+      <S.FormRow>
+        <S.Label>과목명</S.Label>
+        <S.Input
           type="text"
           name="courseName"
           value={filters.courseName}
           onChange={handleInputChange}
           placeholder="과목명을 입력하세요"
         />
-      </FormRow>
+      </S.FormRow>
 
-      <FormRow>
-        <Label>담당교수</Label>
-        <Input
+      <S.FormRow>
+        <S.Label>담당교수</S.Label>
+        <S.Input
           type="text"
           name="professor"
           value={filters.professor}
           onChange={handleInputChange}
           placeholder="교수 이름"
         />
-      </FormRow>
-    </FormBox>
+      </S.FormRow>
+    </S.FormBox>
   );
 }
