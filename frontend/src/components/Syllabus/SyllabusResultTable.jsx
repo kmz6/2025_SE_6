@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Table, Row, Cell, CellHead } from "../../styles/Syllabus.style";
+import * as S from "../../styles/Syllabus.style";
 
 export default function SyllabusResultTable({ results }) {
   const navigate = useNavigate();
@@ -13,33 +13,33 @@ export default function SyllabusResultTable({ results }) {
   }
 
   return (
-    <Table>
+    <S.Table>
       <thead>
         <tr>
-          <CellHead>학정번호</CellHead>
-          <CellHead>과목명</CellHead>
-          <CellHead>이수구분</CellHead>
-          <CellHead>학점</CellHead>
-          <CellHead>강의실</CellHead>
-          <CellHead>교수</CellHead>
+          <S.CellHead>학정번호</S.CellHead>
+          <S.CellHead>과목명</S.CellHead>
+          <S.CellHead>이수구분</S.CellHead>
+          <S.CellHead>학점</S.CellHead>
+          <S.CellHead>강의실</S.CellHead>
+          <S.CellHead>교수</S.CellHead>
         </tr>
       </thead>
       <tbody>
         {results.map((course) => (
-          <Row
+          <S.Row
             key={course.course_code}
             onClick={() => handleRowClick(course.course_code)}
             style={{ cursor: "pointer" }}
           >
-            <Cell>{course.course_code}</Cell>
-            <Cell>{course.course_name}</Cell>
-            <Cell>{course.course_type}</Cell>
-            <Cell>{course.credit}</Cell>
-            <Cell>{course.building} {course.room}</Cell>
-            <Cell>{course.faculty_name}</Cell>
-          </Row>
+            <S.Cell>{course.course_code}</S.Cell>
+            <S.Cell>{course.course_name}</S.Cell>
+            <S.Cell>{course.course_type}</S.Cell>
+            <S.Cell>{course.credit}</S.Cell>
+            <S.Cell>{course.building} {course.room}</S.Cell>
+            <S.Cell>{course.faculty_name}</S.Cell>
+          </S.Row>
         ))}
       </tbody>
-    </Table>
+    </S.Table>
   );
 }
