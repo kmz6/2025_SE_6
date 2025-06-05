@@ -1,4 +1,3 @@
-// components/Post/PostBox.jsx
 import React from "react";
 import "./PostBox.css";
 

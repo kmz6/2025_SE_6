@@ -50,7 +50,6 @@ export default function NoticePostPage() {
     navigate(`/professor/notice/${lectureId}/edit/${postId}`);
   };
 
-  // 삭제
   const handleDelete = async () => {
     const confirmed = window.confirm("정말 삭제하시겠습니까?");
     if (!confirmed) return;

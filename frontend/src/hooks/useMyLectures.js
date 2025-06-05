@@ -1,14 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../apis/axiosInstance";
 
-export const useMyLectures = (studentId) => {
+export const useMyLectures = (userId, userType) => {
   return useQuery({
-    queryKey: ["myLectures", studentId],
+    queryKey: ["myLectures", userId, userType],
     queryFn: async () => {
-      if (!studentId) return [];
-      const res = await axiosInstance.get(`/api/student/${studentId}/lectures`);
+      if (!userId) return [];
+      
+      const url =
+        userType === "student"
+          ? `/api/student/${userId}/lectures`
+          : `/api/faculty/${userId}/lectures`;
+
+      const res = await axiosInstance.get(url);
       return res.data ?? [];
     },
-    enabled: !!studentId,
+    enabled: !!userId && !!userType,
   });
 };
