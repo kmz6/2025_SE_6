@@ -71,13 +71,13 @@ export default function LectureRoomPage() {
             <div className="top-right-buttons">
               <button
                 className="top-right-btn"
-                onClick={() => navigate(`/professor/attendance/${selectedLectureId}`)}
+                onClick={() => navigate(`/student/attendance/${selectedLectureId}`)}
               >
                 출결 조회
               </button>
               <button
                 className="top-right-btn"
-                onClick={() => navigate(`/professor/syllabus/${selectedLectureId}`)}
+                onClick={() => navigate(`/student/syllabus/${selectedLectureId}`)}
               >
                 강의계획서 조회
               </button>
