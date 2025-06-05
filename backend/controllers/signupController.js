@@ -16,10 +16,10 @@ async function userSignup(req, res) {
     console.log("회원가입 요청 데이터:", req.body);
 
     try {
-        // 1. USER_TB에 삽입
+        // USER_TB에 삽입
         await signupModel.insertUser(user_id, password, user_type);
 
-        // 2. 학생 또는 교수 분기
+        // 학생 또는 교수 분기
         if (user_type === 'student') {
             await signupModel.insertStudent(user_id, name, enrollment_status || 'enrolled', college, department, telephone, email);
         } else if (user_type === 'faculty') {

@@ -1,5 +1,6 @@
 const resetPwdModel = require("../models/resetpwdModel");
 
+// 비밀번호 초기화
 async function resetPassword(req, res) {
   const { user_id, name, email } = req.body;
 

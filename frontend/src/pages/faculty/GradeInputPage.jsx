@@ -1,48 +1,36 @@
-import React, { useState } from "react";
-
+import { useEffect, useState } from "react";
+import { useUser } from "../../context/UserContext";
 import { useParams } from "react-router-dom";
+import { getCourseData, getStudentData } from "../../apis/grade/profGrade";
 import ProfGrade from "../../components/GradeInput/ProfGrade";
 
-import { courseData } from "../../mocks/courseData";
-
-//강의 번호에 해당하는 과목 찾기
-function findCourseById(courseArray, targetCourseId) {
-  return courseArray.find((item) => item.course_id === targetCourseId);
-}
-
-//해당 강의를 듣는 학생 찾기 (우선은 임의의 배열 반환하도록 설정)
-function findStudentById(targetCourseId) {
-  const targetStudentData = [
-    {
-      student_id: "2022202063",
-      name: "농담곰",
-      college: "인공지능융합대학",
-      department: "컴퓨터정보공학부",
-    },
-    {
-      student_id: "2023202002",
-      name: "소두곰",
-      college: "인공지능융합대학",
-      department: "컴퓨터정보공학부",
-    },
-    {
-      student_id: "2021202010",
-      name: "하츄핑",
-      college: "인공지능융합대학",
-      department: "컴퓨터정보공학부",
-    },
-  ];
-  return targetStudentData;
-}
-
 function GradeInputPage() {
+  const { user } = useUser();
   const { courseId } = useParams();
-  const targetCourseData = findCourseById(courseData, Number(courseId));
-  const targetStudentData = findStudentById(Number(courseId));
-  console.log("강의 제목 : ", targetCourseData.course_name);
+  const [targetCourse, setTargetCourse] = useState([]); // 과목 정보
+  const [targetStudent, setTargetStudent] = useState([]); // 학생 정보
+
+  useEffect(() => {
+    if (!user) return; //user 없어도 계속 hook 호출
+
+    const fetchCourseInfo = async () => {
+      // 강의 정보 불러오기
+      const courseInfo = await getCourseData(courseId);
+      setTargetCourse(courseInfo);
+    };
+
+    const fetchStudentInfo = async () => {
+      // 학생 정보 불러오기
+      const studentInfo = await getStudentData(courseId);
+      setTargetStudent(studentInfo);
+    };
+
+    fetchCourseInfo();
+    fetchStudentInfo();
+  }, [user]);
 
   return (
-    <ProfGrade courseData={targetCourseData} studentData={targetStudentData} />
+    <ProfGrade courseData={targetCourse} studentData={targetStudent} />
   );
 }
 

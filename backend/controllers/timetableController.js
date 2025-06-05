@@ -1,5 +1,6 @@
 const timetableModel = require("../models/student/timetableModel");
 
+// 시간표 조회
 async function getTimetable(req, res) {
   const { student_id } = req.params;
 
