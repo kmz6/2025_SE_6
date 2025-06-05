@@ -80,10 +80,19 @@ const router = createBrowserRouter([
       { path: "qna/:lectureId", element: <QnAListPage /> },
       { path: "qna/:lectureId/:postId", element: <QnAPostPage /> },
       { path: "qna/:lectureId/write", element: <QnAWritePage /> },
-      { path: "/professor/notice/:lectureId/edit/:postId", element: <NoticeWritePage /> },
-      { path: "/professor/archives/:lectureId/edit/:postId", element: <ArchivesWritePage /> },
+      {
+        path: "/professor/notice/:lectureId/edit/:postId",
+        element: <NoticeWritePage />,
+      },
+      {
+        path: "/professor/archives/:lectureId/edit/:postId",
+        element: <ArchivesWritePage />,
+      },
       { path: "/qna/:lectureId/edit/:postId", element: <QnAWritePage /> },
-      { path: "/assignment/:lectureId/edit/:postId/:studientId", element: <AssignPostPage /> }
+      {
+        path: "/assignment/:lectureId/edit/:postId/:studientId",
+        element: <AssignPostPage />,
+      },
     ],
   },
   {
@@ -155,7 +164,7 @@ const router = createBrowserRouter([
           <ProtectedRoute allowedRoles={["faculty"]}>
             <GradeListPage />
           </ProtectedRoute>
-        )
+        ),
       },
       {
         path: "grade/input/:courseId",

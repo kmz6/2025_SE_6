@@ -24,21 +24,29 @@ export default function AssignSubmittedDetailPage() {
   const fetchAllData = async () => {
     try {
       setLoading(true);
-      const courseRes = await axiosInstance.get(`/api/lectures/${lectureId}/info`);
+      const courseRes = await axiosInstance.get(
+        `/api/lectures/${lectureId}/info`
+      );
       setCourseInfo({
         name: courseRes.data.course_name,
         code: courseRes.data.course_code,
       });
 
-      const assignmentRes = await axiosInstance.get(`/api/lectures/${lectureId}/assignments/${assignmentId}`);
+      const assignmentRes = await axiosInstance.get(
+        `/api/lectures/${lectureId}/assignments/${assignmentId}`
+      );
       if (assignmentRes.data.success) {
         setAssignment(assignmentRes.data.data);
       } else {
-        throw new Error(assignmentRes.data.message || "과제 정보를 불러올 수 없습니다.");
+        throw new Error(
+          assignmentRes.data.message || "과제 정보를 불러올 수 없습니다."
+        );
       }
 
       try {
-        const attachmentsRes = await axiosInstance.get(`/api/assignments/${assignmentId}/attachments`);
+        const attachmentsRes = await axiosInstance.get(
+          `/api/assignments/${assignmentId}/attachments`
+        );
         if (attachmentsRes.data.success) {
           setAssignmentAttachments(attachmentsRes.data.data || []);
         } else {
@@ -49,9 +57,13 @@ export default function AssignSubmittedDetailPage() {
       }
 
       try {
-        const submissionRes = await axiosInstance.get(`/api/lectures/${lectureId}/assignments/${assignmentId}/submissions`);
+        const submissionRes = await axiosInstance.get(
+          `/api/lectures/${lectureId}/assignments/${assignmentId}/submissions`
+        );
         if (submissionRes.data.success) {
-          const studentSubmission = submissionRes.data.data.find(sub => sub.author_id === studentId);
+          const studentSubmission = submissionRes.data.data.find(
+            (sub) => sub.author_id === studentId
+          );
           setSubmission(studentSubmission || null);
         } else {
           setSubmission(null);
@@ -60,8 +72,14 @@ export default function AssignSubmittedDetailPage() {
         setSubmission(null);
       }
     } catch (err) {
-      if (err.message.includes("과제 정보") || err.config?.url?.includes("/info")) {
-        setError(err.response?.data?.message || "필수 데이터를 불러오는 중 문제가 발생했습니다.");
+      if (
+        err.message.includes("과제 정보") ||
+        err.config?.url?.includes("/info")
+      ) {
+        setError(
+          err.response?.data?.message ||
+            "필수 데이터를 불러오는 중 문제가 발생했습니다."
+        );
       }
     } finally {
       setLoading(false);
@@ -77,7 +95,10 @@ export default function AssignSubmittedDetailPage() {
     if (!confirmed) return;
 
     try {
-      const response = await axiosInstance.delete(`/api/lectures/${lectureId}/assignments/${assignmentId}/submissions`, { data: { author_id: studentId } });
+      const response = await axiosInstance.delete(
+        `/api/lectures/${lectureId}/assignments/${assignmentId}/submissions`,
+        { data: { author_id: studentId } }
+      );
       if (response.data.success) {
         alert("제출물이 성공적으로 삭제되었습니다.");
         navigate(`/assignment/${lectureId}`);
@@ -85,7 +106,8 @@ export default function AssignSubmittedDetailPage() {
         throw new Error(response.data.message || "삭제에 실패했습니다.");
       }
     } catch (err) {
-      const errorMessage = err.response?.data?.message || "삭제 중 문제가 발생했습니다.";
+      const errorMessage =
+        err.response?.data?.message || "삭제 중 문제가 발생했습니다.";
       setError(errorMessage);
       alert(errorMessage);
     }
@@ -93,12 +115,22 @@ export default function AssignSubmittedDetailPage() {
 
   const formatDate = (dateString) => {
     if (!dateString) return "";
-    return new Date(dateString).toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" });
+    return new Date(dateString).toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
   };
 
   const formatDateTime = (dateString) => {
     if (!dateString) return "";
-    return new Date(dateString).toLocaleString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+    return new Date(dateString).toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   useEffect(() => {
@@ -147,12 +179,18 @@ export default function AssignSubmittedDetailPage() {
           <PostBox
             title={assignment.title}
             author={assignment.author_id}
-            date={`${formatDate(assignment.start_date)} ~ ${formatDate(assignment.end_date)}`}
+            date={`${formatDate(assignment.start_date)} ~ ${formatDate(
+              assignment.end_date
+            )}`}
             content={assignment.content}
-            attachment={assignmentAttachments.length > 0 ? {
-              name: assignmentAttachments[0].file_name,
-              url: assignmentAttachments[0].file_path,
-            } : null}
+            attachment={
+              assignmentAttachments.length > 0
+                ? {
+                    name: assignmentAttachments[0].file_name,
+                    url: assignmentAttachments[0].file_path,
+                  }
+                : null
+            }
           />
 
           {assignmentAttachments.length > 1 && (
@@ -161,10 +199,17 @@ export default function AssignSubmittedDetailPage() {
               <ul>
                 {assignmentAttachments.slice(1).map((att) => (
                   <li key={att.file_id}>
-                    <a href={att.file_path} target="_blank" rel="noopener noreferrer" className="attachment-link">
+                    <a
+                      href={att.file_path}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="attachment-link"
+                    >
                       {att.file_name}
                     </a>
-                    <span className="attachment-date">(업로드: {formatDateTime(att.created_at)})</span>
+                    <span className="attachment-date">
+                      (업로드: {formatDateTime(att.created_at)})
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -191,7 +236,9 @@ export default function AssignSubmittedDetailPage() {
             </div>
             <div className="submission-date">
               <span className="date-label">제출일시:</span>
-              <span className="date-value">{formatDateTime(submission.created_at)}</span>
+              <span className="date-value">
+                {formatDateTime(submission.created_at)}
+              </span>
             </div>
           </div>
         </>
@@ -200,7 +247,9 @@ export default function AssignSubmittedDetailPage() {
           <h2 className="box-title">학생 제출 과제</h2>
           <div className="no-submission-message">
             <p>아직 제출된 과제가 없습니다.</p>
-            <p className="submission-deadline">제출 마감: {formatDateTime(assignment?.end_date)}</p>
+            <p className="submission-deadline">
+              제출 마감: {formatDateTime(assignment?.end_date)}
+            </p>
           </div>
         </div>
       )}

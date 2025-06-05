@@ -21,7 +21,12 @@ export default function AssignSubmitListPage() {
   const formatDate = (dateStr) => {
     if (!dateStr) return "-";
     try {
-      return new Date(dateStr).toISOString().slice(0, 10);
+      const date = new Date(dateStr);
+      return date.toLocaleDateString("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
     } catch {
       return dateStr.slice(0, 10);
     }
@@ -104,7 +109,11 @@ export default function AssignSubmitListPage() {
       if (error.response?.status === 404) {
         alert("이미 삭제된 과제이거나 존재하지 않는 과제입니다.");
       } else {
-        alert(`과제 삭제 중 오류가 발생했습니다: ${error.response?.data?.message || error.message}`);
+        alert(
+          `과제 삭제 중 오류가 발생했습니다: ${
+            error.response?.data?.message || error.message
+          }`
+        );
       }
     }
   };
@@ -126,7 +135,9 @@ export default function AssignSubmitListPage() {
   }
 
   if (!assignment) {
-    return <div className="loading-message">과제 정보를 불러오는 중입니다...</div>;
+    return (
+      <div className="loading-message">과제 정보를 불러오는 중입니다...</div>
+    );
   }
 
   return (
@@ -135,7 +146,9 @@ export default function AssignSubmitListPage() {
 
       <PostHeader
         subjectName={assignment.title}
-        subjectCode={`${formatDate(assignment.start_date)} ~ ${formatDate(assignment.end_date)}`}
+        subjectCode={`${formatDate(assignment.start_date)} ~ ${formatDate(
+          assignment.end_date
+        )}`}
         authorId={assignment.author_id}
         currentUserId={currentUserId}
         onEdit={handleEditAssignment}
@@ -145,7 +158,9 @@ export default function AssignSubmitListPage() {
       <PostBox
         title={assignment.title}
         author={assignment.author_id || "교수명"}
-        date={`제출 기간: ${formatDate(assignment.start_date)} ~ ${formatDate(assignment.end_date)}`}
+        date={`제출 기간: ${formatDate(assignment.start_date)} ~ ${formatDate(
+          assignment.end_date
+        )}`}
         content={assignment.content}
         attachment={null}
       />
@@ -156,7 +171,10 @@ export default function AssignSubmitListPage() {
       </div>
 
       {error && (
-        <div className="error-message" style={{ color: "red", margin: "20px 0" }}>
+        <div
+          className="error-message"
+          style={{ color: "red", margin: "20px 0" }}
+        >
           {error}
         </div>
       )}
@@ -165,7 +183,9 @@ export default function AssignSubmitListPage() {
         <div className="loading-message">제출 현황을 불러오는 중...</div>
       ) : submittedAssignments.length === 0 ? (
         <div className="no-submissions-message">
-          {error ? "제출 현황을 불러올 수 없습니다." : "아직 제출된 과제가 없습니다."}
+          {error
+            ? "제출 현황을 불러올 수 없습니다."
+            : "아직 제출된 과제가 없습니다."}
         </div>
       ) : (
         <table className="submit-table">
@@ -190,7 +210,9 @@ export default function AssignSubmitListPage() {
                 <tr
                   key={`${submission.submission_id}-${studentId}`}
                   onClick={() =>
-                    navigate(`/assignment/${lectureId}/${assignmentId}/${studentId}`)
+                    navigate(
+                      `/assignment/${lectureId}/${assignmentId}/${studentId}`
+                    )
                   }
                   style={{ cursor: "pointer" }}
                   className="submission-row"
@@ -200,7 +222,11 @@ export default function AssignSubmitListPage() {
                   <td>{studentName}</td>
                   <td className="submission-title">{submissionTitle}</td>
                   <td>{formatDateTime(submission.created_at)}</td>
-                  <td className={`status-cell ${status === "제출 완료" ? "submitted" : "not-submitted"}`}>
+                  <td
+                    className={`status-cell ${
+                      status === "제출 완료" ? "submitted" : "not-submitted"
+                    }`}
+                  >
                     {status}
                   </td>
                 </tr>

@@ -24,7 +24,9 @@ export default function AssignWritePage() {
 
   const fetchCourseInfo = async () => {
     try {
-      const response = await axiosInstance.get(`/api/lectures/${lectureId}/info`);
+      const response = await axiosInstance.get(
+        `/api/lectures/${lectureId}/info`
+      );
       setCourseName(response.data.course_name);
       setCourseCode(response.data.course_code);
     } catch (error) {
@@ -34,7 +36,9 @@ export default function AssignWritePage() {
 
   const fetchAssignment = async () => {
     try {
-      const res = await axiosInstance.get(`/api/lectures/${lectureId}/assignments/${postId}`);
+      const res = await axiosInstance.get(
+        `/api/lectures/${lectureId}/assignments/${postId}`
+      );
       const data = res.data;
       setInitialValues({
         title: data.title ?? "",
@@ -117,7 +121,7 @@ export default function AssignWritePage() {
 
       <div className="date-inputs">
         <label>
-          제출 시작일: 
+          제출 시작일:
           <input
             type="date"
             value={initialValues.start_date ?? ""}
@@ -127,7 +131,7 @@ export default function AssignWritePage() {
           />
         </label>
         <label style={{ marginLeft: "1rem" }}>
-          제출 마감일: 
+          제출 마감일:
           <input
             type="date"
             value={initialValues.end_date ?? ""}

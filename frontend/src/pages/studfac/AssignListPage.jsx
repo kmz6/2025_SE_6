@@ -42,7 +42,9 @@ export default function AssignListPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await axiosInstance.get(`/api/lectures/${lectureId}/assignments`);
+      const res = await axiosInstance.get(
+        `/api/lectures/${lectureId}/assignments`
+      );
       let assignmentData = [];
       if (res.data.success) {
         assignmentData = res.data.data || [];
@@ -146,7 +148,10 @@ export default function AssignListPage() {
     if (!dateString) return "-";
     try {
       const date = new Date(dateString);
-      return date.toISOString().slice(0, 10);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
     } catch {
       return dateString.slice(0, 10);
     }
@@ -173,7 +178,10 @@ export default function AssignListPage() {
         userType={userType}
       />
       {error && (
-        <div className="error-message" style={{ color: "red", margin: "20px 0" }}>
+        <div
+          className="error-message"
+          style={{ color: "red", margin: "20px 0" }}
+        >
           {error}
         </div>
       )}
@@ -199,7 +207,10 @@ export default function AssignListPage() {
               const status = assignment.submitted ? "제출 완료" : "미제출";
               const submitRate =
                 assignment.totalStudents && assignment.totalStudents > 0
-                  ? `${((assignment.submittedCount / assignment.totalStudents) * 100).toFixed(1)}%`
+                  ? `${(
+                      (assignment.submittedCount / assignment.totalStudents) *
+                      100
+                    ).toFixed(1)}%`
                   : assignment.totalStudents === 0
                   ? "0%"
                   : "-";
@@ -210,7 +221,9 @@ export default function AssignListPage() {
               return (
                 <tr
                   key={assignment.assignment_id}
-                  onClick={() => handleRowClick(assignment.assignment_id, status)}
+                  onClick={() =>
+                    handleRowClick(assignment.assignment_id, status)
+                  }
                   style={{ cursor: "pointer" }}
                   className={isOverdue ? "overdue" : ""}
                 >
@@ -222,7 +235,8 @@ export default function AssignListPage() {
                     )}
                   </td>
                   <td className="date-cell">
-                    {formatDate(assignment.start_date)} <br />~ {formatDate(assignment.end_date)}
+                    {formatDate(assignment.start_date)} <br />~{" "}
+                    {formatDate(assignment.end_date)}
                   </td>
                   {userType === "faculty" ? (
                     <td>{submitRate}</td>
