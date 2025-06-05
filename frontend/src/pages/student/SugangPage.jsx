@@ -127,7 +127,7 @@ function SugangPage() {
   const displayedCourses = (
     showFavoritesOnly
       ? allCourses.filter((course) => isFavorite(course.course_id))
-      : searchResults.length > 0
+      : searchTerm
       ? searchResults
       : allCourses
   ).filter(
