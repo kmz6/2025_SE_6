@@ -9,47 +9,26 @@ import {
   getRegisteredCourses,
 } from "../../apis/sugang/sugang";
 import { useUser } from "../../context/UserContext";
+import useFavorites from "../../hooks/Sugang/useFavorites";
 
 function SugangPage() {
   const navigate = useNavigate();
   const { user, loading } = useUser();
+  const { favorites, toggleFavorite, isFavorite } = useFavorites(user?.user_id);
   const [inputValue, setInputValue] = useState("");
   const [allCourses, setAllCourses] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [selected, setSelected] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [favorites, setFavorites] = useState([]);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+
   const totalCredit = selected
     .filter(
       (course) => course.course_year === 2025 && course.course_semester === 1
     )
     .reduce((sum, course) => sum + (course.credit || 0), 0);
-
-  const loadFavorites = (userId) => {
-    if (!userId) return [];
-    try {
-      const stored = localStorage.getItem(`favorites_${userId}`);
-      return stored ? JSON.parse(stored) : [];
-    } catch (error) {
-      console.log("즐겨찾기 로드 실패");
-      return [];
-    }
-  };
-
-  const saveFavorites = (userId, favoritesData) => {
-    if (!userId) return;
-    try {
-      localStorage.setItem(
-        `favorites_${userId}`,
-        JSON.stringify(favoritesData)
-      );
-    } catch (error) {
-      console.log("즐겨찾기 저장 실패");
-    }
-  };
 
   useEffect(() => {
     const fetchAllCourses = async () => {
@@ -79,25 +58,6 @@ function SugangPage() {
       setSelected([]);
     }
   }, [user, loading]);
-
-  useEffect(() => {
-    if (user?.user_id) {
-      const userFavorites = loadFavorites(user.user_id);
-      setFavorites(userFavorites);
-      setIsInitialLoad(false);
-    } else {
-      setFavorites([]);
-      setIsInitialLoad(true);
-    }
-  }, [user?.user_id]);
-
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
-
-  useEffect(() => {
-    if (user?.user_id && !isInitialLoad) {
-      saveFavorites(user.user_id, favorites);
-    }
-  }, [favorites, user?.user_id, isInitialLoad]);
 
   const handleApply = async (lecture) => {
     if (!user) return;
@@ -164,21 +124,9 @@ function SugangPage() {
     }
   };
 
-  const toggleFavorite = (courseId) => {
-    if (!user?.user_id) return;
-
-    setFavorites((prevFavorites) => {
-      if (prevFavorites.includes(courseId)) {
-        return prevFavorites.filter((id) => id !== courseId);
-      } else {
-        return [...prevFavorites, courseId];
-      }
-    });
-  };
-
   const displayedCourses = (
     showFavoritesOnly
-      ? allCourses.filter((course) => favorites.includes(course.course_id))
+      ? allCourses.filter((course) => isFavorite(course.course_id))
       : searchResults.length > 0
       ? searchResults
       : allCourses
@@ -237,10 +185,10 @@ function SugangPage() {
                 <S.LectureInfo>
                   <S.LectureTitleRow>
                     <S.FavoriteStar
-                      isFavorite={favorites.includes(course.course_id)}
+                      isFavorite={isFavorite(course.course_id)}
                       onClick={() => toggleFavorite(course.course_id)}
                     >
-                      {favorites.includes(course.course_id) ? "★" : "☆"}
+                      {isFavorite(course.course_id) ? "★" : "☆"}
                     </S.FavoriteStar>
                     과목명: {course.course_name}
                   </S.LectureTitleRow>
@@ -293,10 +241,10 @@ function SugangPage() {
                 <S.LectureInfo>
                   <S.LectureTitleRow>
                     <S.FavoriteStar
-                      isFavorite={favorites.includes(course.course_id)}
+                      isFavorite={isFavorite(course.course_id)}
                       onClick={() => toggleFavorite(course.course_id)}
                     >
-                      {favorites.includes(course.course_id) ? "★" : "☆"}
+                      {isFavorite(course.course_id) ? "★" : "☆"}
                     </S.FavoriteStar>
                     과목명: {course.course_name}
                   </S.LectureTitleRow>
