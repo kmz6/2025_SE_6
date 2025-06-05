@@ -78,7 +78,7 @@ export default function AssignSubmittedDetailPage() {
       ) {
         setError(
           err.response?.data?.message ||
-            "필수 데이터를 불러오는 중 문제가 발생했습니다."
+          "필수 데이터를 불러오는 중 문제가 발생했습니다."
         );
       }
     } finally {
@@ -178,7 +178,7 @@ export default function AssignSubmittedDetailPage() {
           <h2 className="box-title">출제된 과제</h2>
           <PostBox
             title={assignment.title}
-            author={assignment.author_id}
+            author={assignment.name}
             date={`${formatDate(assignment.start_date)} ~ ${formatDate(
               assignment.end_date
             )}`}
@@ -186,9 +186,9 @@ export default function AssignSubmittedDetailPage() {
             attachment={
               assignmentAttachments.length > 0
                 ? {
-                    name: assignmentAttachments[0].file_name,
-                    url: assignmentAttachments[0].file_path,
-                  }
+                  name: assignmentAttachments[0].file_name,
+                  url: assignmentAttachments[0].file_path,
+                }
                 : null
             }
           />

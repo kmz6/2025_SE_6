@@ -39,7 +39,7 @@ export default function AssignWritePage() {
       const res = await axiosInstance.get(
         `/api/lectures/${lectureId}/assignments/${postId}`
       );
-      const data = res.data;
+      const data = res.data.data;
       setInitialValues({
         title: data.title ?? "",
         content: data.content ?? "",
