@@ -11,6 +11,7 @@ const myRouter = require("./routes/my");
 const memberRouter = require("./routes/staff/member");
 const resetpwdRouter = require("./routes/resetpwd");
 const studentRouter = require("./routes/student");
+const facultyLectureRouter = require("./routes/faculty/course");
 const courseRouter = require("./routes/common/course");
 const sugangRouter = require("./routes/student/sugang");
 
@@ -46,6 +47,7 @@ app.use("/staff", memberRouter);
 app.use("/users/resetpwd", resetpwdRouter);
 app.use("/api/student", studentRouter);
 app.use("/api/courses", courseRouter);
+app.use("/api/faculty", facultyLectureRouter);
 
 app.use("/api", noticeRouter);
 app.use("/api", materialRouter);

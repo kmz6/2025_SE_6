@@ -6,23 +6,23 @@ import { useLectureDetail } from "../../hooks/useLectureDetail";
 import { useUser } from "../../context/UserContext";
 import { FaBullhorn, FaQuestionCircle } from "react-icons/fa";
 
-export default function LectureRoom() {
+export default function LectureRoomPage() {
   const navigate = useNavigate();
   const { user } = useUser();
   const { lectureId: paramLectureId } = useParams();
-  const studentId = user?.user_id;
 
-  const { data: lectures = [], isLoading } = useMyLectures(studentId);
+  const role = user?.user_type === "faculty" ? "faculty" : "student";
+  const userId = user?.user_id;
+
+  const { data: lectures = [], isLoading } = useMyLectures(userId, role);
   const [selectedLectureId, setSelectedLectureId] = useState(paramLectureId);
 
-  // 과목이 없을 경우 처리
   useEffect(() => {
     if (!isLoading && lectures.length === 0) {
       setSelectedLectureId(null);
       return;
     }
 
-    // paramLectureId가 없거나 lectures에 존재하지 않으면 강제 이동
     const validIds = lectures.map((lec) => String(lec.course_id));
     if ((!paramLectureId || !validIds.includes(paramLectureId)) && lectures.length > 0) {
       const firstId = String(lectures[0].course_id);
@@ -48,8 +48,8 @@ export default function LectureRoom() {
       <div className="container">
         <div className="layout">
           <div className="main">
-            <h2>수강 중인 과목이나 관리하는 과목이 없습니다.</h2>
-            <p>수강 신청 혹은 과목 등록을 진행해주세요.</p>
+            <h2>{role === "student" ? "수강 중인 과목이 없습니다." : "운영 중인 과목이 없습니다."}</h2>
+            <p>과목 등록 또는 수강 신청을 진행해주세요.</p>
           </div>
         </div>
       </div>
@@ -71,17 +71,13 @@ export default function LectureRoom() {
             <div className="top-right-buttons">
               <button
                 className="top-right-btn"
-                onClick={() =>
-                  navigate(`/student/attendance/${selectedLectureId}`)
-                }
+                onClick={() => navigate(`/professor/attendance/${selectedLectureId}`)}
               >
                 출결 조회
               </button>
               <button
                 className="top-right-btn"
-                onClick={() =>
-                  navigate(`/student/Syllabus/${selectedLectureId}`)
-                }
+                onClick={() => navigate(`/professor/syllabus/${selectedLectureId}`)}
               >
                 강의계획서 조회
               </button>

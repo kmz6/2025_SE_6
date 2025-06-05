@@ -14,13 +14,32 @@ export default function AssignSubmitListPage() {
   const currentUserId = user?.user_id;
 
   const [assignment, setAssignment] = useState(null);
-  const [studentList, setStudentList] = useState([]);
-  const [submissionStatuses, setSubmissionStatuses] = useState({});
-  const [submissionDates, setSubmissionDates] = useState({});
+  const [submittedAssignments, setSubmittedAssignments] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // 날짜 포맷 유틸
   const formatDate = (dateStr) => {
-    return dateStr?.slice(0, 10) || "-";
+    if (!dateStr) return "-";
+    try {
+      return new Date(dateStr).toISOString().slice(0, 10);
+    } catch {
+      return dateStr.slice(0, 10);
+    }
+  };
+
+  const formatDateTime = (dateStr) => {
+    if (!dateStr) return "-";
+    try {
+      return new Date(dateStr).toLocaleString("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch {
+      return dateStr.slice(0, 16).replace("T", " ");
+    }
   };
 
   const fetchAssignment = async () => {
@@ -28,75 +47,87 @@ export default function AssignSubmitListPage() {
       const res = await axiosInstance.get(
         `/api/lectures/${lectureId}/assignments/${assignmentId}`
       );
-      setAssignment(res.data);
-    } catch (error) {
-      console.error("과제 조회 실패:", error);
+      const assignmentData = res.data.success ? res.data.data : res.data;
+      setAssignment(assignmentData);
+    } catch {
+      setError("과제 정보를 불러오는데 실패했습니다.");
     }
   };
 
-  const fetchStudents = async () => {
-    try {
-      const res = await axiosInstance.get(
-        `/api/lectures/${lectureId}/students`
-      );
-      setStudentList(res.data);
-    } catch (error) {
-      console.error("학생 목록 조회 실패:", error);
-    }
-  };
-
-  const fetchSubmissions = async () => {
+  const fetchSubmittedAssignments = async () => {
+    setLoading(true);
     try {
       const res = await axiosInstance.get(
         `/api/lectures/${lectureId}/assignments/${assignmentId}/submissions`
       );
-      const statuses = {};
-      const dates = {};
-
-      res.data.forEach((submission) => {
-        const { author_id, created_at } = submission;
-        statuses[author_id] = created_at ? "제출" : "미제출";
-        if (created_at) {
-          dates[author_id] = formatDate(created_at);
-        }
-      });
-
-      setSubmissionStatuses(statuses);
-      setSubmissionDates(dates);
+      const submissionData = res.data.success ? res.data.data : res.data;
+      setSubmittedAssignments(submissionData || []);
     } catch (error) {
-      console.error("제출 상태 조회 실패:", error);
+      if (error.response?.status === 404) {
+        setSubmittedAssignments([]);
+      } else {
+        setError("제출 현황을 불러오는데 실패했습니다.");
+        setSubmittedAssignments([]);
+      }
     }
+    setLoading(false);
   };
 
   useEffect(() => {
-    if (lectureId && assignmentId) {
+    if (lectureId && assignmentId && user) {
       fetchAssignment();
-      fetchStudents();
-      fetchSubmissions();
+      fetchSubmittedAssignments();
     }
-  }, [lectureId, assignmentId]);
+  }, [lectureId, assignmentId, user]);
 
   const handleEditAssignment = () => {
-    navigate(`/assignment/edit/${lectureId}/${assignmentId}`);
+    navigate(`/professor/assignment/${lectureId}/edit/${assignmentId}`);
   };
 
   const handleDeleteAssignment = async () => {
-    const confirmDelete = window.confirm("출제된 과제를 정말 삭제하시겠습니까?");
+    const confirmDelete = window.confirm(
+      "출제된 과제를 정말 삭제하시겠습니까?\n관련된 모든 제출물과 첨부파일도 함께 삭제됩니다."
+    );
     if (!confirmDelete) return;
 
     try {
-      await axiosInstance.delete(
+      const res = await axiosInstance.delete(
         `/api/lectures/${lectureId}/assignments/${assignmentId}`
       );
-      alert("과제 삭제 완료");
-      navigate(`/assignment/${lectureId}`);
+      if (res.data.success || res.status === 200) {
+        alert("과제가 성공적으로 삭제되었습니다.");
+        navigate(`/assignment/${lectureId}`);
+      } else {
+        throw new Error(res.data.message || "삭제 실패");
+      }
     } catch (error) {
-      console.error("과제 삭제 실패:", error);
-      alert("과제 삭제 중 오류가 발생했습니다.");
+      if (error.response?.status === 404) {
+        alert("이미 삭제된 과제이거나 존재하지 않는 과제입니다.");
+      } else {
+        alert(`과제 삭제 중 오류가 발생했습니다: ${error.response?.data?.message || error.message}`);
+      }
     }
   };
 
-  if (!assignment) return <div className="loading-message">과제 정보를 불러오는 중입니다...</div>;
+  if (!user) {
+    return <div className="error-message">로그인이 필요합니다.</div>;
+  }
+
+  if (error && !assignment) {
+    return (
+      <div className="error-container">
+        <h1 className="board-title">제출된 과제 목록</h1>
+        <div className="error-message">{error}</div>
+        <button onClick={() => navigate(`/assignment/${lectureId}`)}>
+          과제 목록으로 돌아가기
+        </button>
+      </div>
+    );
+  }
+
+  if (!assignment) {
+    return <div className="loading-message">과제 정보를 불러오는 중입니다...</div>;
+  }
 
   return (
     <div className="assign-submit-list-container">
@@ -114,47 +145,79 @@ export default function AssignSubmitListPage() {
       <PostBox
         title={assignment.title}
         author={assignment.author_id || "교수명"}
-        date={`${formatDate(assignment.start_date)} ~ ${formatDate(assignment.end_date)}`}
+        date={`제출 기간: ${formatDate(assignment.start_date)} ~ ${formatDate(assignment.end_date)}`}
         content={assignment.content}
         attachment={null}
       />
 
-      <table className="submit-table">
-        <thead>
-          <tr>
-            <th>No.</th>
-            <th>학번</th>
-            <th>이름</th>
-            <th>제출일</th>
-            <th>제출상태</th>
-          </tr>
-        </thead>
-        <tbody>
-          {studentList.map((student, idx) => {
-            const studentId = student.student_id;
-            const isSubmitted = submissionStatuses[studentId] === "제출";
+      <div className="submission-summary">
+        <h3>제출 현황</h3>
+        <p>총 제출 건수: {submittedAssignments.length}건</p>
+      </div>
 
-            return (
-              <tr
-                key={studentId}
-                className={isSubmitted ? "clickable" : ""}
-                onClick={() =>
-                  isSubmitted &&
-                  navigate(`/assignment/${lectureId}/${assignmentId}/${studentId}`)
-                }
-              >
-                <td>{idx + 1}</td>
-                <td>{studentId}</td>
-                <td>{student.name}</td>
-                <td>{submissionDates[studentId] || "-"}</td>
-                <td className={isSubmitted ? "submitted" : "not-submitted"}>
-                  {isSubmitted ? "제출" : "미제출"}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      {error && (
+        <div className="error-message" style={{ color: "red", margin: "20px 0" }}>
+          {error}
+        </div>
+      )}
+
+      {loading ? (
+        <div className="loading-message">제출 현황을 불러오는 중...</div>
+      ) : submittedAssignments.length === 0 ? (
+        <div className="no-submissions-message">
+          {error ? "제출 현황을 불러올 수 없습니다." : "아직 제출된 과제가 없습니다."}
+        </div>
+      ) : (
+        <table className="submit-table">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>학번</th>
+              <th>이름</th>
+              <th>제출 제목</th>
+              <th>제출일시</th>
+              <th>제출상태</th>
+            </tr>
+          </thead>
+          <tbody>
+            {submittedAssignments.map((submission, idx) => {
+              const studentId = submission.author_id;
+              const studentName = submission.student_name || "-";
+              const submissionTitle = submission.title || "-";
+              const status = submission.status || "제출 완료";
+
+              return (
+                <tr
+                  key={`${submission.submission_id}-${studentId}`}
+                  onClick={() =>
+                    navigate(`/assignment/${lectureId}/${assignmentId}/${studentId}`)
+                  }
+                  style={{ cursor: "pointer" }}
+                  className="submission-row"
+                >
+                  <td>{idx + 1}</td>
+                  <td>{studentId}</td>
+                  <td>{studentName}</td>
+                  <td className="submission-title">{submissionTitle}</td>
+                  <td>{formatDateTime(submission.created_at)}</td>
+                  <td className={`status-cell ${status === "제출 완료" ? "submitted" : "not-submitted"}`}>
+                    {status}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
+
+      <div className="action-buttons">
+        <button
+          onClick={() => navigate(`/assignment/${lectureId}`)}
+          className="back-button"
+        >
+          과제 목록으로 돌아가기
+        </button>
+      </div>
     </div>
   );
 }

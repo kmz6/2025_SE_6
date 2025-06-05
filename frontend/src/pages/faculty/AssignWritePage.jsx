@@ -1,21 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import PostHeader from "../../components/Post/PostHeader";
+import { useNavigate, useParams } from "react-router-dom";
+import BoardHeader from "../../components/Board/BoardHeader";
 import PostWriteForm from "../../components/Post/PostWriteForm";
 import "./AssignWritePage.css";
 import axiosInstance from "../../apis/axiosInstance";
 import { useUser } from "../../context/UserContext";
 
 export default function AssignWritePage() {
-  const { lectureId } = useParams();
+  const { lectureId, postId } = useParams();
+  const isEdit = Boolean(postId);
   const navigate = useNavigate();
   const { user } = useUser();
 
   const [courseName, setCourseName] = useState("");
   const [courseCode, setCourseCode] = useState("");
-  const [initialValues, setInitialValues] = useState({ title: "", content: "", start_date: "", end_date: "" });
+  const [initialValues, setInitialValues] = useState({
+    title: "",
+    content: "",
+    start_date: "",
+    end_date: "",
+  });
+  const [loading, setLoading] = useState(true);
 
-  const fetchCourseName = async () => {
+  const fetchCourseInfo = async () => {
     try {
       const response = await axiosInstance.get(`/api/lectures/${lectureId}/info`);
       setCourseName(response.data.course_name);
@@ -25,9 +32,33 @@ export default function AssignWritePage() {
     }
   };
 
+  const fetchAssignment = async () => {
+    try {
+      const res = await axiosInstance.get(`/api/lectures/${lectureId}/assignments/${postId}`);
+      const data = res.data;
+      setInitialValues({
+        title: data.title ?? "",
+        content: data.content ?? "",
+        start_date: data.start_date?.slice(0, 10) ?? "",
+        end_date: data.end_date?.slice(0, 10) ?? "",
+      });
+    } catch (error) {
+      console.error("기존 과제 불러오기 실패:", error);
+    }
+  };
+
   useEffect(() => {
-    fetchCourseName();
-  }, [lectureId]);
+    const load = async () => {
+      await fetchCourseInfo();
+      if (isEdit) {
+        await fetchAssignment();
+      }
+      setLoading(false);
+    };
+    load();
+  }, [lectureId, postId]);
+
+  if (loading) return <div>로딩 중...</div>;
 
   const handleSubmit = async (formData, values) => {
     const { start_date, end_date } = values;
@@ -41,7 +72,6 @@ export default function AssignWritePage() {
       return;
     }
 
-    // 날짜 비교: 시간을 00:00:00으로 초기화하고 비교
     const startDate = new Date(start_date).setHours(0, 0, 0, 0);
     const endDate = new Date(end_date).setHours(0, 0, 0, 0);
 
@@ -50,45 +80,60 @@ export default function AssignWritePage() {
       return;
     }
 
-    try {
-      const newAssignment = {
-        title: values.title,
-        content: values.content,
-        start_date: start_date,
-        end_date: end_date,
-        author_id: user.user_id,
-      };
+    const newAssignment = {
+      title: values.title,
+      content: values.content,
+      start_date: start_date,
+      end_date: end_date,
+      author_id: user.user_id,
+    };
 
-      await axiosInstance.post(`/api/lectures/${lectureId}/assignments`, newAssignment);
-      alert("과제 등록 완료");
+    try {
+      if (isEdit) {
+        await axiosInstance.put(
+          `/api/lectures/${lectureId}/assignments/${postId}`,
+          newAssignment
+        );
+        alert("과제가 수정되었습니다.");
+      } else {
+        await axiosInstance.post(
+          `/api/lectures/${lectureId}/assignments`,
+          newAssignment
+        );
+        alert("과제가 등록되었습니다.");
+      }
       navigate(`/assignment/${lectureId}`);
     } catch (error) {
-      console.error("과제 등록 실패:", error);
-      alert("과제 등록 중 오류 발생");
+      console.error("과제 등록/수정 실패:", error);
+      alert("과제 처리 중 오류 발생");
     }
   };
 
   return (
     <div className="assign-write-container">
-      <h1 className="board-title">과제 등록</h1>
+      <h1 className="board-title">{isEdit ? "과제 수정" : "과제 등록"}</h1>
 
-      <PostHeader subjectName={courseName} subjectCode={courseCode} />
+      <BoardHeader subjectName={courseName} subjectCode={courseCode} />
 
       <div className="date-inputs">
         <label>
-          제출 시작일:{" "}
+          제출 시작일: 
           <input
             type="date"
-            value={initialValues.start_date}
-            onChange={(e) => setInitialValues({ ...initialValues, start_date: e.target.value })}
+            value={initialValues.start_date ?? ""}
+            onChange={(e) =>
+              setInitialValues({ ...initialValues, start_date: e.target.value })
+            }
           />
         </label>
         <label style={{ marginLeft: "1rem" }}>
-          제출 마감일:{" "}
+          제출 마감일: 
           <input
             type="date"
-            value={initialValues.end_date}
-            onChange={(e) => setInitialValues({ ...initialValues, end_date: e.target.value })}
+            value={initialValues.end_date ?? ""}
+            onChange={(e) =>
+              setInitialValues({ ...initialValues, end_date: e.target.value })
+            }
           />
         </label>
       </div>
@@ -96,7 +141,7 @@ export default function AssignWritePage() {
       <PostWriteForm
         initialValues={initialValues}
         onSubmit={handleSubmit}
-        submitLabel="등록"
+        submitLabel={isEdit ? "수정" : "등록"}
       />
     </div>
   );

@@ -30,7 +30,7 @@
 /* 작성자 */
 .board-table th:nth-child(3),
 .board-table td:nth-child(3) {
-  width: 10%;
+  width: 15%;
   text-align: center;
 }
 

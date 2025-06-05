@@ -141,7 +141,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "assignment/edit/:lectureId/:postId",
+        path: "assignment/:lectureId/edit/:postId",
         element: (
           <ProtectedRoute allowedRoles={["faculty"]}>
             <AssignWritePage />
