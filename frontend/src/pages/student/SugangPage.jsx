@@ -2,196 +2,33 @@ import { useState, useEffect } from "react";
 import * as S from "../../styles/SugangPage.style";
 import { FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import {
-  searchCourses,
-  registerCourse,
-  deleteCourse,
-  getRegisteredCourses,
-} from "../../apis/sugang/sugang";
 import { useUser } from "../../context/UserContext";
+import useCourseManagement from "../../hooks/Sugang/useCourseManagement";
 
 function SugangPage() {
   const navigate = useNavigate();
   const { user, loading } = useUser();
-  const [inputValue, setInputValue] = useState("");
-  const [allCourses, setAllCourses] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [selected, setSelected] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [favorites, setFavorites] = useState([]);
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-  const totalCredit = selected
-    .filter(
-      (course) => course.course_year === 2025 && course.course_semester === 1
-    )
-    .reduce((sum, course) => sum + (course.credit || 0), 0);
 
-  const loadFavorites = (userId) => {
-    if (!userId) return [];
-    try {
-      const stored = localStorage.getItem(`favorites_${userId}`);
-      return stored ? JSON.parse(stored) : [];
-    } catch (error) {
-      console.log("즐겨찾기 로드 실패");
-      return [];
-    }
-  };
+  const {
+    inputValue,
+    setInputValue,
+    onSearchClick,
+    searchTerm,
+    displayedCourses,
+    selected,
+    handleApply,
+    handleDelete,
+    showModal,
+    modalMessage,
+    setShowModal,
+    totalCredit,
+    isFavorite,
+    toggleFavorite,
+    showFavoritesOnly,
+    setShowFavoritesOnly,
+  } = useCourseManagement(user, loading);
 
-  const saveFavorites = (userId, favoritesData) => {
-    if (!userId) return;
-    try {
-      localStorage.setItem(
-        `favorites_${userId}`,
-        JSON.stringify(favoritesData)
-      );
-    } catch (error) {
-      console.log("즐겨찾기 저장 실패");
-    }
-  };
-
-  useEffect(() => {
-    const fetchAllCourses = async () => {
-      try {
-        const results = await searchCourses("", user?.user_id);
-        setAllCourses(results);
-      } catch (err) {
-        console.log("전체 과목 불러오기 실패");
-      }
-    };
-    if (user) {
-      fetchAllCourses();
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (!loading && user) {
-      (async () => {
-        try {
-          const registered = await getRegisteredCourses(user.user_id);
-          setSelected(registered);
-        } catch (error) {
-          console.log("아직 신청 과목x or 에러");
-        }
-      })();
-    } else {
-      setSelected([]);
-    }
-  }, [user, loading]);
-
-  useEffect(() => {
-    if (user?.user_id) {
-      const userFavorites = loadFavorites(user.user_id);
-      setFavorites(userFavorites);
-      setIsInitialLoad(false);
-    } else {
-      setFavorites([]);
-      setIsInitialLoad(true);
-    }
-  }, [user?.user_id]);
-
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
-
-  useEffect(() => {
-    if (user?.user_id && !isInitialLoad) {
-      saveFavorites(user.user_id, favorites);
-    }
-  }, [favorites, user?.user_id, isInitialLoad]);
-
-  const handleApply = async (lecture) => {
-    if (!user) return;
-
-    const isConflict = selected
-      .filter((l) => l.course_year === 2025 && l.course_semester === 1)
-      .some((l) =>
-        l.course_times.some((lt) =>
-          lecture.course_times.some(
-            (t) =>
-              t.course_day === lt.course_day &&
-              t.course_period === lt.course_period
-          )
-        )
-      );
-
-    if (isConflict) {
-      setModalMessage("해당 시간에는 다른 강의가 있어 신청할 수 없습니다.");
-      setShowModal(true);
-      return;
-    }
-
-    const creditAfterAdd = totalCredit + (lecture.credit || 0);
-    if (creditAfterAdd > 19) {
-      setModalMessage("신청할 수 있는 학점(19학점)을 초과하였습니다.");
-      setShowModal(true);
-      return;
-    }
-
-    try {
-      await registerCourse({
-        user_id: user.user_id,
-        course_id: lecture.course_id,
-      });
-      setSelected([...selected, lecture]);
-    } catch (err) {
-      console.log("수강 신청 실패");
-    }
-  };
-
-  const handleDelete = async (courseId) => {
-    if (!user) return;
-    try {
-      const data = {
-        user_id: user.user_id,
-        course_id: courseId,
-      };
-      await deleteCourse(data);
-      setSelected(selected.filter((l) => l.course_id !== courseId));
-    } catch (err) {
-      console.log("수강 삭제 실패");
-    }
-  };
-
-  const onSearchClick = async () => {
-    if (!inputValue.trim()) return;
-    setSearchTerm(inputValue.trim());
-    try {
-      if (!user) return;
-      const results = await searchCourses(inputValue.trim(), user.user_id);
-      setSearchResults(results);
-    } catch (err) {
-      console.log("검색 중 오류");
-    }
-  };
-
-  const toggleFavorite = (courseId) => {
-    if (!user?.user_id) return;
-
-    setFavorites((prevFavorites) => {
-      if (prevFavorites.includes(courseId)) {
-        return prevFavorites.filter((id) => id !== courseId);
-      } else {
-        return [...prevFavorites, courseId];
-      }
-    });
-  };
-
-  const displayedCourses = (
-    showFavoritesOnly
-      ? allCourses.filter((course) => favorites.includes(course.course_id))
-      : searchResults.length > 0
-      ? searchResults
-      : allCourses
-  ).filter(
-    (course) =>
-      course.course_year === 2025 &&
-      course.course_semester === 1 &&
-      !selected.some((sel) => sel.course_id === course.course_id)
-  );
-
-  if (loading) {
-    return <p>로딩 중...</p>;
-  }
+  if (loading) return <p>로딩 중...</p>;
 
   return (
     <S.Container>
@@ -214,9 +51,7 @@ function SugangPage() {
             placeholder="과목명 검색"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") onSearchClick();
-            }}
+            onKeyDown={(e) => e.key === "Enter" && onSearchClick()}
           />
           <S.SearchButton onClick={onSearchClick}>검색</S.SearchButton>
           <S.FavoriteToggleButton
@@ -237,18 +72,17 @@ function SugangPage() {
                 <S.LectureInfo>
                   <S.LectureTitleRow>
                     <S.FavoriteStar
-                      isFavorite={favorites.includes(course.course_id)}
+                      isFavorite={isFavorite(course.course_id)}
                       onClick={() => toggleFavorite(course.course_id)}
                     >
-                      {favorites.includes(course.course_id) ? "★" : "☆"}
+                      {isFavorite(course.course_id) ? "★" : "☆"}
                     </S.FavoriteStar>
                     과목명: {course.course_name}
                   </S.LectureTitleRow>
-
                   <div>담당교수: {course.faculty_name || "정보 없음"}</div>
                   <div>
                     요일/시간:{" "}
-                    {course.course_times && course.course_times.length > 0
+                    {course.course_times?.length > 0
                       ? course.course_times
                           .map((t) => `${t.course_day} ${t.course_period}교시`)
                           .join(", ")
@@ -277,6 +111,7 @@ function SugangPage() {
             </S.TimetableButton>
           </S.RightHeaderRight>
         </S.RightHeader>
+
         <S.SelectedList>
           {selected.filter(
             (course) =>
@@ -293,18 +128,17 @@ function SugangPage() {
                 <S.LectureInfo>
                   <S.LectureTitleRow>
                     <S.FavoriteStar
-                      isFavorite={favorites.includes(course.course_id)}
+                      isFavorite={isFavorite(course.course_id)}
                       onClick={() => toggleFavorite(course.course_id)}
                     >
-                      {favorites.includes(course.course_id) ? "★" : "☆"}
+                      {isFavorite(course.course_id) ? "★" : "☆"}
                     </S.FavoriteStar>
                     과목명: {course.course_name}
                   </S.LectureTitleRow>
-
                   <div>담당교수: {course.faculty_name || "정보 없음"}</div>
                   <div>
                     요일/시간:{" "}
-                    {course.course_times && course.course_times.length > 0
+                    {course.course_times?.length > 0
                       ? course.course_times
                           .map((t) => `${t.course_day} ${t.course_period}교시`)
                           .join(", ")

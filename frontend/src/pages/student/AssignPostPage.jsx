@@ -33,7 +33,9 @@ export default function AssignPostPage() {
 
   const fetchAssignmentDetail = async () => {
     try {
-      const res = await axiosInstance.get(`/api/lectures/${lectureId}/assignments/${postId}`);
+      const res = await axiosInstance.get(
+        `/api/lectures/${lectureId}/assignments/${postId}`
+      );
       if (res.data.success) {
         setAssignment(res.data.data);
       }
@@ -44,7 +46,9 @@ export default function AssignPostPage() {
 
   const fetchAssignmentAttachments = async () => {
     try {
-      const res = await axiosInstance.get(`/api/assignments/${postId}/attachments`);
+      const res = await axiosInstance.get(
+        `/api/assignments/${postId}/attachments`
+      );
       if (res.data.success) {
         setAttachments(res.data.data);
       }
@@ -55,9 +59,13 @@ export default function AssignPostPage() {
 
   const checkExistingSubmission = async () => {
     try {
-      const res = await axiosInstance.get(`/api/lectures/${lectureId}/assignments/${postId}/submissions`);
+      const res = await axiosInstance.get(
+        `/api/lectures/${lectureId}/assignments/${postId}/submissions`
+      );
       if (res.data.success) {
-        const userSubmission = res.data.data.find(sub => sub.author_id === currentUserId);
+        const userSubmission = res.data.data.find(
+          (sub) => sub.author_id === currentUserId
+        );
         if (userSubmission) {
           setSubmissionExists(true);
           setExistingSubmission(userSubmission);
@@ -78,7 +86,7 @@ export default function AssignPostPage() {
         await Promise.all([
           fetchCourseInfo(),
           fetchAssignmentDetail(),
-          fetchAssignmentAttachments()
+          fetchAssignmentAttachments(),
         ]);
         if (currentUserId) {
           await checkExistingSubmission();
@@ -106,70 +114,94 @@ export default function AssignPostPage() {
 
     try {
       const isEditMode = submissionExists && existingSubmission;
-      const submissionId = existingSubmission?.id || existingSubmission?.submission_id || existingSubmission?.post_id;
+      const submissionId =
+        existingSubmission?.id ||
+        existingSubmission?.submission_id ||
+        existingSubmission?.post_id;
 
-      const apiUrl = isEditMode && submissionId
-        ? `/api/lectures/${lectureId}/assignments/${postId}/submissions/${submissionId}`
-        : `/api/lectures/${lectureId}/assignments/${postId}/submissions`;
+      const apiUrl =
+        isEditMode && submissionId
+          ? `/api/lectures/${lectureId}/assignments/${postId}/submissions/${submissionId}`
+          : `/api/lectures/${lectureId}/assignments/${postId}/submissions`;
 
-      const httpMethod = isEditMode && submissionId ? 'put' : 'post';
+      const httpMethod = isEditMode && submissionId ? "put" : "post";
 
       if (formDataValues.file) {
         const submitFormData = new FormData();
-        submitFormData.append('title', formDataValues.title || `${assignment?.title} 제출물`);
-        submitFormData.append('author_id', currentUserId);
-        submitFormData.append('content', formDataValues.content);
-        submitFormData.append('file', formDataValues.file);
-
-        const res = await axiosInstance[httpMethod](
-          apiUrl,
-          submitFormData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          }
+        submitFormData.append(
+          "title",
+          formDataValues.title || `${assignment?.title} 제출물`
         );
+        submitFormData.append("author_id", currentUserId);
+        submitFormData.append("content", formDataValues.content);
+        submitFormData.append("file", formDataValues.file);
+
+        const res = await axiosInstance[httpMethod](apiUrl, submitFormData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
 
         if (res.data.success) {
-          alert(res.data.message || `과제 ${isEditMode && submissionId ? '수정' : '제출'} 완료`);
+          alert(
+            res.data.message ||
+              `과제 ${isEditMode && submissionId ? "수정" : "제출"} 완료`
+          );
           navigate(`/assignment/${lectureId}`);
         } else {
-          alert(res.data.message || `과제 ${isEditMode && submissionId ? '수정' : '제출'} 중 오류가 발생했습니다.`);
+          alert(
+            res.data.message ||
+              `과제 ${
+                isEditMode && submissionId ? "수정" : "제출"
+              } 중 오류가 발생했습니다.`
+          );
         }
       } else {
         const submitData = {
           title: formDataValues.title || `${assignment?.title} 제출물`,
           author_id: currentUserId,
-          content: formDataValues.content
+          content: formDataValues.content,
         };
 
-        const res = await axiosInstance[httpMethod](
-          apiUrl,
-          submitData,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
+        const res = await axiosInstance[httpMethod](apiUrl, submitData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
 
         if (res.data.success) {
-          alert(res.data.message || `과제 ${isEditMode && submissionId ? '수정' : '제출'} 완료`);
+          alert(
+            res.data.message ||
+              `과제 ${isEditMode && submissionId ? "수정" : "제출"} 완료`
+          );
           navigate(`/assignment/${lectureId}`);
         } else {
-          alert(res.data.message || `과제 ${isEditMode && submissionId ? '수정' : '제출'} 중 오류가 발생했습니다.`);
+          alert(
+            res.data.message ||
+              `과제 ${
+                isEditMode && submissionId ? "수정" : "제출"
+              } 중 오류가 발생했습니다.`
+          );
         }
       }
     } catch (err) {
-      const errorMessage = err.response?.data?.message || "과제 제출/수정 중 오류가 발생했습니다.";
+      const errorMessage =
+        err.response?.data?.message || "과제 제출/수정 중 오류가 발생했습니다.";
       alert(errorMessage);
     }
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return "";
-    return dateString.slice(0, 10);
+    if (!dateString) return "-";
+    try {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    } catch {
+      return dateString.slice(0, 10);
+    }
   };
 
   const getDeadlineStatus = () => {
@@ -197,7 +229,7 @@ export default function AssignPostPage() {
         <h1 className="board-title">과제 제출</h1>
         <div className="login-required">
           <p>과제 제출을 위해 로그인이 필요합니다.</p>
-          <button onClick={() => navigate('/login')}>로그인하기</button>
+          <button onClick={() => navigate("/login")}>로그인하기</button>
         </div>
       </div>
     );
@@ -209,14 +241,13 @@ export default function AssignPostPage() {
   return (
     <div className="assign-post-container">
       <h1 className="board-title">과제 제출</h1>
-      <BoardHeader
-        subjectName={courseName}
-        subjectCode={courseCode}
-      />
+      <BoardHeader subjectName={courseName} subjectCode={courseCode} />
       <PostBox
         title={assignment.title}
         author={assignment.author_id}
-        date={`${formatDate(assignment.start_date)} ~ ${formatDate(assignment.end_date)}`}
+        date={`${formatDate(assignment.start_date)} ~ ${formatDate(
+          assignment.end_date
+        )}`}
         content={assignment.content}
         attachment={attachments.length > 0 ? attachments[0] : null}
       />
@@ -232,7 +263,7 @@ export default function AssignPostPage() {
         </div>
       )}
       <h2 className="submission-title">
-        {submissionExists ? '과제 수정' : '과제 제출'}
+        {submissionExists ? "과제 수정" : "과제 제출"}
       </h2>
       <PostWriteForm
         onSubmit={handleSubmit}
