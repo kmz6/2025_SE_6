@@ -93,9 +93,23 @@ async function getGpas(req, res) {
     }
 }
 
+async function getCounts(req, res) {
+    const { user_id } = req.params;
+
+    try {
+        const result = await gradeModel.countGrades(user_id);
+        return res.json(result);
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "서버 오류가 발생했습니다." });
+    }
+}
+
 module.exports = {
     getSemesters,
     getGrades,
     getCredits,
-    getGpas
+    getGpas,
+    getCounts
 };

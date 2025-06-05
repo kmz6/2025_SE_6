@@ -29,15 +29,29 @@ async function countCredits(user_id) {
     const sql = `SELECT c.course_type, SUM(c.credit) total_credit
                     FROM STUD_COURSE_TB sc JOIN COURSE_TB c ON sc.course_id = c.course_id
                     WHERE sc.student_id = ? AND sc.grade <> 'N/A'
-                    GROUP BY course_type;;`
+                    GROUP BY course_type;`
 
     const [results] = await db.query(sql, [user_id]);
 
     return results;
 }
 
+// 학점별 수 정보 요청
+async function countGrades(user_id) {
+    const sql = `SELECT grade, COUNT(*) count
+                    FROM STUD_COURSE_TB
+                    WHERE student_id = ? AND grade <> 'N/A'
+                    GROUP BY grade;`
+
+    const [results] = await db.query(sql, [user_id]);
+
+    return results;
+}
+
+
 module.exports = {
     findSemestersById,
     findGrades,
-    countCredits
+    countCredits,
+    countGrades
 };

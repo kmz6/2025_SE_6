@@ -14,4 +14,7 @@ router.get("/credit/:user_id", gradeController.getCredits);
 // GET /grade/gpa/${user_id}
 router.get("/gpa/:user_id", gradeController.getGpas);
 
+// GET /grade/count/${user_id}
+router.get("/count/:user_id", gradeController.getCounts);
+
 module.exports = router;

@@ -23,3 +23,9 @@ export const getGpas = async (user_id) => {
     const response = await axiosInstance.get(`/grade/gpa/${user_id}`);
     return response.data;
 }
+
+// 학점별 개수 요청
+export const getGradeCount = async (user_id) => {
+    const response = await axiosInstance.get(`/grade/count/${user_id}`);
+    return response.data;
+}

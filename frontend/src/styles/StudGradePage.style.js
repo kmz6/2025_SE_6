@@ -74,3 +74,10 @@ export const Select = styled.select`
   background-color: white;
   font-size: 16px;
 `;
+
+export const ChartWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+`;
