@@ -5,6 +5,7 @@ import "./ArchivesWritePage.css";
 import axiosInstance from "../../apis/axiosInstance";
 import { useUser } from "../../context/UserContext";
 import PostWriteHeader from "../../components/Post/PostWriteHeader";
+import { insertBoard } from "../../apis/board/board";
 
 export default function ArchivesWritePage() {
   const { lectureId, postId } = useParams();
@@ -55,11 +56,7 @@ export default function ArchivesWritePage() {
         alert("수정 완료");
       } else {
         formData.append("author_id", user.user_id)
-        await axiosInstance.post(`/api/lectures/${lectureId}/materials`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        await insertBoard(lectureId, "material", formData);
         alert("등록 완료");
       }
 

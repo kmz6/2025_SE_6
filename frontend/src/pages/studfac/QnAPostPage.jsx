@@ -6,6 +6,7 @@ import CommentBox from "../../components/Post/CommentBox";
 import "./QnAPostPage.css";
 import { useUser } from "../../context/UserContext";
 import axiosInstance from "../../apis/axiosInstance";
+import { deleteBoard } from "../../apis/board/board";
 
 export default function QnAPostPage() {
   const { lectureId, postId } = useParams();
@@ -73,17 +74,17 @@ export default function QnAPostPage() {
   };
 
   const handleEditComment = async (commentId, newContent) => {
-  try {
-    await axiosInstance.put(
-      `/api/lectures/${lectureId}/qna/${postId}/comments/${commentId}`,
-      { content: newContent }
-    );
-    fetchComments();
-  } catch (error) {
-    console.error("댓글 수정 실패:", error);
-    alert("댓글 수정에 실패했습니다.");
-  }
-};
+    try {
+      await axiosInstance.put(
+        `/api/lectures/${lectureId}/qna/${postId}/comments/${commentId}`,
+        { content: newContent }
+      );
+      fetchComments();
+    } catch (error) {
+      console.error("댓글 수정 실패:", error);
+      alert("댓글 수정에 실패했습니다.");
+    }
+  };
 
   const handleDeleteComment = async (commentId) => {
     if (!window.confirm("댓글을 삭제하시겠습니까?")) return;
@@ -105,7 +106,7 @@ export default function QnAPostPage() {
   const handleDelete = async () => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
     try {
-      await axiosInstance.delete(`/api/lectures/${lectureId}/qna/${postId}`);
+      await deleteBoard(postId);
       alert("삭제되었습니다.");
       navigate(`/qna/${lectureId}`);
     } catch (error) {

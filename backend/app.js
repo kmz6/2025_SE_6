@@ -23,6 +23,7 @@ const courseRouter = require("./routes/common/course");
 const sugangRouter = require("./routes/student/sugang");
 
 // 공지 사항 / 첨부 파일 / QnA / 과제
+const boardRouter = require("./routes/common/board");
 const noticeRouter = require("./routes/common/notice");
 const materialRouter = require("./routes/common/material");
 const qnaRouter = require("./routes/common/qna");
@@ -76,6 +77,7 @@ app.use("/api/courses", courseRouter);
 app.use("/api/faculty", facultyLectureRouter);
 
 // 공지 사항 / 첨부 파일 / QnA / 과제
+app.use("/board", boardRouter);
 app.use("/api", noticeRouter);
 app.use("/api", materialRouter);
 app.use("/api", qnaRouter);

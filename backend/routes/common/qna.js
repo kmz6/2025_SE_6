@@ -80,54 +80,6 @@ router.get('/lectures/:courseId/info', async (req, res) => {
   }
 });
 
-router.post('/lectures/:courseId/qna', upload.array('many'), async (req, res) => {
-  const { courseId } = req.params;
-  const { title, content, author_id } = req.body;
-
-  const files = req.files;
-
-  try {
-    const boardSql = `INSERT INTO BOARD_TB (course_id, title, content, author_id, board_type)
-       VALUES (?, ?, ?, ?, 'qna')`;
-
-    const attachSql = `INSERT INTO ATTACHMENT_TB (post_id, file_name, file_path)
-      VALUES (?, ?, ?)`;
-
-    const [result] = await db.execute(boardSql, [courseId, title, content, author_id]);
-    const postId = result.insertId;
-
-    for (const file of files) {
-      await db.execute(attachSql, [postId, file.filename, `uploads/${file.filename}`]);
-    }
-
-    res.status(201).json({ message: "QnA 게시글 등록 성공" });
-  } catch (err) {
-    console.error("QnA 등록 오류:", err);
-    res.status(500).json({ message: "QnA 게시글 등록 실패" });
-  }
-});
-
-router.delete('/lectures/:courseId/qna/:postId', async (req, res) => {
-  const { courseId, postId } = req.params;
-
-  try {
-    const [result] = await db.execute(
-      `DELETE FROM BOARD_TB 
-       WHERE course_id = ? AND post_id = ? AND board_type = 'qna'`,
-      [courseId, postId]
-    );
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: "삭제할 게시글을 찾을 수 없습니다." });
-    }
-
-    res.json({ message: "삭제 성공" });
-  } catch (err) {
-    console.error("QnA 삭제 오류:", err);
-    res.status(500).json({ message: "QnA 게시글 삭제 실패" });
-  }
-});
-
 router.put('/lectures/:courseId/qna/:postId', async (req, res) => {
   const { courseId, postId } = req.params;
   const { title, content } = req.body;

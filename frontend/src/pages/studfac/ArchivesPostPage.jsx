@@ -5,6 +5,7 @@ import PostBox from "../../components/Post/PostBox";
 import "./ArchivesPostPage.css";
 import { useUser } from "../../context/UserContext";
 import axiosInstance from "../../apis/axiosInstance";
+import { deleteBoard } from "../../apis/board/board";
 
 export default function ArchivesPostPage() {
   const { lectureId, postId } = useParams();
@@ -55,7 +56,7 @@ export default function ArchivesPostPage() {
     if (!confirmed) return;
 
     try {
-      await axiosInstance.delete(`/api/lectures/${lectureId}/materials/${postId}`);
+      await deleteBoard(postId);
       alert("삭제되었습니다.");
       navigate(`/archives/${lectureId}`);
     } catch (error) {
