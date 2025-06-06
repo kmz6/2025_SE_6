@@ -2,10 +2,11 @@ const express = require("express");
 const router = express.Router();
 const db = require("../../config/db");
 
+const multer = require('multer');
 const path = require("path");
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "..", "uploads")); // 파일 업로드 위치
+    cb(null, path.join(__dirname, "../../", "uploads")); // 파일 업로드 위치
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
@@ -79,16 +80,25 @@ router.get('/lectures/:courseId/info', async (req, res) => {
   }
 });
 
-router.post('/lectures/:courseId/qna', async (req, res) => {
+router.post('/lectures/:courseId/qna', upload.array('many'), async (req, res) => {
   const { courseId } = req.params;
   const { title, content, author_id } = req.body;
 
+  const files = req.files;
+
   try {
-    await db.execute(
-      `INSERT INTO BOARD_TB (course_id, title, content, author_id, board_type)
-       VALUES (?, ?, ?, ?, 'qna')`,
-      [courseId, title, content, author_id]
-    );
+    const boardSql = `INSERT INTO BOARD_TB (course_id, title, content, author_id, board_type)
+       VALUES (?, ?, ?, ?, 'qna')`;
+
+    const attachSql = `INSERT INTO ATTACHMENT_TB (post_id, file_name, file_path)
+      VALUES (?, ?, ?)`;
+
+    const [result] = await db.execute(boardSql, [courseId, title, content, author_id]);
+    const postId = result.insertId;
+
+    for (const file of files) {
+      await db.execute(attachSql, [postId, file.filename, `uploads/${file.filename}`]);
+    }
 
     res.status(201).json({ message: "QnA 게시글 등록 성공" });
   } catch (err) {

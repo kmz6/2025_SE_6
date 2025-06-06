@@ -22,7 +22,7 @@ export default function BoardListTable({ data, onRowClick }) {
             >
               {item.title}
             </td>
-            <td>{item.author}</td>
+            <td>{item.name}</td>
             <td>{item.date}</td>
           </tr>
         ))}

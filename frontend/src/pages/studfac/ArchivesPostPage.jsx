@@ -31,7 +31,7 @@ export default function ArchivesPostPage() {
     try {
       const response = await axiosInstance.get(`/api/lectures/${lectureId}/info`);
       setCourseName(response.data.course_name);
-      setCourseCode(response.data.course_code); 
+      setCourseCode(response.data.course_code);
     } catch (error) {
       console.error("과목명 불러오기 실패:", error);
     }
@@ -81,7 +81,7 @@ export default function ArchivesPostPage() {
 
       <PostBox
         title={post.title}
-        author={post.author_id}
+        author={post.name}
         date={post.created_at?.slice(0, 10)}
         content={post.content}
       />

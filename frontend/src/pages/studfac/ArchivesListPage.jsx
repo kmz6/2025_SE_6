@@ -37,7 +37,7 @@ export default function ArchivesListPage() {
     try {
       const response = await axiosInstance.get(`/api/lectures/${lectureId}/info`);
       setCourseName(response.data.course_name);
-      setCourseCode(response.data.course_code); 
+      setCourseCode(response.data.course_code);
     } catch (error) {
       console.error("과목명 불러오기 실패:", error);
     }

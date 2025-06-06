@@ -20,7 +20,7 @@ export default function ArchivesWritePage() {
     try {
       const response = await axiosInstance.get(`/api/lectures/${lectureId}/info`);
       setCourseName(response.data.course_name);
-      setCourseCode(response.data.course_code); 
+      setCourseCode(response.data.course_code);
     } catch (error) {
       console.error("과목명 불러오기 실패:", error);
     }
@@ -54,10 +54,11 @@ export default function ArchivesWritePage() {
         });
         alert("수정 완료");
       } else {
-        await axiosInstance.post(`/api/lectures/${lectureId}/materials`, {
-          title: values.title,
-          content: values.content,
-          author_id: user.user_id,
+        formData.append("author_id", user.user_id)
+        await axiosInstance.post(`/api/lectures/${lectureId}/materials`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         });
         alert("등록 완료");
       }

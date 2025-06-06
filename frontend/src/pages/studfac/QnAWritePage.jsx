@@ -54,14 +54,15 @@ export default function QnAWritePage() {
         });
         alert("수정 완료");
       } else {
-        await axiosInstance.post(`/api/lectures/${lectureId}/qna`, {
-          title: values.title,
-          content: values.content,
-          author_id: user.user_id,
+        formData.append("author_id", user.user_id)
+        await axiosInstance.post(`/api/lectures/${lectureId}/qna`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         });
         alert("등록 완료");
       }
-      
+
       navigate(`/qna/${lectureId}`);
     } catch (error) {
       console.error("전송 실패:", error);

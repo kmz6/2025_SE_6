@@ -2,10 +2,11 @@ const express = require("express");
 const router = express.Router();
 const db = require("../../config/db");
 
+const multer = require('multer');
 const path = require("path");
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "..", "uploads")); // 파일 업로드 위치
+    cb(null, path.join(__dirname, "../../", "uploads")); // 파일 업로드 위치
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
@@ -20,9 +21,9 @@ router.get('/lectures/:courseId/materials', async (req, res) => {
 
   try {
     const [rows] = await db.execute(
-      `SELECT post_id AS id, title, author_id AS author,
-              DATE_FORMAT(created_at, "%Y-%m-%d") AS date
-       FROM BOARD_TB
+      `SELECT b.post_id AS id, b.title, b.author_id AS author, f.name, 
+              DATE_FORMAT(b.created_at, "%Y-%m-%d") AS date
+       FROM BOARD_TB b JOIN FACULTY_TB f ON b.author_id = f.faculty_id
        WHERE course_id = ? AND board_type = 'material'
        ORDER BY created_at DESC`,
       [courseId]
@@ -41,10 +42,10 @@ router.get('/lectures/:courseId/materials/:postId', async (req, res) => {
 
   try {
     const [rows] = await db.execute(
-      `SELECT post_id, title, author_id, content, 
-              DATE_FORMAT(created_at, "%Y-%m-%d") AS created_at
-       FROM BOARD_TB
-       WHERE course_id = ? AND post_id = ? AND board_type = 'material'`,
+      `SELECT b.post_id, b.title, b.author_id, f.name, b.content, 
+              DATE_FORMAT(b.created_at, "%Y-%m-%d") AS created_at
+       FROM BOARD_TB b JOIN FACULTY_TB f ON b.author_id = f.faculty_id
+       WHERE b.course_id = ? AND b.post_id = ? AND b.board_type = 'material'`,
       [courseId, postId]
     );
 
@@ -83,16 +84,25 @@ router.get('/lectures/:courseId/info', async (req, res) => {
 });
 
 // archive write
-router.post('/lectures/:courseId/materials', async (req, res) => {
+router.post('/lectures/:courseId/materials', upload.array('many'), async (req, res) => {
   const { courseId } = req.params;
   const { title, content, author_id } = req.body;
 
+  const files = req.files;
+
   try {
-    await db.execute(
-      `INSERT INTO BOARD_TB (course_id, title, content, author_id, board_type)
-       VALUES (?, ?, ?, ?, 'material')`,
-      [courseId, title, content, author_id]
-    );
+    const boardSql = `INSERT INTO BOARD_TB (course_id, title, content, author_id, board_type)
+       VALUES (?, ?, ?, ?, 'material')`;
+
+    const attachSql = `INSERT INTO ATTACHMENT_TB (post_id, file_name, file_path)
+      VALUES (?, ?, ?)`;
+
+    const [result] = await db.execute(boardSql, [courseId, title, content, author_id]);
+    const postId = result.insertId;
+
+    for (const file of files) {
+      await db.execute(attachSql, [postId, file.filename, `uploads/${file.filename}`]);
+    }
 
     res.status(201).json({ message: "자료 등록 성공" });
   } catch (err) {
