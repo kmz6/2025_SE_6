@@ -35,6 +35,8 @@ export const Cell = styled.td`
 export const Title = styled.h1`
   font-size: 30px;
   font-weight: bold;
+  color : #003366;
+  border-bottom: 1px solid #003366;
   border-bottom: 1px solid;
   padding-bottom: 20px;
   margin-bottom: 25px;
