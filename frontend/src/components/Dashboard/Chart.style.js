@@ -33,7 +33,7 @@ export const BarBackground = styled.div`
 `;
 
 export const BarFill = styled.div`
-  background: #0a84ff;
+  background: #4bc0c0;
   height: 100%;
   border-radius: 12px 0 0 12px;
   width: ${(props) => props.width}%;
