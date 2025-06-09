@@ -6,6 +6,8 @@ import BarChart from "../../components/Chart/BarChart";
 import { getSemester, getCourse, getCredits, getGpas, getGradeCount } from "../../apis/grade/studGrade";
 import * as S from "../../styles/StudGradePage.style";
 
+const gradeOrder = ['A+', 'A0', 'B+', 'B0', 'C+', 'C0', 'D+', 'D0', 'F']; // 순서
+
 const StudGradePage = () => {
   const { user } = useUser(); // user 정보
 
@@ -69,7 +71,7 @@ const StudGradePage = () => {
     return <div>로딩 중...</div>;
   }
 
-  // 정렬
+  // 정렬 (평점)
   const sortedGpaList = [...gpaList].sort((a, b) => {
     const [yearA, semA] = a.semester.split('-').map(Number);
     const [yearB, semB] = b.semester.split('-').map(Number);
@@ -78,12 +80,17 @@ const StudGradePage = () => {
     return semA - semB;
   });
 
+  // 정렬 (학점)
+  const sortedGradeList = [...gradeCount].sort((a, b) => {
+    return gradeOrder.indexOf(a.grade) - gradeOrder.indexOf(b.grade);
+  });
+
   const lineLabels = sortedGpaList.map(c => c.semester);
   const lineScores = sortedGpaList.map(c => parseFloat(c.gpa));
 
-  const barLabels = gradeCount.map(g => g.grade);
-  const total = gradeCount.reduce((acc, cur) => acc + cur.count, 0);
-  const barScores = gradeCount.map(g => (g.count / total) * 100);
+  const barLabels = sortedGradeList.map(g => g.grade);
+  const total = sortedGradeList.reduce((acc, cur) => acc + cur.count, 0);
+  const barScores = sortedGradeList.map(g => (g.count / total) * 100);
 
   return (
     <S.Container>
