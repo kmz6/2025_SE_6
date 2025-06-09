@@ -15,6 +15,7 @@ export default function AssignSubmitListPage() {
   const [courseInfo, setCourseInfo] = useState({ name: "", code: "" });
 
   const [assignment, setAssignment] = useState(null);
+  const [attachments, setAttachments] = useState([]);
   const [submittedAssignments, setSubmittedAssignments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -80,6 +81,20 @@ export default function AssignSubmitListPage() {
     }
   };
 
+  const fetchAssignmentAttachments = async () => {
+    try {
+      const res = await axiosInstance.get(
+        `/api/assignments/${postId}/attachments`
+      );
+
+      if (res.data.success) {
+        setAttachments(res.data.data);
+      }
+    } catch (err) {
+      console.log("첨부파일 정보 불러오기 실패:", err);
+    }
+  };
+
   const fetchSubmittedAssignments = async () => {
     setLoading(true);
     try {
@@ -103,6 +118,7 @@ export default function AssignSubmitListPage() {
     if (lectureId && assignmentId && user) {
       fetchCourseInfo();
       fetchAssignment();
+      fetchAssignmentAttachments();
       fetchSubmittedAssignments();
     }
   }, [lectureId, assignmentId, user]);
@@ -181,7 +197,7 @@ export default function AssignSubmitListPage() {
           assignment.end_date
         )}`}
         content={assignment.content}
-        attachment={null}
+        attachment={attachments}
       />
 
       {error && (

@@ -8,7 +8,7 @@ export default function BoardHeader({ subjectName, subjectCode, onWrite, userTyp
         <span className="subject-name">{subjectName}</span>
         <span className="subject-code">/ {subjectCode}</span>
       </div>
-      {(isQnA || userType === "faculty") && (
+      {((isQnA && userType === "student") || (!isQnA && userType === "faculty")) && (
         <button className="write-button" onClick={onWrite}>
           글쓰기
         </button>

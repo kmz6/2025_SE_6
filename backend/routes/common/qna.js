@@ -7,11 +7,11 @@ router.get('/lectures/:courseId/qna', async (req, res) => {
 
   try {
     const [rows] = await db.execute(
-      `SELECT post_id AS id, title, author_id AS author,
-              DATE_FORMAT(created_at, "%Y-%m-%d") AS date
-       FROM BOARD_TB
-       WHERE course_id = ? AND board_type = 'qna'
-       ORDER BY created_at DESC`,
+      `SELECT b.post_id AS id, b.title, b.author_id AS author, s.name,
+              DATE_FORMAT(b.created_at, "%Y-%m-%d") AS date
+       FROM BOARD_TB b JOIN STUDENT_TB s ON b.author_id = s.student_id
+       WHERE b.course_id = ? AND b.board_type = 'qna'
+       ORDER BY b.created_at DESC`,
       [courseId]
     );
 
@@ -27,10 +27,10 @@ router.get('/lectures/:courseId/qna/:postId', async (req, res) => {
 
   try {
     const [rows] = await db.execute(
-      `SELECT post_id, title, author_id, content, 
-              DATE_FORMAT(created_at, "%Y-%m-%d") AS created_at
-       FROM BOARD_TB
-       WHERE course_id = ? AND post_id = ? AND board_type = 'qna'`,
+      `SELECT b.post_id, b.title, b.author_id, s.name, b.content, 
+              DATE_FORMAT(b.created_at, "%Y-%m-%d") AS created_at
+       FROM BOARD_TB b JOIN STUDENT_TB s ON b.author_id = s.student_id
+       WHERE b.course_id = ? AND b.post_id = ? AND b.board_type = 'qna'`,
       [courseId, postId]
     );
 
@@ -64,45 +64,6 @@ router.get('/lectures/:courseId/info', async (req, res) => {
   } catch (err) {
     console.error("과목명 조회 실패:", err);
     res.status(500).json({ message: "서버 오류" });
-  }
-});
-
-router.post('/lectures/:courseId/qna', async (req, res) => {
-  const { courseId } = req.params;
-  const { title, content, author_id } = req.body;
-
-  try {
-    await db.execute(
-      `INSERT INTO BOARD_TB (course_id, title, content, author_id, board_type)
-       VALUES (?, ?, ?, ?, 'qna')`,
-      [courseId, title, content, author_id]
-    );
-
-    res.status(201).json({ message: "QnA 게시글 등록 성공" });
-  } catch (err) {
-    console.error("QnA 등록 오류:", err);
-    res.status(500).json({ message: "QnA 게시글 등록 실패" });
-  }
-});
-
-router.delete('/lectures/:courseId/qna/:postId', async (req, res) => {
-  const { courseId, postId } = req.params;
-
-  try {
-    const [result] = await db.execute(
-      `DELETE FROM BOARD_TB 
-       WHERE course_id = ? AND post_id = ? AND board_type = 'qna'`,
-      [courseId, postId]
-    );
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: "삭제할 게시글을 찾을 수 없습니다." });
-    }
-
-    res.json({ message: "삭제 성공" });
-  } catch (err) {
-    console.error("QnA 삭제 오류:", err);
-    res.status(500).json({ message: "QnA 게시글 삭제 실패" });
   }
 });
 

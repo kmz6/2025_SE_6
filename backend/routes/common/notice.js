@@ -7,11 +7,11 @@ router.get('/lectures/:courseId/notices', async (req, res) => {
 
   try {
     const [rows] = await db.execute(
-      `SELECT post_id AS id, title, author_id AS author,
-              DATE_FORMAT(created_at, "%Y-%m-%d") AS date
-       FROM BOARD_TB
-       WHERE course_id = ? AND board_type = 'notice'
-       ORDER BY created_at DESC`,
+      `SELECT b.post_id AS id, b.title, b.author_id AS author, f.name,
+              DATE_FORMAT(b.created_at, "%Y-%m-%d") AS date
+       FROM BOARD_TB b JOIN FACULTY_TB f ON b.author_id = f.faculty_id
+       WHERE b.course_id = ? AND b.board_type = 'notice'
+       ORDER BY b.created_at DESC`,
       [courseId]
     );
 
@@ -22,18 +22,16 @@ router.get('/lectures/:courseId/notices', async (req, res) => {
   }
 });
 
-module.exports = router;
-
 // PostPage
 router.get('/lectures/:courseId/notices/:postId', async (req, res) => {
   const { courseId, postId } = req.params;
 
   try {
     const [rows] = await db.execute(
-      `SELECT post_id, title, author_id, content, 
-              DATE_FORMAT(created_at, "%Y-%m-%d") AS created_at
-       FROM BOARD_TB
-       WHERE course_id = ? AND post_id = ? AND board_type = 'notice'`,
+      `SELECT b.post_id, b.title, b.author_id, f.name, b.content, 
+              DATE_FORMAT(b.created_at, "%Y-%m-%d") AS created_at
+       FROM BOARD_TB b JOIN FACULTY_TB f ON b.author_id = f.faculty_id
+       WHERE b.course_id = ? AND b.post_id = ? AND b.board_type = 'notice'`,
       [courseId, postId]
     );
 
@@ -70,47 +68,6 @@ router.get('/lectures/:courseId/info', async (req, res) => {
   }
 });
 
-// WritePage
-router.post('/lectures/:courseId/notices', async (req, res) => {
-  const { courseId } = req.params;
-  const { title, content, author_id } = req.body;
-
-  try {
-    await db.execute(
-      `INSERT INTO BOARD_TB (course_id, title, content, author_id, board_type)
-       VALUES (?, ?, ?, ?, 'notice')`,
-      [courseId, title, content, author_id]
-    );
-
-    res.status(201).json({ message: "공지사항 등록 성공" });
-  } catch (err) {
-    console.error("공지사항 등록 오류:", err);
-    res.status(500).json({ message: "공지사항 등록 실패" });
-  }
-});
-
-// DELETE
-router.delete('/lectures/:courseId/notices/:postId', async (req, res) => {
-  const { courseId, postId } = req.params;
-
-  try {
-    const [result] = await db.execute(
-      `DELETE FROM BOARD_TB 
-       WHERE course_id = ? AND post_id = ? AND board_type = 'notice'`,
-      [courseId, postId]
-    );
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: "삭제할 게시글을 찾을 수 없습니다." });
-    }
-
-    res.json({ message: "삭제 성공" });
-  } catch (err) {
-    console.error("공지사항 삭제 오류:", err);
-    res.status(500).json({ message: "공지사항 삭제 실패" });
-  }
-});
-
 // edit
 router.put('/lectures/:courseId/notices/:postId', async (req, res) => {
   const { courseId, postId } = req.params;
@@ -134,3 +91,5 @@ router.put('/lectures/:courseId/notices/:postId', async (req, res) => {
     res.status(500).json({ message: "공지사항 수정 실패" });
   }
 });
+
+module.exports = router;

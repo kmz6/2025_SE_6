@@ -5,6 +5,7 @@ import PostBox from "../../components/Post/PostBox";
 import "./ArchivesPostPage.css";
 import { useUser } from "../../context/UserContext";
 import axiosInstance from "../../apis/axiosInstance";
+import { getAttachment, deleteBoard } from "../../apis/board/board";
 
 export default function ArchivesPostPage() {
   const { lectureId, postId } = useParams();
@@ -15,12 +16,16 @@ export default function ArchivesPostPage() {
   const [post, setPost] = useState(null);
   const [courseName, setCourseName] = useState("");
   const [courseCode, setCourseCode] = useState("");
+  const [files, setFiles] = useState([]);
 
   // 게시글
   const fetchPost = async () => {
     try {
       const response = await axiosInstance.get(`/api/lectures/${lectureId}/materials/${postId}`);
       setPost(response.data);
+
+      const fileData = await getAttachment(postId);
+      setFiles(fileData);
     } catch (error) {
       console.error("자료실 상세 조회 실패:", error);
     }
@@ -31,7 +36,7 @@ export default function ArchivesPostPage() {
     try {
       const response = await axiosInstance.get(`/api/lectures/${lectureId}/info`);
       setCourseName(response.data.course_name);
-      setCourseCode(response.data.course_code); 
+      setCourseCode(response.data.course_code);
     } catch (error) {
       console.error("과목명 불러오기 실패:", error);
     }
@@ -55,7 +60,7 @@ export default function ArchivesPostPage() {
     if (!confirmed) return;
 
     try {
-      await axiosInstance.delete(`/api/lectures/${lectureId}/materials/${postId}`);
+      await deleteBoard(postId);
       alert("삭제되었습니다.");
       navigate(`/archives/${lectureId}`);
     } catch (error) {
@@ -81,9 +86,10 @@ export default function ArchivesPostPage() {
 
       <PostBox
         title={post.title}
-        author={post.author_id}
+        author={post.name}
         date={post.created_at?.slice(0, 10)}
         content={post.content}
+        attachment={files}
       />
     </div>
   );

@@ -6,6 +6,7 @@ import CommentBox from "../../components/Post/CommentBox";
 import "./QnAPostPage.css";
 import { useUser } from "../../context/UserContext";
 import axiosInstance from "../../apis/axiosInstance";
+import { getAttachment, deleteBoard } from "../../apis/board/board";
 
 export default function QnAPostPage() {
   const { lectureId, postId } = useParams();
@@ -17,6 +18,7 @@ export default function QnAPostPage() {
   const [courseName, setCourseName] = useState("");
   const [courseCode, setCourseCode] = useState("");
   const [comments, setComments] = useState([]);
+  const [files, setFiles] = useState([]);
 
   const fetchPost = async () => {
     try {
@@ -24,6 +26,10 @@ export default function QnAPostPage() {
         `/api/lectures/${lectureId}/qna/${postId}`
       );
       setPost(response.data);
+
+      const fileData = await getAttachment(postId);
+      setFiles(fileData);
+
     } catch (error) {
       console.error("QnA 상세 조회 실패:", error);
     }
@@ -73,17 +79,17 @@ export default function QnAPostPage() {
   };
 
   const handleEditComment = async (commentId, newContent) => {
-  try {
-    await axiosInstance.put(
-      `/api/lectures/${lectureId}/qna/${postId}/comments/${commentId}`,
-      { content: newContent }
-    );
-    fetchComments();
-  } catch (error) {
-    console.error("댓글 수정 실패:", error);
-    alert("댓글 수정에 실패했습니다.");
-  }
-};
+    try {
+      await axiosInstance.put(
+        `/api/lectures/${lectureId}/qna/${postId}/comments/${commentId}`,
+        { content: newContent }
+      );
+      fetchComments();
+    } catch (error) {
+      console.error("댓글 수정 실패:", error);
+      alert("댓글 수정에 실패했습니다.");
+    }
+  };
 
   const handleDeleteComment = async (commentId) => {
     if (!window.confirm("댓글을 삭제하시겠습니까?")) return;
@@ -105,7 +111,7 @@ export default function QnAPostPage() {
   const handleDelete = async () => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
     try {
-      await axiosInstance.delete(`/api/lectures/${lectureId}/qna/${postId}`);
+      await deleteBoard(postId);
       alert("삭제되었습니다.");
       navigate(`/qna/${lectureId}`);
     } catch (error) {
@@ -131,9 +137,10 @@ export default function QnAPostPage() {
 
       <PostBox
         title={post.title}
-        author={post.author_id}
+        author={post.name}
         date={post.created_at?.slice(0, 10)}
         content={post.content}
+        attachment={files}
       />
 
       <CommentBox

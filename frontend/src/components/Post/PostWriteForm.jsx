@@ -10,7 +10,7 @@ export default function PostWriteForm({
 }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
@@ -37,8 +37,10 @@ export default function PostWriteForm({
       formData.append("start_date", startDate);
       formData.append("end_date", endDate);
     }
-    if (file) {
-      formData.append("file", file);
+    if (file && file.length > 0) {
+      file.forEach((f) => {
+        formData.append("many", f);
+      });
     }
 
     onSubmit(formData, {
@@ -66,10 +68,16 @@ export default function PostWriteForm({
           type="file"
           id="file"
           accept=".pdf,.doc,.docx,.zip,.png,.jpg"
-          onChange={(e) => setFile(e.target.files[0])}
+          multiple
+          onChange={(e) => setFile(Array.from(e.target.files))}
           disabled={disabled}
         />
-        {file && <p className="file-name">{file.name}</p>}
+        {file.length > 0 &&
+          (<p className="file-name">
+            {file[0].name}
+            {file.length > 1 && ` 외 ${file.length - 1}개`}
+          </p>)
+        }
       </div>
 
       <textarea
