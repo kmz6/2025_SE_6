@@ -18,6 +18,7 @@ export default function AssignSubmittedDetailPage() {
   const [assignment, setAssignment] = useState(null);
   const [assignmentAttachments, setAssignmentAttachments] = useState([]);
   const [submission, setSubmission] = useState(null);
+  const [submissionAttachments, setSubmissionAttachments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -86,6 +87,23 @@ export default function AssignSubmittedDetailPage() {
     }
   };
 
+  const fetchSubAttachment = async () => {
+    try {
+      const submissionId = submission?.submission_id;
+      const subAttachmentsRes = await axiosInstance.get(
+        `/api/submissions/attachments/${submissionId}`
+      );
+      if (subAttachmentsRes.data.success) {
+        setSubmissionAttachments(subAttachmentsRes.data.data || []);
+        console.log(subAttachmentsRes.data);
+      } else {
+        setSubmissionAttachments([]);
+      }
+    } catch {
+      setSubmissionAttachments([]);
+    }
+  }
+
   const handleEdit = () => {
     navigate(`/assignment/${lectureId}/edit/${assignmentId}/${studentId}`);
   };
@@ -137,6 +155,12 @@ export default function AssignSubmittedDetailPage() {
     fetchAllData();
   }, [lectureId, assignmentId, studentId]);
 
+  useEffect(() => {
+    if (submission?.submission_id) {
+      fetchSubAttachment();
+    }
+  }, [submission]);
+
   if (loading) {
     return (
       <div className="assign-submitted-detail-container">
@@ -184,12 +208,7 @@ export default function AssignSubmittedDetailPage() {
             )}`}
             content={assignment.content}
             attachment={
-              assignmentAttachments.length > 0
-                ? {
-                  name: assignmentAttachments[0].file_name,
-                  url: assignmentAttachments[0].file_path,
-                }
-                : null
+              assignmentAttachments
             }
           />
 
@@ -226,7 +245,7 @@ export default function AssignSubmittedDetailPage() {
             author={submission.student_name || submission.author_id}
             date={formatDateTime(submission.created_at)}
             content={submission.content}
-            attachment={null}
+            attachment={submissionAttachments}
           />
         </>
       ) : (

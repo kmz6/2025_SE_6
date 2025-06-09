@@ -43,8 +43,8 @@ export default function AssignWritePage() {
       setInitialValues({
         title: data.title ?? "",
         content: data.content ?? "",
-        start_date: data.start_date?.slice(0, 10) ?? "",
-        end_date: data.end_date?.slice(0, 10) ?? "",
+        start_date: new Date(data.start_date).toLocaleDateString('sv-SE') ?? "",
+        end_date: new Date(data.end_date).toLocaleDateString('sv-SE') ?? "",
       });
     } catch (error) {
       console.error("기존 과제 불러오기 실패:", error);
@@ -87,8 +87,8 @@ export default function AssignWritePage() {
       return;
     }
 
-    const startDateStr = startDate.toISOString().slice(0, 10);
-    const endDateStr = endDate.toISOString().slice(0, 10);
+    const startDateStr = startDate.toLocaleDateString('sv-SE');
+    const endDateStr = endDate.toLocaleDateString('sv-SE');
 
     formData.set("start_date", startDateStr);
     formData.set("end_date", endDateStr);

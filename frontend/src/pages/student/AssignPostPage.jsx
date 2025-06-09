@@ -127,61 +127,27 @@ export default function AssignPostPage() {
 
       const httpMethod = isEditMode && submissionId ? "put" : "post";
 
-      if (formDataValues.file) {
-        const submitFormData = new FormData();
-        submitFormData.append(
-          "title",
-          formDataValues.title || `${assignment?.title} 제출물`
+      formData.set("title", formDataValues.title || `${assignment?.title} 제출물`)
+      formData.append("author_id", currentUserId);
+
+      const res = await axiosInstance[httpMethod](apiUrl, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (res.data.success) {
+        alert(
+          res.data.message ||
+          `과제 ${isEditMode && submissionId ? "수정" : "제출"} 완료`
         );
-        submitFormData.append("author_id", currentUserId);
-        submitFormData.append("content", formDataValues.content);
-        submitFormData.append("file", formDataValues.file);
-
-        const res = await axiosInstance[httpMethod](apiUrl, submitFormData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-
-        if (res.data.success) {
-          alert(
-            res.data.message ||
-            `과제 ${isEditMode && submissionId ? "수정" : "제출"} 완료`
-          );
-          navigate(`/assignment/${lectureId}`);
-        } else {
-          alert(
-            res.data.message ||
-            `과제 ${isEditMode && submissionId ? "수정" : "제출"
-            } 중 오류가 발생했습니다.`
-          );
-        }
+        navigate(`/assignment/${lectureId}`);
       } else {
-        const submitData = {
-          title: formDataValues.title || `${assignment?.title} 제출물`,
-          author_id: currentUserId,
-          content: formDataValues.content,
-        };
-
-        const res = await axiosInstance[httpMethod](apiUrl, submitData, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (res.data.success) {
-          alert(
-            res.data.message ||
-            `과제 ${isEditMode && submissionId ? "수정" : "제출"} 완료`
-          );
-          navigate(`/assignment/${lectureId}`);
-        } else {
-          alert(
-            res.data.message ||
-            `과제 ${isEditMode && submissionId ? "수정" : "제출"
-            } 중 오류가 발생했습니다.`
-          );
-        }
+        alert(
+          res.data.message ||
+          `과제 ${isEditMode && submissionId ? "수정" : "제출"
+          } 중 오류가 발생했습니다.`
+        );
       }
     } catch (err) {
       const errorMessage =

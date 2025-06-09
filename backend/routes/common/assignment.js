@@ -369,9 +369,12 @@ router.delete("/assignments/attachments/:fileId", async (req, res) => {
 });
 
 // 과제 제출
-router.post("/lectures/:lectureId/assignments/:assignmentId/submissions", async (req, res) => {
+router.post("/lectures/:lectureId/assignments/:assignmentId/submissions", upload.array('many'), async (req, res) => {
   const { lectureId, assignmentId } = req.params;
   const { title, author_id, content } = req.body;
+  const files = req.files;
+
+  console.log("파일 : ", req.files);
 
   if (!title || !content || !author_id) {
     return res.status(400).json({
@@ -380,6 +383,7 @@ router.post("/lectures/:lectureId/assignments/:assignmentId/submissions", async 
     });
   }
 
+  const connection = await db.getConnection();
   try {
     // 과제 마감일 확인
     const [assignmentRows] = await db.execute(
@@ -417,22 +421,75 @@ router.post("/lectures/:lectureId/assignments/:assignmentId/submissions", async 
       });
     }
 
-    const [result] = await db.execute(
-      `INSERT INTO SUBMISSIONS_TB (assignment_id, author_id, title, content, created_at)
-       VALUES (?, ?, ?, ?, NOW())`,
-      [assignmentId, author_id, title, content]
-    );
+    await connection.beginTransaction();
+
+    // submission_tb에 게시글 등록
+    const subSql = `INSERT INTO SUBMISSIONS_TB
+                            (assignment_id, author_id,title, content) 
+                            VALUES (?, ?, ?, ?)`;
+
+    const [result] = await connection.query(subSql,
+      [assignmentId, author_id, title, content]);
+
+    const subId = await result.insertId;
+
+    // 첨부 파일 등록
+    const attachSql = `INSERT INTO SUBMISSIONS_ATTACHMENT_TB
+                            (submission_id, file_name, file_path)
+                            VALUES (?, ?, ?)`;
+
+    for (const file of files) {
+      await connection.query(attachSql, [subId, file.filename, `uploads/${file.filename}`]);
+    }
+
+    await connection.commit();
 
     res.status(201).json({
       success: true,
       data: { submission_id: result.insertId },
-      message: "과제 제출 성공"
+      message: "과제 등록 성공"
     });
-  } catch (err) {
-    console.error("과제 제출 오류:", err);
+  }
+  catch (error) {
+    await connection.rollback();
+
+    console.error("과제 등록 오류:", error);
     res.status(500).json({
       success: false,
-      message: "서버 오류로 과제 제출에 실패했습니다.",
+      message: "과제 등록 실패",
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+
+    throw error;
+  }
+  finally {
+    connection.release();
+  }
+});
+
+// 과제(제출) 첨부파일 조회
+router.get("/submissions/attachments/:submissionId/", async (req, res) => {
+  const { submissionId } = req.params;
+
+  try {
+    const [rows] = await db.execute(
+      `SELECT file_id, file_name, file_path, uploaded_at
+       FROM SUBMISSIONS_ATTACHMENT_TB
+       WHERE submission_id = ?
+       ORDER BY uploaded_at DESC`,
+      [submissionId]
+    );
+
+    res.status(200).json({
+      success: true,
+      data: rows,
+      message: "첨부파일 목록 조회 성공"
+    });
+  } catch (err) {
+    console.error("첨부파일 조회 오류:", err);
+    res.status(500).json({
+      success: false,
+      message: "첨부파일 조회 실패",
       error: process.env.NODE_ENV === 'development' ? err.message : undefined
     });
   }
@@ -552,10 +609,11 @@ router.get("/lectures/:lectureId/students", async (req, res) => {
 });
 
 router.put(
-  '/lectures/:lectureId/assignments/:assignmentId/submissions/:submissionId',
+  '/lectures/:lectureId/assignments/:assignmentId/submissions/:submissionId', upload.array('many'),
   async (req, res) => {
     const { assignmentId, submissionId } = req.params;
     const { title, author_id, content } = req.body;
+    const file = req.files;
 
     if (!title || !author_id || !content) {
       return res.status(400).json({
@@ -564,22 +622,56 @@ router.put(
       });
     }
 
+    const connection = await db.getConnection();
     try {
-      const [result] = await db.execute(
-        `UPDATE SUBMISSIONS_TB
-         SET title = ?, content = ?, updated_at = NOW()
-         WHERE submission_id = ? AND assignment_id = ? AND author_id = ?`,
-        [title, content, submissionId, assignmentId, author_id]
-      );
+      await connection.beginTransaction();
 
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ success: false, message: '수정할 제출물이 없습니다.' });
+      // submission_tb에 게시글 업데이트
+      const subSql = `UPDATE SUBMISSIONS_TB
+                       SET title = ?, content = ?
+                       WHERE submission_id = ?`;
+
+      const [result] = await connection.query(subSql,
+        [title, content, submissionId]);
+
+      if (files.length > 0) {
+        // attachment_tb 기존 첨부파일 삭제
+        const deleteSql = `DELETE FROM SUBMISSIONS_ATTACHMENT_TB
+                            WHERE submission_id = ?`;
+
+        await connection.execute(deleteSql, [submissionId]);
+
+        // attachment_tb 추가
+        const attachSql = `INSERT INTO SUBMISSIONS_ATTACHMENT_TB
+                                (submission_id, file_name, file_path)
+                                VALUES (?, ?, ?)`;
+
+        for (const file of files) {
+          await connection.query(attachSql, [submissionId, file.filename, `uploads/${file.filename}`]);
+        }
       }
 
-      return res.json({ success: true, message: '과제 제출물이 수정되었습니다.' });
-    } catch (err) {
-      console.error('과제 제출 수정 실패:', err);
-      return res.status(500).json({ success: false, message: '서버 오류로 제출 수정 실패' });
+      await connection.commit();
+
+      res.status(200).json({
+        success: true,
+        message: "과제 수정 성공"
+      });
+    }
+    catch (error) {
+      await connection.rollback();
+
+      console.error("과제 수정 오류:", error);
+      res.status(500).json({
+        success: false,
+        message: "과제 수정 실패",
+        error: process.env.NODE_ENV === 'development' ? err.message : undefined
+      });
+
+      throw error;
+    }
+    finally {
+      connection.release();
     }
   }
 );
