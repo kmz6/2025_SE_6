@@ -5,7 +5,7 @@ import "./QnAWritePage.css";
 import axiosInstance from "../../apis/axiosInstance";
 import { useUser } from "../../context/UserContext";
 import PostWriteHeader from "../../components/Post/PostWriteHeader";
-import { insertBoard } from "../../apis/board/board";
+import { insertBoard, patchBoard } from "../../apis/board/board";
 
 export default function QnAWritePage() {
   const { lectureId, postId } = useParams();
@@ -49,10 +49,19 @@ export default function QnAWritePage() {
   const handleSubmit = async (formData, values) => {
     try {
       if (isEdit) {
-        await axiosInstance.put(`/api/lectures/${lectureId}/qna/${postId}`, {
-          title: values.title,
-          content: values.content,
-        });
+        const hasFile = formData.getAll("files")?.length > 0; // 파일 존재 여부
+
+        if (!hasFile) {
+          const confirmKeep = window.confirm(
+            "첨부 파일이 업로드 되지 않았습니다.\n기존 첨부 파일을 유지하시겠습니까?"
+          );
+
+          if (!confirmKeep) {
+            return;
+          }
+        }
+
+        await patchBoard(postId, formData);
         alert("수정 완료");
       } else {
         formData.append("author_id", user.user_id)

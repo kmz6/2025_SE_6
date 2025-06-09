@@ -19,6 +19,26 @@ async function insertBoard(req, res) {
     }
 }
 
+// 게시글 수정하기
+async function updateBoard(req, res) {
+    const { postId } = req.params;
+    const { title, content } = req.body;
+    const files = req.files;
+
+    try {
+        const affectedRows = await boardModel.updateById(title, content, files, postId);
+
+        if (affectedRows === 0) {
+            return res.status(404).json({ message: "수정할 게시글이 없습니다." });
+        }
+        return res.status(201).json({ message: "수정 성공" });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "서버 오류가 발생했습니다." });
+    }
+}
+
 // 첨부파일 목록
 async function getAttachment(req, res) {
     const postId = req.query.post_id;
@@ -73,6 +93,7 @@ async function deleteBoard(req, res) {
 
 module.exports = {
     insertBoard,
+    updateBoard,
     getAttachment,
     downloadFile,
     deleteBoard

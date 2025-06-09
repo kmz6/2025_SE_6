@@ -10,6 +10,16 @@ export const insertBoard = async (courseId, boardType, formData) => {
     return response.data;
 }
 
+// 게시글 수정
+export const patchBoard = async (postId, formData) => {
+    const response = await axiosInstance.patch(`/board/update/${postId}`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+    return response.data;
+}
+
 // 첨부파일 불러오기
 export const getAttachment = async (postId) => {
     const response = await axiosInstance.get(`/board/read/attachment`, {
