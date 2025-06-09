@@ -2,19 +2,6 @@ const express = require("express");
 const router = express.Router();
 const db = require("../../config/db");
 
-const multer = require('multer');
-const path = require("path");
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../../", "uploads")); // 파일 업로드 위치
-  },
-  filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
-    cb(null, path.basename(file.originalname, ext) + "-" + Date.now() + ext); // 파일명
-  }
-})
-var upload = multer({ storage: storage });
-
 router.get('/lectures/:courseId/notices', async (req, res) => {
   const { courseId } = req.params;
 
@@ -34,8 +21,6 @@ router.get('/lectures/:courseId/notices', async (req, res) => {
     res.status(500).json({ message: "공지사항 불러오기 실패" });
   }
 });
-
-module.exports = router;
 
 // PostPage
 router.get('/lectures/:courseId/notices/:postId', async (req, res) => {
@@ -106,3 +91,5 @@ router.put('/lectures/:courseId/notices/:postId', async (req, res) => {
     res.status(500).json({ message: "공지사항 수정 실패" });
   }
 });
+
+module.exports = router;

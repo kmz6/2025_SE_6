@@ -17,6 +17,10 @@ var upload = multer({ storage: storage });
 
 router.post('/write/:courseId/:boardType', upload.array('many'), boardController.insertBoard);
 
+router.get('/read/attachment', boardController.getAttachment);
+
+router.get('/download/:filename', boardController.downloadFile);
+
 router.delete('/delete', boardController.deleteBoard);
 
 module.exports = router;

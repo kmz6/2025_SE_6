@@ -6,7 +6,7 @@ import CommentBox from "../../components/Post/CommentBox";
 import "./QnAPostPage.css";
 import { useUser } from "../../context/UserContext";
 import axiosInstance from "../../apis/axiosInstance";
-import { deleteBoard } from "../../apis/board/board";
+import { getAttachment, deleteBoard } from "../../apis/board/board";
 
 export default function QnAPostPage() {
   const { lectureId, postId } = useParams();
@@ -18,6 +18,7 @@ export default function QnAPostPage() {
   const [courseName, setCourseName] = useState("");
   const [courseCode, setCourseCode] = useState("");
   const [comments, setComments] = useState([]);
+  const [files, setFiles] = useState([]);
 
   const fetchPost = async () => {
     try {
@@ -25,6 +26,10 @@ export default function QnAPostPage() {
         `/api/lectures/${lectureId}/qna/${postId}`
       );
       setPost(response.data);
+
+      const fileData = await getAttachment(postId);
+      setFiles(fileData);
+
     } catch (error) {
       console.error("QnA 상세 조회 실패:", error);
     }
@@ -135,6 +140,7 @@ export default function QnAPostPage() {
         author={post.name}
         date={post.created_at?.slice(0, 10)}
         content={post.content}
+        attachment={files}
       />
 
       <CommentBox

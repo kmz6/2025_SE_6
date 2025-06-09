@@ -33,6 +33,17 @@ async function insertById(data, files) {
     }
 }
 
+// 첨부파일 목록
+async function getAttachById(postId) {
+    const sql = `SELECT *
+                    FROM ATTACHMENT_TB
+                    WHERE post_id = ?`;
+
+    const [results] = await db.query(sql, [postId]);
+
+    return results;
+}
+
 // 게시글 삭제
 async function deleteById(postId) {
     const sql = `DELETE FROM BOARD_TB
@@ -45,5 +56,6 @@ async function deleteById(postId) {
 
 module.exports = {
     insertById,
+    getAttachById,
     deleteById
 }

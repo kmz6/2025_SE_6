@@ -5,7 +5,7 @@ import PostBox from "../../components/Post/PostBox";
 import "./NoticePostPage.css";
 import { useUser } from "../../context/UserContext";
 import axiosInstance from "../../apis/axiosInstance";
-import { deleteBoard } from "../../apis/board/board";
+import { getAttachment, deleteBoard } from "../../apis/board/board";
 
 export default function NoticePostPage() {
   const { lectureId, postId } = useParams();
@@ -16,12 +16,19 @@ export default function NoticePostPage() {
   const [post, setPost] = useState(null);
   const [courseName, setCourseName] = useState("");
   const [courseCode, setCourseCode] = useState("");
+  const [files, setFiles] = useState([]);
 
-  // 게시글 데이터
+  // 게시글 데이터 + 첨부파일
   const fetchPost = async () => {
     try {
       const response = await axiosInstance.get(`/api/lectures/${lectureId}/notices/${postId}`);
       setPost(response.data);
+
+      const fileData = await getAttachment(postId);
+      setFiles(fileData);
+
+      console.log(fileData);
+
     } catch (error) {
       console.error("공지사항 상세 조회 실패:", error);
     }
@@ -85,6 +92,7 @@ export default function NoticePostPage() {
         author={post.name}
         date={post.created_at?.slice(0, 10)}
         content={post.content}
+        attachment={files}
       />
     </div>
   );
