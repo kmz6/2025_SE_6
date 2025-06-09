@@ -58,7 +58,7 @@ async function getSemData(req, res) {
         const rank = sortedStudents.findIndex(([studentId]) => studentId === user_id) + 1; //석차 정보
 
         return {
-            totalCredits: semData.totalCredits, gpa: semData.gpa, rank
+            totalCredits: semData.totalCredits, gpa: semData.gpa.toFixed(2), rank
         };
     }
 

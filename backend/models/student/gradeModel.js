@@ -2,10 +2,10 @@ const db = require("../../config/db");
 
 //학기 정보
 async function findSemestersById(user_id) {
-    const sql = `SELECT DISTINCT course_year, course_semester
+    const sql = `SELECT DISTINCT c.course_year, c.course_semester
                     FROM COURSE_TB c JOIN STUD_COURSE_TB sc ON c.course_id = sc.course_id
                     WHERE sc.student_id = ?
-                    ORDER BY course_year DESC, course_semester DESC;`;
+                    ORDER BY c.course_year DESC, c.course_semester DESC;`;
 
     const [results] = await db.query(sql, [user_id]);
 
@@ -29,7 +29,7 @@ async function countCredits(user_id) {
     const sql = `SELECT c.course_type, SUM(c.credit) total_credit
                     FROM STUD_COURSE_TB sc JOIN COURSE_TB c ON sc.course_id = c.course_id
                     WHERE sc.student_id = ? AND sc.grade <> 'N/A'
-                    GROUP BY course_type;`
+                    GROUP BY c.course_type;`
 
     const [results] = await db.query(sql, [user_id]);
 
