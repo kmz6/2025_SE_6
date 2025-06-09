@@ -221,7 +221,7 @@ export const RightHeaderRight = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: -6px;
+  margin-top: -12px;
 `;
 
 export const Credit = styled.div`

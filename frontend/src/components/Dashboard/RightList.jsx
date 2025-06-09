@@ -2,6 +2,7 @@ import * as S from "../../styles/DashboardPage.style";
 import { useNavigate } from "react-router-dom";
 import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
 import WeeklySubmissionBarChart from "./Chart";
+import { examPeriods } from "../../constants/event";
 
 export default function RightList({
   assignments,
@@ -15,6 +16,10 @@ export default function RightList({
   const dailyAssignments = assignments.filter(
     (a) => a.end_date?.slice(0, 10) === date
   );
+
+  const currentExamLabel = examPeriods.find(
+    (period) => date >= period.start && date <= period.end
+  )?.label;
 
   return (
     <>
@@ -30,7 +35,7 @@ export default function RightList({
 
       {isInExamPeriod && (
         <S.ExamNotice>
-          <span>기말고사 시험기간</span>
+          <span>{currentExamLabel} 시험기간</span>
         </S.ExamNotice>
       )}
       {isInFestivalPeriod && (
