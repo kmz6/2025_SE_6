@@ -76,33 +76,57 @@ export default function AssignWritePage() {
       return;
     }
 
-    const startDate = new Date(start_date).setHours(0, 0, 0, 0);
-    const endDate = new Date(end_date).setHours(0, 0, 0, 0);
+    const startDate = new Date(start_date);
+    startDate.setHours(0, 0, 0, 0);
+
+    const endDate = new Date(end_date);
+    endDate.setHours(0, 0, 0, 0);
 
     if (endDate < startDate) {
       alert("마감일은 시작일보다 이전일 수 없습니다.");
       return;
     }
 
-    const newAssignment = {
-      title: values.title,
-      content: values.content,
-      start_date: start_date,
-      end_date: end_date,
-      author_id: user.user_id,
-    };
+    const startDateStr = startDate.toISOString().slice(0, 10);
+    const endDateStr = endDate.toISOString().slice(0, 10);
+
+    formData.set("start_date", startDateStr);
+    formData.set("end_date", endDateStr);
+    formData.append("author_id", user.user_id)
 
     try {
       if (isEdit) {
+        const hasFile = formData.getAll("files")?.length > 0; // 파일 존재 여부
+
+        if (!hasFile) {
+          const confirmKeep = window.confirm(
+            "첨부 파일이 업로드 되지 않았습니다.\n기존 첨부 파일을 유지하시겠습니까?"
+          );
+
+          if (!confirmKeep) {
+            return;
+          }
+        }
+
         await axiosInstance.put(
           `/api/lectures/${lectureId}/assignments/${postId}`,
-          newAssignment
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
         );
         alert("과제가 수정되었습니다.");
       } else {
         await axiosInstance.post(
           `/api/lectures/${lectureId}/assignments`,
-          newAssignment
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
         );
         alert("과제가 등록되었습니다.");
       }

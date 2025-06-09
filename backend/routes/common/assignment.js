@@ -78,9 +78,10 @@ router.get("/lectures/:courseId/assignments/:id", async (req, res) => {
 });
 
 // 과제 등록
-router.post("/lectures/:courseId/assignments", async (req, res) => {
+router.post("/lectures/:courseId/assignments", upload.array('many'), async (req, res) => {
   const { courseId } = req.params;
   const { title, author_id, content, start_date, end_date } = req.body;
+  const files = req.files;
 
   // 필수 필드 검증
   if (!title || !author_id || !content || !start_date || !end_date) {
@@ -108,33 +109,59 @@ router.post("/lectures/:courseId/assignments", async (req, res) => {
     });
   }
 
+  const connection = await db.getConnection();
   try {
-    const [result] = await db.execute(
-      `INSERT INTO ASSIGNMENTS_TB 
-       (course_id, title, author_id, content, start_date, end_date, created_at) 
-       VALUES (?, ?, ?, ?, ?, ?, NOW())`,
-      [courseId, title, author_id, content, start_date, end_date]
-    );
+    await connection.beginTransaction();
+
+    // assignment_tb에 게시글 등록
+    const assignSql = `INSERT INTO ASSIGNMENTS_TB
+                            (course_id, title, author_id, content, start_date, end_date) 
+                            VALUES (?, ?, ?, ?, ?, ?)`;
+
+    const [result] = await connection.query(assignSql,
+      [courseId, title, author_id, content, start_date, end_date]);
+
+    const assignId = await result.insertId;
+
+    // 첨부 파일 등록
+    const attachSql = `INSERT INTO ASSIGNMENTS_ATTACHMENT_TB
+                            (assignment_id, file_name, file_path)
+                            VALUES (?, ?, ?)`;
+
+    for (const file of files) {
+      await connection.query(attachSql, [assignId, file.filename, `uploads/${file.filename}`]);
+    }
+
+    await connection.commit();
 
     res.status(201).json({
       success: true,
       data: { assignment_id: result.insertId },
       message: "과제 등록 성공"
     });
-  } catch (err) {
-    console.error("과제 등록 오류:", err);
+  }
+  catch (error) {
+    await connection.rollback();
+
+    console.error("과제 등록 오류:", error);
     res.status(500).json({
       success: false,
       message: "과제 등록 실패",
       error: process.env.NODE_ENV === 'development' ? err.message : undefined
     });
+
+    throw error;
+  }
+  finally {
+    connection.release();
   }
 });
 
 // 과제 수정
-router.put("/lectures/:courseId/assignments/:id", async (req, res) => {
+router.put("/lectures/:courseId/assignments/:id", upload.array('many'), async (req, res) => {
   const { courseId, id } = req.params;
   const { title, content, start_date, end_date } = req.body;
+  const files = req.files;
 
   // 필수 필드 검증
   if (!title || !content || !start_date || !end_date) {
@@ -162,32 +189,56 @@ router.put("/lectures/:courseId/assignments/:id", async (req, res) => {
     });
   }
 
+  const connection = await db.getConnection();
   try {
-    const [result] = await db.execute(
-      `UPDATE ASSIGNMENTS_TB 
-       SET title = ?, content = ?, start_date = ?, end_date = ?, updated_at = NOW()
-       WHERE course_id = ? AND assignment_id = ?`,
-      [title, content, start_date, end_date, courseId, id]
-    );
+    await connection.beginTransaction();
 
-    if (result.affectedRows === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "해당 과제를 찾을 수 없습니다."
-      });
+    // assignment_tb에 게시글 업데이트
+    const assignSql = `UPDATE ASSIGNMENTS_TB
+                       SET title = ?, content = ?, start_date = ?, end_date = ? 
+                       WHERE assignment_id = ?`;
+
+    const [result] = await connection.query(assignSql,
+      [title, content, start_date, end_date, id]);
+
+    if (files.length > 0) {
+      // attachment_tb 기존 첨부파일 삭제
+      const deleteSql = `DELETE FROM ASSIGNMENTS_ATTACHMENT_TB
+                            WHERE assignment_id = ?`;
+
+      await connection.execute(deleteSql, [id]);
+
+      // attachment_tb 추가
+      const attachSql = `INSERT INTO ASSIGNMENTS_ATTACHMENT_TB
+                                (assignment_id, file_name, file_path)
+                                VALUES (?, ?, ?)`;
+
+      for (const file of files) {
+        await connection.query(attachSql, [id, file.filename, `uploads/${file.filename}`]);
+      }
     }
+
+    await connection.commit();
 
     res.status(200).json({
       success: true,
       message: "과제 수정 성공"
     });
-  } catch (err) {
-    console.error("과제 수정 오류:", err);
+  }
+  catch (error) {
+    await connection.rollback();
+
+    console.error("과제 수정 오류:", error);
     res.status(500).json({
       success: false,
       message: "과제 수정 실패",
       error: process.env.NODE_ENV === 'development' ? err.message : undefined
     });
+
+    throw error;
+  }
+  finally {
+    connection.release();
   }
 });
 

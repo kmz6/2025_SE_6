@@ -49,6 +49,7 @@ export default function AssignPostPage() {
       const res = await axiosInstance.get(
         `/api/assignments/${postId}/attachments`
       );
+
       if (res.data.success) {
         setAttachments(res.data.data);
       }
@@ -145,15 +146,14 @@ export default function AssignPostPage() {
         if (res.data.success) {
           alert(
             res.data.message ||
-              `과제 ${isEditMode && submissionId ? "수정" : "제출"} 완료`
+            `과제 ${isEditMode && submissionId ? "수정" : "제출"} 완료`
           );
           navigate(`/assignment/${lectureId}`);
         } else {
           alert(
             res.data.message ||
-              `과제 ${
-                isEditMode && submissionId ? "수정" : "제출"
-              } 중 오류가 발생했습니다.`
+            `과제 ${isEditMode && submissionId ? "수정" : "제출"
+            } 중 오류가 발생했습니다.`
           );
         }
       } else {
@@ -172,15 +172,14 @@ export default function AssignPostPage() {
         if (res.data.success) {
           alert(
             res.data.message ||
-              `과제 ${isEditMode && submissionId ? "수정" : "제출"} 완료`
+            `과제 ${isEditMode && submissionId ? "수정" : "제출"} 완료`
           );
           navigate(`/assignment/${lectureId}`);
         } else {
           alert(
             res.data.message ||
-              `과제 ${
-                isEditMode && submissionId ? "수정" : "제출"
-              } 중 오류가 발생했습니다.`
+            `과제 ${isEditMode && submissionId ? "수정" : "제출"
+            } 중 오류가 발생했습니다.`
           );
         }
       }
@@ -244,12 +243,12 @@ export default function AssignPostPage() {
       <BoardHeader subjectName={courseName} subjectCode={courseCode} />
       <PostBox
         title={assignment.title}
-        author={assignment.author_id}
+        author={assignment.name}
         date={`${formatDate(assignment.start_date)} ~ ${formatDate(
           assignment.end_date
         )}`}
         content={assignment.content}
-        attachment={attachments.length > 0 ? attachments[0] : null}
+        attachment={attachments}
       />
       {deadlineStatus && (
         <div className={`deadline-status ${deadlineStatus.className}`}>
