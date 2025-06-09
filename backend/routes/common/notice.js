@@ -20,11 +20,11 @@ router.get('/lectures/:courseId/notices', async (req, res) => {
 
   try {
     const [rows] = await db.execute(
-      `SELECT post_id AS id, title, author_id AS author,
-              DATE_FORMAT(created_at, "%Y-%m-%d") AS date
-       FROM BOARD_TB
-       WHERE course_id = ? AND board_type = 'notice'
-       ORDER BY created_at DESC`,
+      `SELECT b.post_id AS id, b.title, b.author_id AS author, f.name,
+              DATE_FORMAT(b.created_at, "%Y-%m-%d") AS date
+       FROM BOARD_TB b JOIN FACULTY_TB f ON b.author_id = f.faculty_id
+       WHERE b.course_id = ? AND b.board_type = 'notice'
+       ORDER BY b.created_at DESC`,
       [courseId]
     );
 
@@ -43,10 +43,10 @@ router.get('/lectures/:courseId/notices/:postId', async (req, res) => {
 
   try {
     const [rows] = await db.execute(
-      `SELECT post_id, title, author_id, content, 
-              DATE_FORMAT(created_at, "%Y-%m-%d") AS created_at
-       FROM BOARD_TB
-       WHERE course_id = ? AND post_id = ? AND board_type = 'notice'`,
+      `SELECT b.post_id, b.title, b.author_id, f.name, b.content, 
+              DATE_FORMAT(b.created_at, "%Y-%m-%d") AS created_at
+       FROM BOARD_TB b JOIN FACULTY_TB f ON b.author_id = f.faculty_id
+       WHERE b.course_id = ? AND b.post_id = ? AND b.board_type = 'notice'`,
       [courseId, postId]
     );
 

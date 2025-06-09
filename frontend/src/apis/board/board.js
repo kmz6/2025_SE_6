@@ -2,7 +2,7 @@ import axiosInstance from "../axiosInstance";
 
 // 게시글 등록
 export const insertBoard = async (courseId, boardType, formData) => {
-    const response = await axiosInstance.post(`/board/${courseId}/${boardType}`, formData, {
+    const response = await axiosInstance.post(`/write/board/${courseId}/${boardType}`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }

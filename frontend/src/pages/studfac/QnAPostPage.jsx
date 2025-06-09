@@ -132,7 +132,7 @@ export default function QnAPostPage() {
 
       <PostBox
         title={post.title}
-        author={post.author_id}
+        author={post.name}
         date={post.created_at?.slice(0, 10)}
         content={post.content}
       />

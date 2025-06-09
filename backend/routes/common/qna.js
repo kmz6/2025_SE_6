@@ -20,11 +20,11 @@ router.get('/lectures/:courseId/qna', async (req, res) => {
 
   try {
     const [rows] = await db.execute(
-      `SELECT post_id AS id, title, author_id AS author,
-              DATE_FORMAT(created_at, "%Y-%m-%d") AS date
-       FROM BOARD_TB
-       WHERE course_id = ? AND board_type = 'qna'
-       ORDER BY created_at DESC`,
+      `SELECT b.post_id AS id, b.title, b.author_id AS author, s.name,
+              DATE_FORMAT(b.created_at, "%Y-%m-%d") AS date
+       FROM BOARD_TB b JOIN STUDENT_TB s ON b.author_id = s.student_id
+       WHERE b.course_id = ? AND b.board_type = 'qna'
+       ORDER BY b.created_at DESC`,
       [courseId]
     );
 
@@ -40,10 +40,10 @@ router.get('/lectures/:courseId/qna/:postId', async (req, res) => {
 
   try {
     const [rows] = await db.execute(
-      `SELECT post_id, title, author_id, content, 
-              DATE_FORMAT(created_at, "%Y-%m-%d") AS created_at
-       FROM BOARD_TB
-       WHERE course_id = ? AND post_id = ? AND board_type = 'qna'`,
+      `SELECT b.post_id, b.title, b.author_id, s.name, b.content, 
+              DATE_FORMAT(b.created_at, "%Y-%m-%d") AS created_at
+       FROM BOARD_TB b JOIN STUDENT_TB s ON b.author_id = s.student_id
+       WHERE b.course_id = ? AND b.post_id = ? AND b.board_type = 'qna'`,
       [courseId, postId]
     );
 

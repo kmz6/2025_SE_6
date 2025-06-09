@@ -15,7 +15,7 @@ var storage = multer.diskStorage({
 })
 var upload = multer({ storage: storage });
 
-router.post('/:courseId/:boardType', upload.array('many'), boardController.insertBoard);
+router.post('/write/:courseId/:boardType', upload.array('many'), boardController.insertBoard);
 
 router.delete('/delete', boardController.deleteBoard);
 
