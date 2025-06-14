@@ -10,6 +10,11 @@ function LeaveRequestPage() {
   const [enrollStatus, setEnrollStatus] = useState(""); // 휴복학 상태
   const [leaveData, setleaveData] = useState([]); // 휴복학 정보
 
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalAction, setModalAction] = useState({ onConfirm: () => { }, onCancel: () => { } });
+  const [modalVisible, setModalVisible] = useState(false);
+  const [cancelVisible, setCancelVisible] = useState(false);
+
   // 휴복학 신청 버튼 클릭 시 요청 보내기
   const handleLeaveRequest = async (type) => {
     try {
@@ -19,18 +24,13 @@ function LeaveRequestPage() {
       }
 
       // 요청 종류
-      const confirmed = window.confirm(
-        type === "on_leave" ? "휴학 신청을 하시겠습니까?" : "복학 신청을 하시겠습니까?"
-      );
+      const confirmed = await showConfirmModal(type === "on_leave" ? "휴학 신청을 하시겠습니까?" : "복학 신청을 하시겠습니까?");
       if (!confirmed) return;
 
       await postLeaveRequest(user.user_id, type);
-      alert(type === "on_leave" ? "휴학 신청이 완료되었습니다." : "복학 신청이 완료되었습니다.");
-
-      window.location.reload(); // 새로고침
-
+      openModal(type === "on_leave" ? "휴학 신청이 완료되었습니다." : "복학 신청이 완료되었습니다.");
     } catch (error) {
-      alert("요청 중 오류가 발생했습니다.");
+      openModal("요청 중 오류가 발생했습니다.");
       console.error(error);
     }
   };
@@ -38,21 +38,53 @@ function LeaveRequestPage() {
   // 휴복학 신청 취소
   const handleCancel = async (req_id) => {
     try {
-      // 요청 종류
-      const confirmed = window.confirm(
-        "신청을 취소하시겠습니까?"
-      );
+      const confirmed = await showConfirmModal("신청을 취소하시겠습니까?");
       if (!confirmed) return;
 
       await deleteLeaveRequest(req_id);
-      alert("취소가 완료되었습니다.");
-
-      window.location.reload(); // 새로고침
+      openModal("취소가 완료되었습니다.");
 
     } catch (error) {
-      alert("요청 중 오류가 발생했습니다.");
+      openModal("요청 중 오류가 발생했습니다.");
       console.error(error);
     }
+  };
+
+  const openModal = (message) => {
+    setModalMessage(message);
+    setModalVisible(true);
+  };
+
+  const closeModal = (onCloseCallback) => {
+    setModalVisible(false);
+    setCancelVisible(false);
+    if (onCloseCallback) onCloseCallback();
+  };
+
+  // 확인, 취소 모달
+  const showConfirmModal = (message) => {
+    return new Promise((resolve) => {
+      setModalMessage(message);
+      setModalVisible(true);
+      setCancelVisible(true);
+
+      // 확인 버튼 누름
+      const handleConfirm = () => {
+        closeModal();
+        resolve(true);
+      };
+
+      // 취소 버튼 누름
+      const handleCancelClick = () => {
+        closeModal();
+        resolve(false);
+      };
+
+      setModalAction(() => ({
+        onConfirm: handleConfirm,
+        onCancel: handleCancelClick
+      }));
+    });
   };
 
   // 휴복학 정보 불러오기
@@ -135,6 +167,24 @@ function LeaveRequestPage() {
           </S.Row>
         )}
       </S.Table>
+
+      {modalVisible && (
+        <S.ModalOverlay>
+          <S.Modal>
+            <p>{modalMessage}</p>
+            {cancelVisible ? (
+              <S.ModalButtonWrapper>
+                <S.ModalCloseButton onClick={modalAction.onConfirm}>확인</S.ModalCloseButton>
+                <S.ModalCloseButton onClick={modalAction.onCancel}>취소</S.ModalCloseButton>
+              </S.ModalButtonWrapper>
+            ) : (
+              <S.ModalButtonWrapper>
+                <S.ModalCloseButton onClick={() => closeModal(() => window.location.reload())}>확인</S.ModalCloseButton>
+              </S.ModalButtonWrapper>
+            )}
+          </S.Modal>
+        </S.ModalOverlay>
+      )}
     </S.Container>
   );
 }
