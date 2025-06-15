@@ -9,6 +9,11 @@ const ProfGrade = ({ courseData, studentData }) => {
     const [sortBy, setSortBy] = useState("student_id"); // 초기 정렬은 학번순
     const [sortedStudents, setSortedStudents] = useState([]);
 
+    const [modalMessage, setModalMessage] = useState("");
+    const [modalAction, setModalAction] = useState({ onConfirm: () => { }, onCancel: () => { } });
+    const [modalVisible, setModalVisible] = useState(false);
+    const [cancelVisible, setCancelVisible] = useState(false);
+
     useEffect(() => {
         setSortedStudents(studentData.map(s => {
             const attendance = Number(s.attendance) || 0;
@@ -96,22 +101,57 @@ const ProfGrade = ({ courseData, studentData }) => {
         );
     };
 
+    const openModal = (message) => {
+        setModalMessage(message);
+        setModalVisible(true);
+    };
+
+    const closeModal = (onCloseCallback) => {
+        setModalVisible(false);
+        setCancelVisible(false);
+        if (onCloseCallback) onCloseCallback();
+    };
+
+    // 확인, 취소 모달
+    const showConfirmModal = (message) => {
+        return new Promise((resolve) => {
+            setModalMessage(message);
+            setModalVisible(true);
+            setCancelVisible(true);
+
+            // 확인 버튼 누름
+            const handleConfirm = () => {
+                closeModal();
+                resolve(true);
+            };
+
+            // 취소 버튼 누름
+            const handleCancelClick = () => {
+                closeModal();
+                resolve(false);
+            };
+
+            setModalAction(() => ({
+                onConfirm: handleConfirm,
+                onCancel: handleCancelClick
+            }));
+        });
+    };
+
     // 저장 버튼 클릭
     const handleSave = async () => {
         try {
-            const confirmed = window.confirm(
-                "저장하시겠습니까?"
-            );
+            const confirmed = await showConfirmModal("저장하시겠습니까?");
             if (!confirmed) return;
 
             for (const student of sortedStudents) {
                 // 학생 데이터 하나씩 업데이트
                 await patchStudentScore(student);
             }
-            alert("저장되었습니다.");
+            openModal("저장되었습니다.");
         } catch (error) {
             console.error(error);
-            alert("오류가 발생했습니다.");
+            openModal("오류가 발생했습니다.");
         }
     };
 
@@ -146,6 +186,24 @@ const ProfGrade = ({ courseData, studentData }) => {
             <S.ButtonWrapper>
                 <S.CheckButton onClick={handleSave}>저장</S.CheckButton>
             </S.ButtonWrapper>
+
+            {modalVisible && (
+                <S.ModalOverlay>
+                    <S.Modal>
+                        <p>{modalMessage}</p>
+                        {cancelVisible ? (
+                            <S.ModalButtonWrapper>
+                                <S.ModalCloseButton onClick={modalAction.onConfirm}>확인</S.ModalCloseButton>
+                                <S.ModalCloseButton onClick={modalAction.onCancel}>취소</S.ModalCloseButton>
+                            </S.ModalButtonWrapper>
+                        ) : (
+                            <S.ModalButtonWrapper>
+                                <S.ModalCloseButton onClick={() => closeModal(() => window.location.reload())}>확인</S.ModalCloseButton>
+                            </S.ModalButtonWrapper>
+                        )}
+                    </S.Modal>
+                </S.ModalOverlay>
+            )}
         </S.Container>
     );
 };
