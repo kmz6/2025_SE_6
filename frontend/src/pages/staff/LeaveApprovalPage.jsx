@@ -7,17 +7,21 @@ function LeaveApprovalPage() {
 
   const [requestData, setRequestData] = useState([]); // 휴복학 요청 정보
 
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalAction, setModalAction] = useState({ onConfirm: () => { }, onCancel: () => { } });
+  const [modalVisible, setModalVisible] = useState(false);
+  const [cancelVisible, setCancelVisible] = useState(false);
+
   // 승인 버튼 클릭 시 요청 보내기
   const handleLeaveApprove = async (req_id, req_type) => {
     try {
-      const confirmed = window.confirm("승인하시겠습니까?");
+      const confirmed = await showConfirmModal("승인하시겠습니까?");
       if (!confirmed) return;
 
       await patchLeaveApprove(req_id, req_type);
-      alert("요청이 완료되었습니다.");
-
+      openModal("요청이 완료되었습니다.");
     } catch (error) {
-      alert("요청 중 오류가 발생했습니다.");
+      openModal("요청 중 오류가 발생했습니다.");
       console.error(error);
     }
   };
@@ -25,16 +29,53 @@ function LeaveApprovalPage() {
   // 반려 버튼 클릭 시 요청 보내기
   const handleLeaveReject = async (req_id) => {
     try {
-      const confirmed = window.confirm("반려하시겠습니까?");
+      const confirmed = await showConfirmModal("반려하시겠습니까?");
       if (!confirmed) return;
 
       await patchLeaveReject(req_id);
-      alert("요청이 완료되었습니다.");
+      openModal("요청이 완료되었습니다.");
 
     } catch (error) {
-      alert("요청 중 오류가 발생했습니다.");
+      openModal("요청 중 오류가 발생했습니다.");
       console.error(error);
     }
+  };
+
+  const openModal = (message) => {
+    setModalMessage(message);
+    setModalVisible(true);
+  };
+
+  const closeModal = (onCloseCallback) => {
+    setModalVisible(false);
+    setCancelVisible(false);
+    if (onCloseCallback) onCloseCallback();
+  };
+
+  // 확인, 취소 모달
+  const showConfirmModal = (message) => {
+    return new Promise((resolve) => {
+      setModalMessage(message);
+      setModalVisible(true);
+      setCancelVisible(true);
+
+      // 확인 버튼 누름
+      const handleConfirm = () => {
+        closeModal();
+        resolve(true);
+      };
+
+      // 취소 버튼 누름
+      const handleCancelClick = () => {
+        closeModal();
+        resolve(false);
+      };
+
+      setModalAction(() => ({
+        onConfirm: handleConfirm,
+        onCancel: handleCancelClick
+      }));
+    });
   };
 
   // 휴복학 요청 정보 불러오기
@@ -103,6 +144,24 @@ function LeaveApprovalPage() {
           )}
         </tbody>
       </S.Table>
+
+      {modalVisible && (
+        <S.ModalOverlay>
+          <S.Modal>
+            <p>{modalMessage}</p>
+            {cancelVisible ? (
+              <S.ModalButtonWrapper>
+                <S.ModalCloseButton onClick={modalAction.onConfirm}>확인</S.ModalCloseButton>
+                <S.ModalCloseButton onClick={modalAction.onCancel}>취소</S.ModalCloseButton>
+              </S.ModalButtonWrapper>
+            ) : (
+              <S.ModalButtonWrapper>
+                <S.ModalCloseButton onClick={() => closeModal(() => window.location.reload())}>확인</S.ModalCloseButton>
+              </S.ModalButtonWrapper>
+            )}
+          </S.Modal>
+        </S.ModalOverlay>
+      )}
     </S.Container >
   );
 }
