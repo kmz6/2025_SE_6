@@ -11,6 +11,20 @@ function LoginPage() {
 
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const openModal = (message) => {
+    setModalMessage(message);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    if (modalMessage === "아이디 또는 비밀번호가 올바르지 않습니다.") {
+      navigate(`/login`);
+    }
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -22,7 +36,7 @@ function LoginPage() {
       navigate("/home");
     } catch (err) {
       console.error("로그인 실패", err);
-      alert("아이디 또는 비밀번호가 올바르지 않습니다.");
+      openModal("아이디 또는 비밀번호가 올바르지 않습니다.");
     }
   };
 
@@ -52,6 +66,15 @@ function LoginPage() {
         <span>|</span>
         <a href="/forgotpasswd">비밀번호 찾기</a>
       </S.Footer>
+
+      {modalVisible && (
+        <S.ModalOverlay>
+          <S.Modal>
+            <p>{modalMessage}</p>
+            <S.ModalCloseButton onClick={closeModal}>확인</S.ModalCloseButton>
+          </S.Modal>
+        </S.ModalOverlay>
+      )}
     </S.PageWrapper>
   );
 }

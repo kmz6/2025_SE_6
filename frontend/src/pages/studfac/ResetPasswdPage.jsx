@@ -1,22 +1,27 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import AuthForm from "../../components/AuthForm/AuthForm";
 import { resetPassword } from "../../apis/resetpwd/resetpwd";
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: #fff;
-`;
+import * as S from "../../styles/ResetPasswdPage.style";
 
 function ResetPasswdPage() {
     const [userId, setuserId] = useState("");
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const [modalMessage, setModalMessage] = useState("");
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const openModal = (message) => {
+        setModalMessage(message);
+        setModalVisible(true);
+    };
+
+    const closeModal = () => {
+        setModalVisible(false);
+        if (modalMessage === "비밀번호 초기화가 완료되었습니다.") {
+            navigate(`/login`);
+        }
+    };
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -24,16 +29,15 @@ function ResetPasswdPage() {
 
         try {
             const res = await resetPassword({ user_id: userId, name, email });
-            alert(res.message);
-            navigate("/login");
+            openModal("비밀번호 초기화가 완료되었습니다.");
         } catch (err) {
-            alert("입력하신 정보가 일치하지 않습니다.");
+            openModal("입력하신 정보가 일치하지 않습니다.");
             console.error("초기화 실패:", err);
         }
     };
 
     return (
-        <Container>
+        <S.Container>
             <AuthForm
                 title="비밀번호 찾기"
                 fields={[
@@ -59,7 +63,15 @@ function ResetPasswdPage() {
                 onSubmit={handleSubmit}
                 buttonText="비밀번호 초기화"
             />
-        </Container>
+            {modalVisible && (
+                <S.ModalOverlay>
+                    <S.Modal>
+                        <p>{modalMessage}</p>
+                        <S.ModalCloseButton onClick={closeModal}>확인</S.ModalCloseButton>
+                    </S.Modal>
+                </S.ModalOverlay>
+            )}
+        </S.Container>
     );
 }
 
