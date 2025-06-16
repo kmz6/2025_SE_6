@@ -60,7 +60,7 @@ export default function LectureRoomPage() {
         }
         setAssignments(result);
       } else {
-        setAssignments(assignmentData); // 교수는 제출 상태 필요 없음
+        setAssignments(assignmentData);
       }
     } catch (e) {
       console.error("과제 불러오기 실패:", e);
@@ -129,13 +129,17 @@ export default function LectureRoomPage() {
             <div className="top-right-buttons">
               <button
                 className="top-right-btn"
-                onClick={() => navigate(`/student/attendance/${selectedLectureId}`)}
+                onClick={() =>
+                  navigate(`/${role === "faculty" ? "professor" : "student"}/attendance/${selectedLectureId}`)
+                }
               >
                 출결 조회
               </button>
               <button
                 className="top-right-btn"
-                onClick={() => navigate(`/student/syllabus/${selectedLectureId}`)}
+                onClick={() =>
+                  navigate(`/${role === "faculty" ? "professor" : "student"}/syllabus/${selectedLectureId}`)
+                }
               >
                 강의계획서 조회
               </button>
