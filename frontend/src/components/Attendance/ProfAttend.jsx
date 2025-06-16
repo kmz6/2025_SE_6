@@ -11,6 +11,17 @@ const ProfAttend = () => {
   const [attendance, setAttendance] = useState({});
   const [week, setWeek] = useState(1);
   const [session, setSession] = useState(1);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const openModal = (message) => {
+    setModalMessage(message);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
 
   const loadAttendance = async () => {
     const data = await fetchAttendanceData(courseId, week, session);
@@ -41,9 +52,9 @@ const ProfAttend = () => {
         Object.entries(attendance).map(([id, status]) => [id, mapKoreanToStatus(status)])
       );
       await saveAttendanceData(courseId, week, session, mapped);
-      alert("저장 완료!");
+      openModal("출석 정보 저장에 성공하였습니다.");
     } catch {
-      alert("저장 실패!");
+      openModal("출석 정보 저장에 실패하였습니다.");
     }
   };
 
@@ -111,6 +122,15 @@ const ProfAttend = () => {
         <S.Button onClick={handleReset}>초기화</S.Button>
         <S.Button onClick={handleSave}>저장</S.Button>
       </S.ButtonWrapper>
+
+      {modalVisible && (
+        <S.ModalOverlay>
+          <S.Modal>
+            <p>{modalMessage}</p>
+            <S.ModalCloseButton onClick={closeModal}>확인</S.ModalCloseButton>
+          </S.Modal>
+        </S.ModalOverlay>
+      )}
     </S.Container>
   );
 };

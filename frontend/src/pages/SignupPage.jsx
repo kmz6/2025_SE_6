@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { formatPhoneNumber } from "../utils/format";
 import {
   isValidPhone,
@@ -11,6 +12,20 @@ import * as S from "../styles/Signup.style";
 
 function SignupPage() {
   const navigate = useNavigate();
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const openModal = (message) => {
+    setModalMessage(message);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    if (modalMessage === "회원가입이 완료되었습니다.") {
+      navigate(`/login`);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,28 +42,28 @@ function SignupPage() {
     const confirmPassword = form[8].value;
 
     if (!user_type || !college || !department || !user_id || !name || !email || !phone || !password || !confirmPassword) {
-      alert("모든 항목을 입력해 주세요.");
+      openModal("모든 항목을 입력해 주세요.");
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("비밀번호가 일치하지 않습니다.");
+      openModal("비밀번호가 일치하지 않습니다.");
       return;
     }
 
     if (!isValidPhone(phone)) {
-      alert("올바른 전화번호 형식이 아닙니다.");
+      openModal("올바른 전화번호 형식이 아닙니다.");
       return;
     }
 
     if (!isValidEmail(email)) {
-      alert("올바른 이메일 형식이 아닙니다.");
+      openModal("올바른 이메일 형식이 아닙니다.");
       return;
     }
 
     const pwError = isValidPassword(password);
     if (pwError) {
-      alert(pwError);
+      openModal(pwError);
       return;
     }
     try {
@@ -63,13 +78,10 @@ function SignupPage() {
         email,
         enrollment_status: user_type === "student" ? "enrolled" : undefined,
       });
-
-      alert(res.message);
-      navigate("/login");
-
+      openModal("회원가입이 완료되었습니다.");
     } catch (err) {
       console.error(err);
-      alert("회원가입 실패!");
+      openModal("회원가입에 실패하였습니다.");
     }
   };
 
@@ -138,6 +150,14 @@ function SignupPage() {
           회원가입 완료
         </S.Button>
       </S.Form>
+      {modalVisible && (
+        <S.ModalOverlay>
+          <S.Modal>
+            <p>{modalMessage}</p>
+            <S.ModalCloseButton onClick={closeModal}>확인</S.ModalCloseButton>
+          </S.Modal>
+        </S.ModalOverlay>
+      )}
     </S.Container>
   );
 }

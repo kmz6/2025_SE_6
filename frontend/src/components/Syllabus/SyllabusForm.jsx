@@ -21,6 +21,20 @@ const SyllabusForm = ({ initialData, onSubmit }) => {
     assignment: initialData?.assignment || "",
     etc: initialData?.etc || ""
   });
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const openModal = (message) => {
+    setModalMessage(message);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    if (modalMessage === "강의계획서가 제출되었습니다.") {
+      navigate(`/professor/syllabus`);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,12 +52,12 @@ const SyllabusForm = ({ initialData, onSubmit }) => {
     const roomPattern = /^[가-힣]+\s\d+$/;
 
     if (!timePattern.test(time)) {
-      alert("강의시간 형식이 잘못되었습니다.\n예시: 월 1교시, 수 2교시");
+      openModal("강의시간 형식이 잘못되었습니다.\n예시: 월 1교시, 수 2교시");
       return;
     }
 
     if (!roomPattern.test(room)) {
-      alert("강의실 형식이 잘못되었습니다.\n예시: 새빛관 101");
+      openModal("강의실 형식이 잘못되었습니다.\n예시: 새빛관 101");
       return;
     }
 
@@ -64,8 +78,6 @@ const SyllabusForm = ({ initialData, onSubmit }) => {
 
     if (onSubmit) onSubmit(payload);
     console.log("payload faculty_id:", payload.faculty_id);
-    alert("강의계획서가 제출되었습니다.");
-    navigate("/professor/syllabus");
   };
 
   return (
@@ -118,6 +130,15 @@ const SyllabusForm = ({ initialData, onSubmit }) => {
       <S.ButtonWrapper>
         <S.Button onClick={handleSubmit}>제출</S.Button>
       </S.ButtonWrapper>
+
+      {modalVisible && (
+        <S.ModalOverlay>
+          <S.Modal>
+            <p>{modalMessage}</p>
+            <S.ModalCloseButton onClick={closeModal}>확인</S.ModalCloseButton>
+          </S.Modal>
+        </S.ModalOverlay>
+      )}
     </S.Container>
   );
 };
