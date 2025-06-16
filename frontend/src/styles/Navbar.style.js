@@ -5,12 +5,9 @@ export const Nav = styled.div`
   height: 60px;
   background-color: #f9f9f9;
   border-bottom: 1px solid #ccc;
-  font-family: sans-serif;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   padding: 0 20px;
   box-sizing: border-box;
   position: relative;
@@ -27,6 +24,7 @@ export const Center = styled.img`
   cursor: pointer;
   position: absolute;
   left: 50%;
+  margin-left: 95px;
   transform: translateX(-50%);
   transition: transform 0.2s ease;
 

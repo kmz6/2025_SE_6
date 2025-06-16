@@ -206,7 +206,7 @@ function HomePage() {
           onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
         >
           <img
-            src="/images/kwlogo.svg"
+            src="/images/kw_kor.png"
             alt="학교 배너"
             style={{ width: "160px", height: "auto", display: "block" }}
           />

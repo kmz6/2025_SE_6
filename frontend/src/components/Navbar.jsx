@@ -20,7 +20,7 @@ const Navbar = () => {
   return (
     <S.Nav>
       <S.Left>메뉴</S.Left>
-      <S.Center src="/images/1506.png" alt="로고" onClick={() => navigate("/")} />
+      <S.Center src="/images/kw_eng.svg" alt="로고" onClick={() => navigate("/")} />
       <S.Right>
         {user ? (
           <>
