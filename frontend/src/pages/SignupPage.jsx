@@ -114,9 +114,10 @@ function SignupPage() {
           <S.Select defaultValue="">
             <option value="" disabled>학과</option>
             <option value="컴퓨터정보공학부">컴퓨터정보공학부</option>
-            <option value="전자바이오물리학과">전자바이오물리학과</option>
-            <option value="화학공학과">화학공학과</option>
-            <option value="법학부">법학부</option>
+            <option value="소프트웨어학부">소프트웨어학부</option>
+            <option value="정보융합학부">정보융합학부</option>
+            <option value="로봇학부">로봇학부</option>
+            <option value="지능형로봇학과">지능형로봇학과</option>
           </S.Select>
 
           <S.LabelGroup><span>학번/사번</span></S.LabelGroup>
