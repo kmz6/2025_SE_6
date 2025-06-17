@@ -6,6 +6,7 @@ import axiosInstance from "../../apis/axiosInstance";
 import { useUser } from "../../context/UserContext";
 import PostWriteHeader from "../../components/Post/PostWriteHeader";
 import { insertBoard, patchBoard } from "../../apis/board/board";
+import * as ModalStyle from "../../styles/Modal.style";
 
 export default function ArchivesWritePage() {
   const { lectureId, postId } = useParams();
@@ -16,6 +17,49 @@ export default function ArchivesWritePage() {
   const [courseCode, setCourseCode] = useState("");
   const [initialValues, setInitialValues] = useState({ title: "", content: "" });
   const isEdit = !!postId;
+
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+  const [cancelVisible, setCancelVisible] = useState(false);
+  const [modalAction, setModalAction] = useState({ onConfirm: () => {}, onCancel: () => {} });
+
+  const openModal = (message, callback) => {
+    setModalMessage(message);
+    setModalVisible(true);
+    setCancelVisible(false);
+    setModalAction({
+      onConfirm: () => closeModal(callback),
+    });
+  };
+
+  const closeModal = (callback) => {
+    setModalVisible(false);
+    setCancelVisible(false);
+    if (callback) callback();
+  };
+
+  const showConfirmModal = (message) => {
+    return new Promise((resolve) => {
+      setModalMessage(message);
+      setModalVisible(true);
+      setCancelVisible(true);
+
+      const handleConfirm = () => {
+        closeModal();
+        resolve(true);
+      };
+
+      const handleCancel = () => {
+        closeModal();
+        resolve(false);
+      };
+
+      setModalAction({
+        onConfirm: handleConfirm,
+        onCancel: handleCancel,
+      });
+    });
+  };
 
   const fetchCourseName = async () => {
     try {
@@ -49,45 +93,56 @@ export default function ArchivesWritePage() {
   const handleSubmit = async (formData, values) => {
     try {
       if (isEdit) {
-        const hasFile = formData.getAll("files")?.length > 0; // 파일 존재 여부
+        const hasFile = formData.getAll("files")?.length > 0;
 
         if (!hasFile) {
-          const confirmKeep = window.confirm(
+          const confirmKeep = await showConfirmModal(
             "첨부 파일이 업로드 되지 않았습니다.\n기존 첨부 파일을 유지하시겠습니까?"
           );
-
-          if (!confirmKeep) {
-            return;
-          }
+          if (!confirmKeep) return;
         }
 
         await patchBoard(postId, formData);
-        alert("수정 완료");
+        openModal("수정 완료", () => navigate(`/archives/${lectureId}`));
       } else {
-        formData.append("author_id", user.user_id)
+        formData.append("author_id", user.user_id);
         await insertBoard(lectureId, "material", formData);
-        alert("등록 완료");
+        openModal("등록 완료", () => navigate(`/archives/${lectureId}`));
       }
-
-      navigate(`/archives/${lectureId}`);
     } catch (error) {
       console.error("전송 실패:", error);
-      alert(isEdit ? "수정 중 오류 발생" : "등록 중 오류 발생");
+      openModal(isEdit ? "수정 중 오류 발생" : "등록 중 오류 발생");
     }
   };
 
   return (
     <div className="archives-write-container">
       <h1 className="board-title">{isEdit ? "강의 자료 수정" : "강의 자료 등록"}</h1>
-      <PostWriteHeader
-        subjectName={courseName}
-        subjectCode={courseCode}
-      />
+      <PostWriteHeader subjectName={courseName} subjectCode={courseCode} />
 
-      <PostWriteForm
-        onSubmit={handleSubmit}
-        initialValues={initialValues}
-      />
+      <PostWriteForm onSubmit={handleSubmit} initialValues={initialValues} />
+
+      {modalVisible && (
+        <ModalStyle.ModalOverlay>
+          <ModalStyle.Modal>
+            <p>{modalMessage}</p>
+            {cancelVisible ? (
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <ModalStyle.ModalButtonWrapper>
+                  <ModalStyle.ModalCloseButton onClick={modalAction.onConfirm}>확인</ModalStyle.ModalCloseButton>
+                  <ModalStyle.ModalCloseButton onClick={modalAction.onCancel}>취소</ModalStyle.ModalCloseButton>
+                </ModalStyle.ModalButtonWrapper>
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <ModalStyle.ModalCloseButton onClick={modalAction.onConfirm}>
+                  확인
+                </ModalStyle.ModalCloseButton>
+              </div>
+            )}
+          </ModalStyle.Modal>
+        </ModalStyle.ModalOverlay>
+      )}
     </div>
   );
 }

@@ -6,6 +6,7 @@ import "./ArchivesPostPage.css";
 import { useUser } from "../../context/UserContext";
 import axiosInstance from "../../apis/axiosInstance";
 import { getAttachment, deleteBoard } from "../../apis/board/board";
+import * as ModalStyle from "../../styles/Modal.style";
 
 export default function ArchivesPostPage() {
   const { lectureId, postId } = useParams();
@@ -17,6 +18,44 @@ export default function ArchivesPostPage() {
   const [courseName, setCourseName] = useState("");
   const [courseCode, setCourseCode] = useState("");
   const [files, setFiles] = useState([]);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [cancelVisible, setCancelVisible] = useState(false);
+  const [modalAction, setModalAction] = useState({ onConfirm: () => {}, onCancel: () => {} });
+
+  const openModal = (message, callback) => {
+    setModalMessage(message);
+    setModalVisible(true);
+    setCancelVisible(false);
+    setModalAction({
+      onConfirm: () => closeModal(callback),
+    });
+  };
+
+  const closeModal = (callback) => {
+    setModalVisible(false);
+    setCancelVisible(false);
+    if (callback) callback();
+  };
+
+  const showConfirmModal = (message) => {
+    return new Promise((resolve) => {
+      setModalMessage(message);
+      setModalVisible(true);
+      setCancelVisible(true);
+      setModalAction({
+        onConfirm: () => {
+          closeModal();
+          resolve(true);
+        },
+        onCancel: () => {
+          closeModal();
+          resolve(false);
+        },
+      });
+    });
+  };
 
   // 게시글
   const fetchPost = async () => {
@@ -56,16 +95,15 @@ export default function ArchivesPostPage() {
   };
 
   const handleDelete = async () => {
-    const confirmed = window.confirm("정말 삭제하시겠습니까?");
+    const confirmed = await showConfirmModal("정말 삭제하시겠습니까?");
     if (!confirmed) return;
 
     try {
       await deleteBoard(postId);
-      alert("삭제되었습니다.");
-      navigate(`/archives/${lectureId}`);
+      openModal("삭제되었습니다.", () => navigate(`/archives/${lectureId}`));
     } catch (error) {
       console.error("삭제 실패:", error);
-      alert("삭제 중 오류가 발생했습니다.");
+      openModal("삭제 중 오류가 발생했습니다.");
     }
   };
 
@@ -91,6 +129,28 @@ export default function ArchivesPostPage() {
         content={post.content}
         attachment={files}
       />
+
+      {modalVisible && (
+        <ModalStyle.ModalOverlay>
+          <ModalStyle.Modal>
+            <p>{modalMessage}</p>
+            {cancelVisible ? (
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <ModalStyle.ModalButtonWrapper>
+                  <ModalStyle.ModalCloseButton onClick={modalAction.onConfirm}>확인</ModalStyle.ModalCloseButton>
+                  <ModalStyle.ModalCloseButton onClick={modalAction.onCancel}>취소</ModalStyle.ModalCloseButton>
+                </ModalStyle.ModalButtonWrapper>
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <ModalStyle.ModalCloseButton onClick={modalAction.onConfirm}>
+                  확인
+                </ModalStyle.ModalCloseButton>
+              </div>
+            )}
+          </ModalStyle.Modal>
+        </ModalStyle.ModalOverlay>
+      )}
     </div>
   );
 }

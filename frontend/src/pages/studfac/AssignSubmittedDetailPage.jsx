@@ -4,13 +4,13 @@ import PostHeader from "../../components/Post/PostHeader";
 import PostBox from "../../components/Post/PostBox";
 import { useUser } from "../../context/UserContext";
 import axiosInstance from "../../apis/axiosInstance";
+import * as ModalStyle from "../../styles/Modal.style";
 import "./AssignSubmittedDetailPage.css";
 
 export default function AssignSubmittedDetailPage() {
   const { lectureId, postId, studentId } = useParams();
   const assignmentId = postId;
   const navigate = useNavigate();
-
   const { user } = useUser();
   const currentUserId = user?.user_id;
 
@@ -22,12 +22,48 @@ export default function AssignSubmittedDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [cancelVisible, setCancelVisible] = useState(false);
+  const [modalAction, setModalAction] = useState({ onConfirm: () => {}, onCancel: () => {} });
+
+  const openModal = (message, callback) => {
+    setModalMessage(message);
+    setModalVisible(true);
+    setCancelVisible(false);
+    setModalAction({
+      onConfirm: () => closeModal(callback),
+    });
+  };
+
+  const closeModal = (callback) => {
+    setModalVisible(false);
+    setCancelVisible(false);
+    if (callback) callback();
+  };
+
+  const showConfirmModal = (message) => {
+    return new Promise((resolve) => {
+      setModalMessage(message);
+      setModalVisible(true);
+      setCancelVisible(true);
+      setModalAction({
+        onConfirm: () => {
+          closeModal();
+          resolve(true);
+        },
+        onCancel: () => {
+          closeModal();
+          resolve(false);
+        },
+      });
+    });
+  };
+
   const fetchAllData = async () => {
     try {
       setLoading(true);
-      const courseRes = await axiosInstance.get(
-        `/api/lectures/${lectureId}/info`
-      );
+      const courseRes = await axiosInstance.get(`/api/lectures/${lectureId}/info`);
       setCourseInfo({
         name: courseRes.data.course_name,
         code: courseRes.data.course_code,
@@ -39,9 +75,7 @@ export default function AssignSubmittedDetailPage() {
       if (assignmentRes.data.success) {
         setAssignment(assignmentRes.data.data);
       } else {
-        throw new Error(
-          assignmentRes.data.message || "과제 정보를 불러올 수 없습니다."
-        );
+        throw new Error(assignmentRes.data.message || "과제 정보를 불러올 수 없습니다.");
       }
 
       try {
@@ -79,7 +113,7 @@ export default function AssignSubmittedDetailPage() {
       ) {
         setError(
           err.response?.data?.message ||
-          "필수 데이터를 불러오는 중 문제가 발생했습니다."
+            "필수 데이터를 불러오는 중 문제가 발생했습니다."
         );
       }
     } finally {
@@ -95,21 +129,20 @@ export default function AssignSubmittedDetailPage() {
       );
       if (subAttachmentsRes.data.success) {
         setSubmissionAttachments(subAttachmentsRes.data.data || []);
-        console.log(subAttachmentsRes.data);
       } else {
         setSubmissionAttachments([]);
       }
     } catch {
       setSubmissionAttachments([]);
     }
-  }
+  };
 
   const handleEdit = () => {
     navigate(`/assignment/${lectureId}/edit/${assignmentId}/${studentId}`);
   };
 
   const handleDelete = async () => {
-    const confirmed = window.confirm("정말로 이 과제를 삭제하시겠습니까?");
+    const confirmed = await showConfirmModal("정말로 이 과제를 삭제하시겠습니까?");
     if (!confirmed) return;
 
     try {
@@ -118,8 +151,9 @@ export default function AssignSubmittedDetailPage() {
         { data: { author_id: studentId } }
       );
       if (response.data.success) {
-        alert("제출물이 성공적으로 삭제되었습니다.");
-        navigate(`/assignment/${lectureId}`);
+        openModal("제출물이 성공적으로 삭제되었습니다.", () =>
+          navigate(`/assignment/${lectureId}`)
+        );
       } else {
         throw new Error(response.data.message || "삭제에 실패했습니다.");
       }
@@ -127,7 +161,7 @@ export default function AssignSubmittedDetailPage() {
       const errorMessage =
         err.response?.data?.message || "삭제 중 문제가 발생했습니다.";
       setError(errorMessage);
-      alert(errorMessage);
+      openModal(errorMessage);
     }
   };
 
@@ -207,9 +241,7 @@ export default function AssignSubmittedDetailPage() {
               assignment.end_date
             )}`}
             content={assignment.content}
-            attachment={
-              assignmentAttachments
-            }
+            attachment={assignmentAttachments}
           />
 
           {assignmentAttachments.length > 1 && (
@@ -255,6 +287,28 @@ export default function AssignSubmittedDetailPage() {
             <p>아직 제출된 과제가 없습니다.</p>
           </div>
         </div>
+      )}
+
+      {modalVisible && (
+        <ModalStyle.ModalOverlay>
+          <ModalStyle.Modal>
+            <p>{modalMessage}</p>
+            {cancelVisible ? (
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <ModalStyle.ModalButtonWrapper>
+                  <ModalStyle.ModalCloseButton onClick={modalAction.onConfirm}>확인</ModalStyle.ModalCloseButton>
+                  <ModalStyle.ModalCloseButton onClick={modalAction.onCancel}>취소</ModalStyle.ModalCloseButton>
+                </ModalStyle.ModalButtonWrapper>
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <ModalStyle.ModalCloseButton onClick={modalAction.onConfirm}>
+                  확인
+                </ModalStyle.ModalCloseButton>
+              </div>
+            )}
+          </ModalStyle.Modal>
+        </ModalStyle.ModalOverlay>
       )}
     </div>
   );

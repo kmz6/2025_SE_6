@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./PostWriteForm.css";
+import * as ModalStyle from "../../styles/Modal.style";
 
 export default function PostWriteForm({
   onSubmit,
@@ -14,19 +15,33 @@ export default function PostWriteForm({
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
+  const openModal = (message) => {
+    setModalMessage(message);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
   useEffect(() => {
     if (initialValues) {
       if (initialValues.title !== undefined) setTitle(initialValues.title);
       if (initialValues.content !== undefined) setContent(initialValues.content);
-      if (initialValues.start_date !== undefined) setStartDate(initialValues.start_date.slice(0, 10));
-      if (initialValues.end_date !== undefined) setEndDate(initialValues.end_date.slice(0, 10));
+      if (initialValues.start_date !== undefined)
+        setStartDate(initialValues.start_date.slice(0, 10));
+      if (initialValues.end_date !== undefined)
+        setEndDate(initialValues.end_date.slice(0, 10));
     }
   }, [initialValues]);
 
   const handleSubmit = () => {
     if (disabled) return;
     if (!title?.trim?.() || !content?.trim?.()) {
-      alert("제목과 내용을 모두 입력해주세요.");
+      openModal("제목과 내용을 모두 입력해주세요.");
       return;
     }
 
@@ -72,12 +87,12 @@ export default function PostWriteForm({
           onChange={(e) => setFile(Array.from(e.target.files))}
           disabled={disabled}
         />
-        {file.length > 0 &&
-          (<p className="file-name">
+        {file.length > 0 && (
+          <p className="file-name">
             {file[0].name}
             {file.length > 1 && ` 외 ${file.length - 1}개`}
-          </p>)
-        }
+          </p>
+        )}
       </div>
 
       <textarea
@@ -118,6 +133,19 @@ export default function PostWriteForm({
       >
         {submitLabel}
       </button>
+
+      {modalVisible && (
+        <ModalStyle.ModalOverlay>
+          <ModalStyle.Modal>
+            <p>{modalMessage}</p>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <ModalStyle.ModalCloseButton onClick={closeModal}>
+                확인
+              </ModalStyle.ModalCloseButton>
+            </div>
+          </ModalStyle.Modal>
+        </ModalStyle.ModalOverlay>
+      )}
     </div>
   );
 }
