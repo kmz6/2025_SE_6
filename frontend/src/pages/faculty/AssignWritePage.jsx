@@ -5,6 +5,7 @@ import PostWriteForm from "../../components/Post/PostWriteForm";
 import "./AssignWritePage.css";
 import axiosInstance from "../../apis/axiosInstance";
 import { useUser } from "../../context/UserContext";
+import * as ModalStyle from "../../styles/Modal.style";
 
 export default function AssignWritePage() {
   const { lectureId, postId } = useParams();
@@ -22,11 +23,47 @@ export default function AssignWritePage() {
   });
   const [loading, setLoading] = useState(true);
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [cancelVisible, setCancelVisible] = useState(false);
+  const [modalAction, setModalAction] = useState({ onConfirm: () => {}, onCancel: () => {} });
+
+  const openModal = (message, callback) => {
+    setModalMessage(message);
+    setModalVisible(true);
+    setCancelVisible(false);
+    setModalAction({
+      onConfirm: () => closeModal(callback),
+    });
+  };
+
+  const closeModal = (callback) => {
+    setModalVisible(false);
+    setCancelVisible(false);
+    if (callback) callback();
+  };
+
+  const showConfirmModal = (message) => {
+    return new Promise((resolve) => {
+      setModalMessage(message);
+      setModalVisible(true);
+      setCancelVisible(true);
+      setModalAction({
+        onConfirm: () => {
+          closeModal();
+          resolve(true);
+        },
+        onCancel: () => {
+          closeModal();
+          resolve(false);
+        },
+      });
+    });
+  };
+
   const fetchCourseInfo = async () => {
     try {
-      const response = await axiosInstance.get(
-        `/api/lectures/${lectureId}/info`
-      );
+      const response = await axiosInstance.get(`/api/lectures/${lectureId}/info`);
       setCourseName(response.data.course_name);
       setCourseCode(response.data.course_code);
     } catch (error) {
@@ -36,15 +73,13 @@ export default function AssignWritePage() {
 
   const fetchAssignment = async () => {
     try {
-      const res = await axiosInstance.get(
-        `/api/lectures/${lectureId}/assignments/${postId}`
-      );
+      const res = await axiosInstance.get(`/api/lectures/${lectureId}/assignments/${postId}`);
       const data = res.data.data;
       setInitialValues({
         title: data.title ?? "",
         content: data.content ?? "",
-        start_date: new Date(data.start_date).toLocaleDateString('sv-SE') ?? "",
-        end_date: new Date(data.end_date).toLocaleDateString('sv-SE') ?? "",
+        start_date: new Date(data.start_date).toLocaleDateString("sv-SE") ?? "",
+        end_date: new Date(data.end_date).toLocaleDateString("sv-SE") ?? "",
       });
     } catch (error) {
       console.error("기존 과제 불러오기 실패:", error);
@@ -68,11 +103,11 @@ export default function AssignWritePage() {
     const { start_date, end_date } = values;
 
     if (!start_date) {
-      alert("과제 제출 시작일을 입력해주세요.");
+      openModal("과제 제출 시작일을 입력해주세요.");
       return;
     }
     if (!end_date) {
-      alert("과제 제출 마감일을 입력해주세요.");
+      openModal("과제 제출 마감일을 입력해주세요.");
       return;
     }
 
@@ -83,26 +118,25 @@ export default function AssignWritePage() {
     endDate.setHours(0, 0, 0, 0);
 
     if (endDate < startDate) {
-      alert("마감일은 시작일보다 이전일 수 없습니다.");
+      openModal("마감일은 시작일보다 이전일 수 없습니다.");
       return;
     }
 
-    const startDateStr = startDate.toLocaleDateString('sv-SE');
-    const endDateStr = endDate.toLocaleDateString('sv-SE');
+    const startDateStr = startDate.toLocaleDateString("sv-SE");
+    const endDateStr = endDate.toLocaleDateString("sv-SE");
 
     formData.set("start_date", startDateStr);
     formData.set("end_date", endDateStr);
-    formData.append("author_id", user.user_id)
+    formData.append("author_id", user.user_id);
 
     try {
       if (isEdit) {
-        const hasFile = formData.getAll("files")?.length > 0; // 파일 존재 여부
+        const hasFile = formData.getAll("files")?.length > 0;
 
         if (!hasFile) {
-          const confirmKeep = window.confirm(
+          const confirmKeep = await showConfirmModal(
             "첨부 파일이 업로드 되지 않았습니다.\n기존 첨부 파일을 유지하시겠습니까?"
           );
-
           if (!confirmKeep) {
             return;
           }
@@ -113,27 +147,22 @@ export default function AssignWritePage() {
           formData,
           {
             headers: {
-              'Content-Type': 'multipart/form-data'
-            }
+              "Content-Type": "multipart/form-data",
+            },
           }
         );
-        alert("과제가 수정되었습니다.");
+        openModal("과제가 수정되었습니다.", () => navigate(`/assignment/${lectureId}`));
       } else {
-        await axiosInstance.post(
-          `/api/lectures/${lectureId}/assignments`,
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          }
-        );
-        alert("과제가 등록되었습니다.");
+        await axiosInstance.post(`/api/lectures/${lectureId}/assignments`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        openModal("과제가 등록되었습니다.", () => navigate(`/assignment/${lectureId}`));
       }
-      navigate(`/assignment/${lectureId}`);
     } catch (error) {
       console.error("과제 등록/수정 실패:", error);
-      alert("과제 처리 중 오류 발생");
+      openModal("과제 처리 중 오류 발생");
     }
   };
 
@@ -171,6 +200,28 @@ export default function AssignWritePage() {
         onSubmit={handleSubmit}
         submitLabel={isEdit ? "수정" : "등록"}
       />
+
+      {modalVisible && (
+        <ModalStyle.ModalOverlay>
+          <ModalStyle.Modal>
+            <p>{modalMessage}</p>
+            {cancelVisible ? (
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <ModalStyle.ModalButtonWrapper>
+                  <ModalStyle.ModalCloseButton onClick={modalAction.onConfirm}>확인</ModalStyle.ModalCloseButton>
+                  <ModalStyle.ModalCloseButton onClick={modalAction.onCancel}>취소</ModalStyle.ModalCloseButton>
+                </ModalStyle.ModalButtonWrapper>
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <ModalStyle.ModalCloseButton onClick={modalAction.onConfirm}>
+                  확인
+                </ModalStyle.ModalCloseButton>
+              </div>
+            )}
+          </ModalStyle.Modal>
+        </ModalStyle.ModalOverlay>
+      )}
     </div>
   );
 }

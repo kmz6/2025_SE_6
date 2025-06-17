@@ -4,6 +4,7 @@ import PostHeader from "../../components/Post/PostHeader";
 import PostBox from "../../components/Post/PostBox";
 import axiosInstance from "../../apis/axiosInstance";
 import { useUser } from "../../context/UserContext";
+import * as ModalStyle from "../../styles/Modal.style";
 import "./AssignSubmitListPage.css";
 
 export default function AssignSubmitListPage() {
@@ -19,6 +20,44 @@ export default function AssignSubmitListPage() {
   const [submittedAssignments, setSubmittedAssignments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [cancelVisible, setCancelVisible] = useState(false);
+  const [modalAction, setModalAction] = useState({ onConfirm: () => {}, onCancel: () => {} });
+
+  const openModal = (message, callback) => {
+    setModalMessage(message);
+    setModalVisible(true);
+    setCancelVisible(false);
+    setModalAction({
+      onConfirm: () => closeModal(callback),
+    });
+  };
+
+  const closeModal = (callback) => {
+    setModalVisible(false);
+    setCancelVisible(false);
+    if (callback) callback();
+  };
+
+  const showConfirmModal = (message) => {
+    return new Promise((resolve) => {
+      setModalMessage(message);
+      setModalVisible(true);
+      setCancelVisible(true);
+      setModalAction({
+        onConfirm: () => {
+          closeModal();
+          resolve(true);
+        },
+        onCancel: () => {
+          closeModal();
+          resolve(false);
+        },
+      });
+    });
+  };
 
   const fetchCourseInfo = async () => {
     try {
@@ -71,9 +110,7 @@ export default function AssignSubmitListPage() {
 
   const fetchAssignment = async () => {
     try {
-      const res = await axiosInstance.get(
-        `/api/lectures/${lectureId}/assignments/${assignmentId}`
-      );
+      const res = await axiosInstance.get(`/api/lectures/${lectureId}/assignments/${assignmentId}`);
       const assignmentData = res.data.success ? res.data.data : res.data;
       setAssignment(assignmentData);
     } catch {
@@ -83,10 +120,7 @@ export default function AssignSubmitListPage() {
 
   const fetchAssignmentAttachments = async () => {
     try {
-      const res = await axiosInstance.get(
-        `/api/assignments/${postId}/attachments`
-      );
-
+      const res = await axiosInstance.get(`/api/assignments/${postId}/attachments`);
       if (res.data.success) {
         setAttachments(res.data.data);
       }
@@ -128,7 +162,7 @@ export default function AssignSubmitListPage() {
   };
 
   const handleDeleteAssignment = async () => {
-    const confirmDelete = window.confirm(
+    const confirmDelete = await showConfirmModal(
       "출제된 과제를 정말 삭제하시겠습니까?\n관련된 모든 제출물과 첨부파일도 함께 삭제됩니다."
     );
     if (!confirmDelete) return;
@@ -138,17 +172,19 @@ export default function AssignSubmitListPage() {
         `/api/lectures/${lectureId}/assignments/${assignmentId}`
       );
       if (res.data.success || res.status === 200) {
-        alert("과제가 성공적으로 삭제되었습니다.");
-        navigate(`/assignment/${lectureId}`);
+        openModal("과제가 성공적으로 삭제되었습니다.", () =>
+          navigate(`/assignment/${lectureId}`)
+        );
       } else {
         throw new Error(res.data.message || "삭제 실패");
       }
     } catch (error) {
       if (error.response?.status === 404) {
-        alert("이미 삭제된 과제이거나 존재하지 않는 과제입니다.");
+        openModal("이미 삭제된 과제이거나 존재하지 않는 과제입니다.");
       } else {
-        alert(
-          `과제 삭제 중 오류가 발생했습니다: ${error.response?.data?.message || error.message
+        openModal(
+          `과제 삭제 중 오류가 발생했습니다: ${
+            error.response?.data?.message || error.message
           }`
         );
       }
@@ -172,9 +208,7 @@ export default function AssignSubmitListPage() {
   }
 
   if (!assignment) {
-    return (
-      <div className="loading-message">과제 정보를 불러오는 중입니다...</div>
-    );
+    return <div className="loading-message">과제 정보를 불러오는 중입니다...</div>;
   }
 
   return (
@@ -201,10 +235,7 @@ export default function AssignSubmitListPage() {
       />
 
       {error && (
-        <div
-          className="error-message"
-          style={{ color: "red", margin: "20px 0" }}
-        >
+        <div className="error-message" style={{ color: "red", margin: "20px 0" }}>
           {error}
         </div>
       )}
@@ -213,9 +244,7 @@ export default function AssignSubmitListPage() {
         <div className="loading-message">제출 현황을 불러오는 중...</div>
       ) : submittedAssignments.length === 0 ? (
         <div className="no-submissions-message">
-          {error
-            ? "제출 현황을 불러올 수 없습니다."
-            : "아직 제출된 과제가 없습니다."}
+          {error ? "제출 현황을 불러올 수 없습니다." : "아직 제출된 과제가 없습니다."}
         </div>
       ) : (
         <table className="submit-table">
@@ -238,9 +267,7 @@ export default function AssignSubmitListPage() {
                 <tr
                   key={`${submission.submission_id}-${studentId}`}
                   onClick={() =>
-                    navigate(
-                      `/assignment/${lectureId}/${assignmentId}/${studentId}`
-                    )
+                    navigate(`/assignment/${lectureId}/${assignmentId}/${studentId}`)
                   }
                   style={{ cursor: "pointer" }}
                   className="submission-row"
@@ -249,10 +276,7 @@ export default function AssignSubmitListPage() {
                   <td>{studentId}</td>
                   <td>{studentName}</td>
                   <td>{formatDateTime(submission.created_at)}</td>
-                  <td
-                    className={`status-cell ${status === "제출 완료" ? "submitted" : "not-submitted"
-                      }`}
-                  >
+                  <td className={`status-cell ${status === "제출 완료" ? "submitted" : "not-submitted"}`}>
                     {status}
                   </td>
                 </tr>
@@ -260,6 +284,28 @@ export default function AssignSubmitListPage() {
             })}
           </tbody>
         </table>
+      )}
+
+      {modalVisible && (
+        <ModalStyle.ModalOverlay>
+          <ModalStyle.Modal>
+            <p>{modalMessage}</p>
+            {cancelVisible ? (
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <ModalStyle.ModalButtonWrapper>
+                  <ModalStyle.ModalCloseButton onClick={modalAction.onConfirm}>확인</ModalStyle.ModalCloseButton>
+                  <ModalStyle.ModalCloseButton onClick={modalAction.onCancel}>취소</ModalStyle.ModalCloseButton>
+                </ModalStyle.ModalButtonWrapper>
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <ModalStyle.ModalCloseButton onClick={modalAction.onConfirm}>
+                  확인
+                </ModalStyle.ModalCloseButton>
+              </div>
+            )}
+          </ModalStyle.Modal>
+        </ModalStyle.ModalOverlay>
       )}
     </div>
   );

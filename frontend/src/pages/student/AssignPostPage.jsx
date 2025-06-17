@@ -6,6 +6,7 @@ import "./AssignPostPage.css";
 import { useUser } from "../../context/UserContext";
 import axiosInstance from "../../apis/axiosInstance";
 import BoardHeader from "../../components/Board/BoardHeader";
+import * as ModalStyle from "../../styles/Modal.style";
 
 export default function AssignPostPage() {
   const { lectureId, postId } = useParams();
@@ -20,6 +21,26 @@ export default function AssignPostPage() {
   const [loading, setLoading] = useState(true);
   const [submissionExists, setSubmissionExists] = useState(false);
   const [existingSubmission, setExistingSubmission] = useState(null);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [cancelVisible, setCancelVisible] = useState(false);
+  const [modalAction, setModalAction] = useState({ onConfirm: () => {}, onCancel: () => {} });
+
+  const openModal = (message, callback) => {
+    setModalMessage(message);
+    setModalVisible(true);
+    setCancelVisible(false);
+    setModalAction({
+      onConfirm: () => closeModal(callback),
+    });
+  };
+
+  const closeModal = (callback) => {
+    setModalVisible(false);
+    setCancelVisible(false);
+    if (callback) callback();
+  };
 
   const fetchCourseInfo = async () => {
     try {
@@ -49,7 +70,6 @@ export default function AssignPostPage() {
       const res = await axiosInstance.get(
         `/api/assignments/${postId}/attachments`
       );
-
       if (res.data.success) {
         setAttachments(res.data.data);
       }
@@ -100,7 +120,7 @@ export default function AssignPostPage() {
 
   const handleSubmit = async (formData, formDataValues) => {
     if (!currentUserId) {
-      alert("로그인이 필요합니다.");
+      openModal("로그인이 필요합니다.");
       return;
     }
 
@@ -108,7 +128,7 @@ export default function AssignPostPage() {
       const endDate = new Date(assignment.end_date);
       const now = new Date();
       if (now > endDate) {
-        alert("과제 제출 기한이 지났습니다.");
+        openModal("과제 제출 기한이 지났습니다.");
         return;
       }
     }
@@ -127,7 +147,7 @@ export default function AssignPostPage() {
 
       const httpMethod = isEditMode && submissionId ? "put" : "post";
 
-      formData.set("title", formDataValues.title || `${assignment?.title} 제출물`)
+      formData.set("title", formDataValues.title || `${assignment?.title} 제출물`);
       formData.append("author_id", currentUserId);
 
       const res = await axiosInstance[httpMethod](apiUrl, formData, {
@@ -137,22 +157,19 @@ export default function AssignPostPage() {
       });
 
       if (res.data.success) {
-        alert(
-          res.data.message ||
-          `과제 ${isEditMode && submissionId ? "수정" : "제출"} 완료`
+        openModal(
+          res.data.message || `과제 ${isEditMode ? "수정" : "제출"} 완료`,
+          () => navigate(`/assignment/${lectureId}`)
         );
-        navigate(`/assignment/${lectureId}`);
       } else {
-        alert(
-          res.data.message ||
-          `과제 ${isEditMode && submissionId ? "수정" : "제출"
-          } 중 오류가 발생했습니다.`
+        openModal(
+          res.data.message || `과제 ${isEditMode ? "수정" : "제출"} 중 오류가 발생했습니다.`
         );
       }
     } catch (err) {
       const errorMessage =
         err.response?.data?.message || "과제 제출/수정 중 오류가 발생했습니다.";
-      alert(errorMessage);
+      openModal(errorMessage);
     }
   };
 
@@ -210,9 +227,7 @@ export default function AssignPostPage() {
       <PostBox
         title={assignment.title}
         author={assignment.name}
-        date={`${formatDate(assignment.start_date)} ~ ${formatDate(
-          assignment.end_date
-        )}`}
+        date={`${formatDate(assignment.start_date)} ~ ${formatDate(assignment.end_date)}`}
         content={assignment.content}
         attachment={attachments}
       />
@@ -239,6 +254,17 @@ export default function AssignPostPage() {
         submitLabel={submissionExists ? "과제 수정" : "과제 제출"}
         disabled={isDisabled}
       />
+
+      {modalVisible && (
+        <ModalStyle.ModalOverlay>
+          <ModalStyle.Modal>
+            <p>{modalMessage}</p>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <ModalStyle.ModalCloseButton onClick={modalAction.onConfirm}>확인</ModalStyle.ModalCloseButton>
+            </div>
+          </ModalStyle.Modal>
+        </ModalStyle.ModalOverlay>
+      )}
     </div>
   );
 }
