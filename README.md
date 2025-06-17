@@ -58,11 +58,11 @@ frontend/src/
 
 ```bash
 backend/
-├── config/                # DB 및 서버 설정 파일
+├── config/                # DB 및 서버 설정
 ├── constants/             # 상수 정의
 ├── controllers/           # 요청 로직 처리
 ├── models/                # DB 모델 정의
-├── public/images/         # 정적 이미지 파일
+├── public/images/         # 이미지 파일
 ├── routes/                # API 라우터 정의
 ├── uploads/               # 업로드 파일 저장 경로
 ├── .gitignore             # Git 제외 파일 목록
