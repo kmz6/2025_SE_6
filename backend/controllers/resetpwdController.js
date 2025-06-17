@@ -11,8 +11,8 @@ async function resetPassword(req, res) {
     const matched = await resetPwdModel.verifyUser(userType, user_id, name, email);
     if (!matched) return res.status(401).json({ message: "정보가 일치하지 않습니다." });
 
-    await resetPwdModel.updatePassword(user_id, "0000");
-    res.json({ message: "비밀번호가 '0000'으로 초기화되었습니다." });
+    await resetPwdModel.updatePassword(user_id, "00000000");
+    res.json({ message: "비밀번호가 '00000000'으로 초기화되었습니다." });
 
   } catch (err) {
     console.error("[비밀번호 초기화 오류]", err);
