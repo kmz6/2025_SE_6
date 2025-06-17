@@ -2,7 +2,9 @@
 
 > 소프트웨어공학 3차 팀 프로젝트
 
-### ⚙️ 사용 기술
+<br/>
+
+## ⚙️ 사용 기술
 
 **Frontend**: React, Vite
 <br>
@@ -10,7 +12,9 @@
 <br>
 **Database**: MySQL
 
-### 🚀 설치 및 실행 방법
+<br/>
+
+## 🚀 설치 및 실행 방법
 
 ```bash
 # 레포지토리 클론
@@ -32,7 +36,9 @@ cd backend
 npm run start:all
 ```
 
-### 📁 파일 구조
+<br/>
+
+## 📁 파일 구조
 
 #### 프론트엔드 구조
 
@@ -72,3 +78,34 @@ backend/
 ├── package.json           # 프로젝트 설정 및 의존성
 └── package-lock.json      # 의존성 고정 파일
 ```
+
+<br/>
+
+## 🗃️ ERD
+
+![ERD](frontend/src/images/erd.png)
+
+<br/>
+
+## 👩🏻‍💻 팀원 소개
+
+<table width="100%">
+  <tr>
+    <td align="center" width="25%">
+      <img src="https://github.com/kmz6.png" width="100" /><br />
+      <a href="https://github.com/kmz6">@kmz6</a>
+    </td>
+    <td align="center" width="25%">
+      <img src="https://github.com/dbfanck.png" width="100" /><br />
+      <a href="https://github.com/dbfanck">@dbfanck</a>
+    </td>
+    <td align="center" width="25%">
+      <img src="https://github.com/zo0o0.png" width="100" /><br />
+      <a href="https://github.com/zo0o0">@zo0o0</a>
+    </td>
+    <td align="center" width="25%">
+      <img src="https://github.com/gpdnjs8.png" width="100" /><br />
+      <a href="https://github.com/gpdnjs8">@gpdnjs8</a>
+    </td>
+  </tr>
+</table>
