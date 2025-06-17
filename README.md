@@ -92,19 +92,19 @@ backend/
 <table width="100%">
   <tr>
     <td align="center" width="25%">
-      <img src="https://github.com/kmz6.png" width="100" /><br />
+      <img src="https://github.com/kmz6.png" width="190" /><br />
       <a href="https://github.com/kmz6">@kmz6</a>
     </td>
     <td align="center" width="25%">
-      <img src="https://github.com/dbfanck.png" width="100" /><br />
+      <img src="https://github.com/dbfanck.png" width="190" /><br />
       <a href="https://github.com/dbfanck">@dbfanck</a>
     </td>
     <td align="center" width="25%">
-      <img src="https://github.com/zo0o0.png" width="100" /><br />
+      <img src="https://github.com/zo0o0.png" width="190" /><br />
       <a href="https://github.com/zo0o0">@zo0o0</a>
     </td>
     <td align="center" width="25%">
-      <img src="https://github.com/gpdnjs8.png" width="100" /><br />
+      <img src="https://github.com/gpdnjs8.png" width="190" /><br />
       <a href="https://github.com/gpdnjs8">@gpdnjs8</a>
     </td>
   </tr>
