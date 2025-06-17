@@ -609,11 +609,12 @@ router.get("/lectures/:lectureId/students", async (req, res) => {
 });
 
 router.put(
-  '/lectures/:lectureId/assignments/:assignmentId/submissions/:submissionId', upload.array('many'),
+  '/lectures/:lectureId/assignments/:assignmentId/submissions/:submissionId',
+  upload.array('many'),
   async (req, res) => {
     const { assignmentId, submissionId } = req.params;
     const { title, author_id, content } = req.body;
-    const file = req.files;
+    const files = req.files;
 
     if (!title || !author_id || !content) {
       return res.status(400).json({
@@ -623,58 +624,61 @@ router.put(
     }
 
     const connection = await db.getConnection();
+
     try {
       await connection.beginTransaction();
 
-      // submission_tb에 게시글 업데이트
-      const subSql = `UPDATE SUBMISSIONS_TB
-                       SET title = ?, content = ?
-                       WHERE submission_id = ?`;
+      const subSql = `
+        UPDATE SUBMISSIONS_TB
+        SET title = ?, content = ?
+        WHERE submission_id = ?
+      `;
+      await connection.query(subSql, [title, content, submissionId]);
 
-      const [result] = await connection.query(subSql,
-        [title, content, submissionId]);
-
-      if (files.length > 0) {
-        // attachment_tb 기존 첨부파일 삭제
-        const deleteSql = `DELETE FROM SUBMISSIONS_ATTACHMENT_TB
-                            WHERE submission_id = ?`;
-
+      if (files && files.length > 0) {
+        const deleteSql = `
+          DELETE FROM SUBMISSIONS_ATTACHMENT_TB
+          WHERE submission_id = ?
+        `;
         await connection.execute(deleteSql, [submissionId]);
 
-        // attachment_tb 추가
-        const attachSql = `INSERT INTO SUBMISSIONS_ATTACHMENT_TB
-                                (submission_id, file_name, file_path)
-                                VALUES (?, ?, ?)`;
-
+        const attachSql = `
+          INSERT INTO SUBMISSIONS_ATTACHMENT_TB
+          (submission_id, file_name, file_path)
+          VALUES (?, ?, ?)
+        `;
         for (const file of files) {
-          await connection.query(attachSql, [submissionId, file.filename, `uploads/${file.filename}`]);
+          await connection.query(attachSql, [
+            submissionId,
+            file.originalname,
+            `uploads/${file.filename}`
+          ]);
         }
       }
 
       await connection.commit();
 
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         message: "과제 수정 성공"
       });
-    }
-    catch (error) {
+
+    } catch (error) {
       await connection.rollback();
 
       console.error("과제 수정 오류:", error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         message: "과제 수정 실패",
-        error: process.env.NODE_ENV === 'development' ? err.message : undefined
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
       });
 
-      throw error;
-    }
-    finally {
+    } finally {
       connection.release();
     }
   }
 );
+
 
 
 module.exports = router;
