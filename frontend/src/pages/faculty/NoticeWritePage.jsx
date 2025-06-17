@@ -88,7 +88,7 @@ export default function NoticeWritePage() {
   const handleSubmit = async (formData, values) => {
     try {
       if (isEdit) {
-        const hasFile = formData.getAll("files")?.length > 0;
+        const hasFile = formData.getAll("many")?.length > 0;
 
         if (!hasFile) {
           const confirmKeep = await showConfirmModal(
