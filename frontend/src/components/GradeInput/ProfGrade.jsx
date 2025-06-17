@@ -3,7 +3,7 @@ import HeaderRow from "./HeaderRow";
 import StudentRow from "./StudentRow";
 import CourseTable from "./CourseTable";
 import { patchStudentScore } from "../../apis/grade/profGrade";
-import * as S from "./GradeInput.style";
+import * as S from "../../styles/GradeInput.style";
 
 const ProfGrade = ({ courseData, studentData }) => {
     const [sortBy, setSortBy] = useState("student_id"); // 초기 정렬은 학번순

@@ -17,7 +17,7 @@ async function getSemData(req, res) {
             const grade = course.grade; // 학점
 
             if (!studentGradesMap.has(studentId)) { //학생 아이디 없는 경우
-                studentGradesMap.set(studentId, { totalCredits: 0, totalGradePoints: 0, gpa: 0 });
+                studentGradesMap.set(studentId, { totalCredits: 0, scoreCredits: 0, totalGradePoints: 0, gpa: 0 });
             }
 
             const studentData = studentGradesMap.get(studentId);
@@ -26,13 +26,14 @@ async function getSemData(req, res) {
 
             //성적이 나온 과목들만 처리
             if (grade !== "N/A") {
+                studentData.scoreCredits += credit;
                 studentData.totalGradePoints += (gradePoints[grade] ?? 0) * credit;
             }
         });
 
         // 평균 평점 계산
         for (const [studentId, data] of studentGradesMap) {
-            data.gpa = data.totalCredits > 0 ? data.totalGradePoints / data.totalCredits : 0;
+            data.gpa = data.totalCredits > 0 ? data.totalGradePoints / data.scoreCredits : 0;
         }
 
         const semData = studentGradesMap.get(user_id) || { totalCredits: 0, gpa: 0 }; // 학점 정보
