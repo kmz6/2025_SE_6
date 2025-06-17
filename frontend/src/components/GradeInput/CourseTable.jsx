@@ -1,4 +1,4 @@
-import * as S from "./GradeInput.style";
+import * as S from "../../styles/GradeInput.style";
 
 const CourseTable = ({ courseData }) => {
     return (

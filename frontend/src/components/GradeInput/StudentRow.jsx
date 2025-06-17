@@ -1,5 +1,5 @@
 import { gradeLists } from "../../constants/gradePoints"
-import * as S from "./GradeInput.style";
+import * as S from "../../styles/GradeInput.style";
 
 const StudentRow = ({ s, handleInputChange, handleGradeChange }) => {
     return (
