@@ -19,7 +19,7 @@ function LeaveRequestPage() {
   const handleLeaveRequest = async (type) => {
     try {
       if (!user) {
-        alert("사용자 정보가 없습니다.");
+        openModal("사용자 정보가 없습니다.");
         return;
       }
 
