@@ -65,6 +65,7 @@ const SyllabusForm = ({ initialData, onSubmit }) => {
     const payload = {
       building: formData.room.split(" ")[0],
       room: formData.room.split(" ")[1] || "",
+      course_times: formData.time,
       attendance: formData.attendance,
       midterm_exam: formData.midterm,
       final_exam: formData.final,
